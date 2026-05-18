@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { getMachines, getAlerts, getLogs, getAnalytics, sendCommand, resolveAlert } from "./api";
+import { useState, useEffect, useRef } from "react";
+import { getMachines, getAlerts, getLogs, getAnalytics, sendCommand, resolveAlert,
+  getProcesses, killProcess, requestScreenshot, getScreenshot, getEventLogs, getHealth } from "./api";
 import "./Dashboard.css";
 
 // -- Helper: convert seconds to mm:ss --
@@ -62,10 +63,29 @@ function MiniBar({ value, warn, danger }) {
   );
 }
 
-// -- Machine card --
+// -- Machine card with live countdown timer --
 function MachineCard({ machine, onCommand, sending }) {
-  const isOffline   = machine.status === "offline";
-  const remaining   = machine.session?.remaining_sec ?? 0;
+  const isOffline = machine.status === "offline";
+  const serverRemaining = machine.session?.remaining_sec ?? 0;
+
+  // Local countdown that ticks every second between server polls
+  const [localRemaining, setLocalRemaining] = useState(serverRemaining);
+
+  // Sync with server value whenever it updates
+  useEffect(() => {
+    setLocalRemaining(serverRemaining);
+  }, [serverRemaining]);
+
+  // Count down every second locally
+  useEffect(() => {
+    if (!machine.session || machine.status !== "online") return;
+    const interval = setInterval(() => {
+      setLocalRemaining(prev => (prev <= 0 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [machine.session?.id, machine.status]);
+
+  const remaining   = localRemaining;
   const isLow       = remaining > 0 && remaining < 300;
   const borderColor = { online: "#6ee7b7", idle: "#d1d5db", offline: "#fca5a5" }[machine.status] || "#d1d5db";
   const timerBg     = machine.status === "online" ? (isLow ? "#fef2f2" : "#f0fdf4") : "#f9fafb";
@@ -213,6 +233,25 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   const [logFilter,   setLogFilter]   = useState("");
   const [logLimit,    setLogLimit]    = useState(50);
 
+  // Troubleshooting state
+  const [selectedMachine,  setSelectedMachine]  = useState("");
+  const [processes,        setProcesses]         = useState([]);
+  const [processTime,      setProcessTime]       = useState(null);
+  const [processLoading,   setProcessLoading]    = useState(false);
+  const [screenshot,       setScreenshot]        = useState(null);
+  const [screenshotTime,   setScreenshotTime]    = useState(null);
+  const [screenshotLoading,setScreenshotLoading] = useState(false);
+  const [autoRefresh,      setAutoRefresh]       = useState(false);
+  const autoRefreshRef = useRef(null);
+  const [eventLogs,        setEventLogs]         = useState([]);
+  const [eventLogTime,     setEventLogTime]      = useState(null);
+  const [eventLogLoading,  setEventLogLoading]   = useState(false);
+  const [killConfirm,      setKillConfirm]       = useState(null);
+
+  // Health state
+  const [healthData,    setHealthData]    = useState([]);
+  const [healthLoading, setHealthLoading] = useState(false);
+
   // Fetch machines every 3 seconds
   useEffect(() => {
     const fetchMachines = async () => {
@@ -257,6 +296,11 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   // Fetch logs when that tab is opened
   useEffect(() => {
     if (activeTab === "logs") fetchLogs();
+  }, [activeTab]);
+
+  // Fetch health when that tab is opened
+  useEffect(() => {
+    if (activeTab === "health") fetchHealth();
   }, [activeTab]);
 
   const fetchAnalytics = async () => {
@@ -304,6 +348,111 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // -- Troubleshooting fetch functions --
+  const fetchProcesses = async (machine) => {
+    if (!machine) return;
+    setProcessLoading(true);
+    try {
+      const res = await getProcesses(machine);
+      if (res.data.success) {
+        setProcesses(res.data.data.processes);
+        setProcessTime(res.data.data.recorded_at);
+      }
+    } catch { console.error("Failed to fetch processes"); }
+    finally { setProcessLoading(false); }
+  };
+
+  const fetchScreenshot = async (machine) => {
+    if (!machine) return;
+    setScreenshotLoading(true);
+    try {
+      const res = await getScreenshot(machine);
+      if (res.data.success) {
+        setScreenshot(res.data.data.image);
+        setScreenshotTime(res.data.data.recorded_at);
+      }
+    } catch { console.error("Failed to fetch screenshot"); }
+    finally { setScreenshotLoading(false); }
+  };
+
+  const fetchEventLogs = async (machine) => {
+    if (!machine) return;
+    setEventLogLoading(true);
+    try {
+      const res = await getEventLogs(machine);
+      if (res.data.success) {
+        setEventLogs(res.data.data.logs);
+        setEventLogTime(res.data.data.recorded_at);
+      }
+    } catch { console.error("Failed to fetch event logs"); }
+    finally { setEventLogLoading(false); }
+  };
+
+  const fetchHealth = async () => {
+    setHealthLoading(true);
+    try {
+      const res = await getHealth();
+      if (res.data.success) setHealthData(res.data.data.health);
+    } catch { console.error("Failed to fetch health data"); }
+    finally { setHealthLoading(false); }
+  };
+
+  const handleSelectMachine = (name) => {
+    setSelectedMachine(name);
+    setProcesses([]);
+    setScreenshot(null);
+    setEventLogs([]);
+    fetchProcesses(name);
+    fetchScreenshot(name);
+    fetchEventLogs(name);
+  };
+
+  const handleRequestScreenshot = async (machine) => {
+    const target = machine || selectedMachine;
+    if (!target) return;
+    setScreenshotLoading(true);
+    try {
+      await requestScreenshot(target);
+      setTimeout(() => fetchScreenshot(target), 3000);
+    } catch { showToast("Failed to request screenshot"); }
+    finally { setScreenshotLoading(false); }
+  };
+
+  const toggleAutoRefresh = (machine) => {
+    if (autoRefresh) {
+      // Stop auto refresh
+      clearInterval(autoRefreshRef.current);
+      setAutoRefresh(false);
+    } else {
+      // Start auto refresh every 8 seconds
+      setAutoRefresh(true);
+      autoRefreshRef.current = setInterval(() => {
+        handleRequestScreenshot(machine);
+      }, 8000);
+    }
+  };
+
+  // Clean up auto refresh interval when machine changes or tab changes
+  useEffect(() => {
+    return () => {
+      if (autoRefreshRef.current) clearInterval(autoRefreshRef.current);
+      setAutoRefresh(false);
+    };
+  }, [selectedMachine, activeTab]);
+
+  const handleKillProcess = async (proc) => {
+    if (!killConfirm) {
+      setKillConfirm(proc);
+      return;
+    }
+    try {
+      await killProcess(selectedMachine, proc.pid, proc.name);
+      showToast(`Kill command sent for ${proc.name} (PID: ${proc.pid})`);
+      setKillConfirm(null);
+      setTimeout(() => fetchProcesses(selectedMachine), 3000);
+    } catch { showToast("Failed to send kill command"); }
+  };
+
   const counts = {
     online:  machines.filter(m => m.status === "online").length,
     idle:    machines.filter(m => m.status === "idle").length,
@@ -311,7 +460,7 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     total:   machines.length,
   };
 
-  const tabs = ["machines", "analytics", "alerts", "logs"];
+  const tabs = ["machines", "analytics", "alerts", "logs", "troubleshoot", "health"];
 
   return (
     <div className="dashboard">
@@ -573,6 +722,366 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
           </div>
         )}
       </div>
+
+      {/* Troubleshooting tab */}
+        {activeTab === "troubleshoot" && (
+          <div className="troubleshoot-layout">
+
+            {/* Machine selector */}
+            <div className="troubleshoot-selector">
+              <select
+                className="troubleshoot-select"
+                value={selectedMachine}
+                onChange={e => handleSelectMachine(e.target.value)}
+              >
+                <option value="">— Select a machine —</option>
+                {machines
+                  .filter(m => m.status === "online")
+                  .map(m => (
+                    <option key={m.name} value={m.name}>{m.name}</option>
+                  ))}
+              </select>
+
+              {selectedMachine && (
+                <>
+                  <button
+                    className="troubleshoot-action-btn"
+                    onClick={() => { fetchProcesses(selectedMachine); fetchEventLogs(selectedMachine); }}
+                  >
+                    ↺ Refresh All
+                  </button>
+                  <button
+                    className="troubleshoot-action-btn"
+                    onClick={handleRequestScreenshot}
+                    disabled={screenshotLoading}
+                  >
+                    📷 Take Screenshot
+                  </button>
+                </>
+              )}
+            </div>
+
+            {!selectedMachine ? (
+              <div className="troubleshoot-empty">
+                Select an online machine above to view troubleshooting data
+              </div>
+            ) : (
+              <>
+                {/* Process List */}
+                <div className="troubleshoot-card">
+                  <div className="troubleshoot-card-header">
+                    <span className="troubleshoot-card-title">
+                      🔧 Running Processes — {selectedMachine}
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {processTime && (
+                        <span className="troubleshoot-card-meta">
+                          Updated {fmtRelative(processTime)}
+                        </span>
+                      )}
+                      <button
+                        className="troubleshoot-action-btn"
+                        onClick={() => fetchProcesses(selectedMachine)}
+                        disabled={processLoading}
+                        style={{ padding: "4px 10px", fontSize: 11 }}
+                      >
+                        {processLoading ? "Loading…" : "↺ Refresh"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Kill confirm banner */}
+                  {killConfirm && (
+                    <div style={{
+                      background: "#fef2f2", padding: "10px 16px",
+                      borderBottom: "1px solid #fecaca",
+                      display: "flex", alignItems: "center",
+                      justifyContent: "space-between", gap: 12,
+                    }}>
+                      <span style={{ fontSize: 13, color: "#991b1b" }}>
+                        ⚠ Kill <strong>{killConfirm.name}</strong> (PID: {killConfirm.pid})?
+                        This will force-close the process.
+                      </span>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button
+                          className="troubleshoot-action-btn danger"
+                          onClick={() => handleKillProcess(killConfirm)}
+                        >
+                          Confirm Kill
+                        </button>
+                        <button
+                          className="troubleshoot-action-btn"
+                          onClick={() => setKillConfirm(null)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {processLoading ? (
+                    <div className="troubleshoot-loading">Loading processes…</div>
+                  ) : processes.length === 0 ? (
+                    <div className="troubleshoot-empty">No process data yet — wait a few seconds</div>
+                  ) : (
+                    <div style={{ maxHeight: 400, overflowY: "auto" }}>
+                      <table className="process-table">
+                        <thead>
+                          <tr>
+                            <th>Process Name</th>
+                            <th>PID</th>
+                            <th>CPU %</th>
+                            <th>RAM %</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {processes.map(proc => (
+                            <tr key={proc.pid}>
+                              <td className="process-name" title={proc.name}>{proc.name}</td>
+                              <td className="process-pid">{proc.pid}</td>
+                              <td className={
+                                proc.cpu >= 50 ? "process-cpu-high" :
+                                proc.cpu >= 20 ? "process-cpu-med"  : "process-cpu-low"
+                              }>
+                                {proc.cpu.toFixed(1)}%
+                              </td>
+                              <td className="process-cpu-low">{proc.ram.toFixed(1)}%</td>
+                              <td>
+                                <button
+                                  className="troubleshoot-action-btn danger"
+                                  style={{ padding: "3px 10px", fontSize: 11 }}
+                                  onClick={() => {
+                                    setKillConfirm(null);
+                                    handleKillProcess(proc);
+                                  }}
+                                >
+                                  Kill
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* Screenshot */}
+                <div className="troubleshoot-card">
+                  <div className="troubleshoot-card-header">
+                    <span className="troubleshoot-card-title">
+                      📷 Remote Screenshot — {selectedMachine}
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {screenshotTime && (
+                        <span className="troubleshoot-card-meta">
+                          Taken {fmtRelative(screenshotTime)}
+                        </span>
+                      )}
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <button
+                          className="troubleshoot-action-btn"
+                          onClick={() => handleRequestScreenshot()}
+                          disabled={screenshotLoading}
+                          style={{ padding: "4px 10px", fontSize: 11 }}
+                        >
+                          {screenshotLoading ? "Requesting…" : "📷 Capture"}
+                        </button>
+                        <button
+                          className={`troubleshoot-action-btn ${autoRefresh ? "danger" : ""}`}
+                          onClick={() => toggleAutoRefresh(selectedMachine)}
+                          style={{ padding: "4px 10px", fontSize: 11 }}
+                        >
+                          {autoRefresh ? "⏹ Stop Auto" : "▶ Auto (8s)"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="screenshot-container">
+                    {screenshotLoading ? (
+                      <div className="troubleshoot-loading">Requesting screenshot…</div>
+                    ) : screenshot ? (
+                      <img
+                        src={screenshot}
+                        alt={`Screenshot of ${selectedMachine}`}
+                        className="screenshot-img"
+                      />
+                    ) : (
+                      <div className="screenshot-placeholder">
+                        No screenshot yet — click "Take Screenshot" above
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Windows Event Logs */}
+                <div className="troubleshoot-card">
+                  <div className="troubleshoot-card-header">
+                    <span className="troubleshoot-card-title">
+                      📋 Windows Event Logs — {selectedMachine}
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {eventLogTime && (
+                        <span className="troubleshoot-card-meta">
+                          Updated {fmtRelative(eventLogTime)}
+                        </span>
+                      )}
+                      <button
+                        className="troubleshoot-action-btn"
+                        onClick={() => fetchEventLogs(selectedMachine)}
+                        disabled={eventLogLoading}
+                        style={{ padding: "4px 10px", fontSize: 11 }}
+                      >
+                        {eventLogLoading ? "Loading…" : "↺ Refresh"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {eventLogLoading ? (
+                    <div className="troubleshoot-loading">Loading event logs…</div>
+                  ) : eventLogs.length === 0 ? (
+                    <div className="troubleshoot-empty">
+                      No event logs yet — logs are sent every 60 seconds.<br/>
+                      <span style={{ fontSize: 11, color: "#c4c9d4" }}>
+                        Requires pywin32 installed on the client PC.
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="eventlog-list">
+                      {eventLogs.map((log, i) => (
+                        <div key={i} className="eventlog-row">
+                          <span className={`eventlog-level ${log.level.toLowerCase()}`}>
+                            {log.level}
+                          </span>
+                          <span className="eventlog-source">{log.source}</span>
+                          <span className="eventlog-message">{log.message}</span>
+                          <span className="eventlog-time">
+                            {fmtRelative(log.time)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+
+        {/* Health tab */}
+        {activeTab === "health" && (
+          <div style={{ animation: "fadeIn 0.3s ease" }}>
+
+            {/* Header */}
+            <div className="health-header-row">
+              <div>
+                <div className="health-header-title">Hardware Health Monitor</div>
+                <div className="health-header-sub">
+                  Based on 7-day average metrics — helps identify PCs that need maintenance or hardware upgrades
+                </div>
+              </div>
+              <button
+                className="troubleshoot-action-btn"
+                onClick={fetchHealth}
+                disabled={healthLoading}
+              >
+                {healthLoading ? "Analyzing…" : "↺ Refresh"}
+              </button>
+            </div>
+
+            {/* Summary */}
+            {healthData.length > 0 && (
+              <div className="health-summary-row">
+                {[
+                  { label: "Healthy",        color: "#10b981", status: "healthy"   },
+                  { label: "Needs Attention", color: "#f59e0b", status: "attention" },
+                  { label: "Critical",        color: "#ef4444", status: "critical"  },
+                ].map(s => (
+                  <div key={s.label} className="health-summary-card">
+                    <div className="health-summary-count" style={{ color: s.color }}>
+                      {healthData.filter(h => h.status === s.status).length}
+                    </div>
+                    <div className="health-summary-label">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {healthLoading ? (
+              <div className="troubleshoot-loading">Analyzing hardware health…</div>
+            ) : healthData.length === 0 ? (
+              <div className="troubleshoot-empty">
+                No health data yet — machines need at least a few hours of metric history
+              </div>
+            ) : (
+              <div className="health-grid">
+                {healthData.map(h => (
+                  <div key={h.machine_name} className={`health-card ${h.status}`}>
+
+                    {/* Header */}
+                    <div className="health-card-header">
+                      <div>
+                        <div className="health-machine-name">
+                          🖥 {h.machine_name}
+                        </div>
+                        <span className={`health-status-badge ${h.status}`} style={{ marginTop: 4, display: "inline-block" }}>
+                          {h.status_label}
+                        </span>
+                      </div>
+                      <div className={`health-score-circle ${h.status}`}>
+                        <span>{h.score}</span>
+                        <span className="health-score-label">/ 100</span>
+                      </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="health-stats">
+                      {[
+                        { label: "Avg CPU",   value: `${h.avg_cpu}%`,      warn: h.avg_cpu >= 60,  danger: h.avg_cpu >= 80  },
+                        { label: "Avg RAM",   value: `${h.avg_ram}%`,      warn: h.avg_ram >= 70,  danger: h.avg_ram >= 85  },
+                        { label: "Avg Disk",  value: `${h.avg_disk}%`,     warn: h.avg_disk >= 75, danger: h.avg_disk >= 90 },
+                        { label: "Uptime",    value: `${h.uptime_days}d`,  warn: h.uptime_days >= 7, danger: h.uptime_days >= 14 },
+                        { label: "Downtime",  value: `${h.offline_count}x`, warn: h.offline_count >= 2, danger: h.offline_count >= 5 },
+                      ].map(s => (
+                        <div key={s.label} className="health-stat">
+                          <div className="health-stat-label">{s.label}</div>
+                          <div className={`health-stat-value ${s.danger ? "danger" : s.warn ? "warn" : "good"}`}>
+                            {s.value}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Recommendations */}
+                    <div className="health-recommendations">
+                      {h.recommendations.map((rec, i) => {
+                        const icons = {
+                          critical: "🔴",
+                          warning:  "🟡",
+                          info:     "🔵",
+                          good:     "✅",
+                        };
+                        return (
+                          <div key={i} className="health-rec-item">
+                            <span className="health-rec-icon">{icons[rec.level] ?? "⚪"}</span>
+                            <div className="health-rec-content">
+                              <div className="health-rec-component">{rec.component}</div>
+                              <div className="health-rec-message">{rec.message}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
       {toast && <div className="toast">{toast}</div>}
     </div>

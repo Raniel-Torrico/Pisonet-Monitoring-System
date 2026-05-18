@@ -1,0 +1,31 @@
+2026-05-17 23:34:58 [INFO] Pisonet Client starting — server: http://192.168.1.7/pisonetV2/api
+2026-05-17 23:34:58 [INFO] Mode: Normal logging, File coin trigger
+2026-05-17 23:34:59 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-05-17 23:34:59 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-05-17 23:34:59 [INFO] Registered as: DESKTOP-IR25OBQ
+2026-05-17 23:34:59 [INFO] Running as DESKTOP-IR25OBQ — rate: P1.0/min
+2026-05-17 23:34:59 [INFO] File coin watcher started (normal mode)
+2026-05-17 23:34:59 [INFO] All threads started
+2026-05-17 23:43:59 [INFO] Pisonet Client starting — server: http://192.168.1.7/pisonetV2/api
+2026-05-17 23:43:59 [INFO] Mode: Normal logging, File coin trigger
+2026-05-17 23:43:59 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-05-17 23:43:59 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-05-17 23:43:59 [INFO] Registered as: DESKTOP-IR25OBQ
+2026-05-17 23:43:59 [INFO] Running as DESKTOP-IR25OBQ — rate: P1.0/min
+2026-05-17 23:43:59 [INFO] File coin watcher started (normal mode)
+2026-05-17 23:43:59 [INFO] All threads started
+2026-05-17 23:45:17 [INFO] Pisonet Client starting — server: http://192.168.1.7/pisonetV2/api
+2026-05-17 23:45:17 [INFO] Mode: Normal logging, File coin trigger
+2026-05-17 23:45:17 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-05-17 23:45:17 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-05-17 23:45:17 [INFO] Registered as: DESKTOP-IR25OBQ
+2026-05-17 23:45:17 [INFO] Running as DESKTOP-IR25OBQ — rate: P1.0/min
+2026-05-17 23:45:17 [INFO] File coin watcher started (normal mode)
+2026-05-17 23:45:17 [INFO] All threads started
+2026-05-17 23:47:55 [INFO] Screenshot sent to server
+2026-05-18 00:01:03 [INFO] Process 13816 terminated
+2026-05-18 00:01:03 [INFO] Kill PID 13816: success
+2026-05-18 00:17:50 [WARNING] Access denied killing process 11812
+2026-05-18 00:17:50 [INFO] Kill PID 11812: failed
+2026-05-18 00:18:03 [INFO] Screenshot sent to server
+2026-05-18 00:20:33 [INFO] Running: lock

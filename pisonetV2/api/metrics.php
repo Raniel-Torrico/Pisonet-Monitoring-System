@@ -13,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 validate_api_key();
 
-// Find machines that just went offline (still marked online but last_seen is too old)
-// We check these BEFORE updating so we know which ones just changed
+// -- Find machines that just went offline --
+// Check BEFORE updating so we know which ones just changed
 $went_offline = db_select(
     $conn,
     'SELECT name FROM machines
@@ -31,7 +31,6 @@ db_execute(
 );
 
 // Create an offline alert for each machine that just went offline
-// Only creates one if there is no recent unresolved offline alert for that machine
 foreach ($went_offline as $machine) {
     $existing = db_select(
         $conn,
@@ -50,8 +49,6 @@ foreach ($went_offline as $machine) {
             'ss',
             [$machine['name'], "{$machine['name']} went offline"]
         );
-
-        // Also log it
         db_execute(
             $conn,
             'INSERT INTO logs (actor, action, target, detail) VALUES (?, ?, ?, ?)',
@@ -62,88 +59,89 @@ foreach ($went_offline as $machine) {
 }
 
 // -- Idle machine detection --
-// A machine is idle if it is online but has had no active session for 10 minutes.
-// We check the last time a session ended (or started) for each online machine.
-$idle_machines = db_select(
+// Only alert if machine is online, has had at least one session before,
+// and has been idle for 10+ minutes since the last session ended.
+$online_machines = db_select(
     $conn,
     'SELECT name FROM machines WHERE status = "online"'
 );
 
-foreach ($idle_machines as $machine) {
-    // Check if there is an active session right now
+foreach ($online_machines as $machine) {
+    // Skip if there is an active session right now
     $active_session = db_select(
         $conn,
-        'SELECT id FROM sessions
-         WHERE machine_name = ? AND ended_at IS NULL
-         LIMIT 1',
+        'SELECT id FROM sessions WHERE machine_name = ? AND ended_at IS NULL LIMIT 1',
+        's',
+        [$machine['name']]
+    );
+    if (!empty($active_session)) continue;
+
+    // Skip if machine has never had a session
+    $has_sessions = db_select(
+        $conn,
+        'SELECT id FROM sessions WHERE machine_name = ? LIMIT 1',
+        's',
+        [$machine['name']]
+    );
+    if (empty($has_sessions)) continue;
+
+    // Check how long ago the last session ended
+    $last_activity = db_select(
+        $conn,
+        'SELECT MAX(ended_at) AS last_active
+         FROM sessions
+         WHERE machine_name = ? AND ended_at IS NOT NULL',
         's',
         [$machine['name']]
     );
 
-    // Skip if there is an active session — machine is in use
-    if (!empty($active_session)) continue;
-
-    // Check how long ago the last session ended
-    // If no session ever existed, use the machine's created_at time
-    $last_activity = db_select(
-        $conn,
-        'SELECT COALESCE(MAX(ended_at), (SELECT created_at FROM machines WHERE name = ?)) AS last_active
-         FROM sessions WHERE machine_name = ?',
-        'ss',
-        [$machine['name'], $machine['name']]
-    );
-
     $last_active = $last_activity[0]['last_active'] ?? null;
+    if (!$last_active) continue;
 
-    // If the machine has been idle for more than 10 minutes, create an alert
-    if ($last_active) {
-        $idle_minutes = (int) db_select(
+    $idle_minutes = (int) db_select(
+        $conn,
+        'SELECT TIMESTAMPDIFF(MINUTE, ?, NOW()) AS mins',
+        's',
+        [$last_active]
+    )[0]['mins'];
+
+    if ($idle_minutes >= 10) {
+        $existing = db_select(
             $conn,
-            'SELECT TIMESTAMPDIFF(MINUTE, ?, NOW()) AS mins',
+            'SELECT id FROM alerts
+             WHERE machine_name = ? AND type = "idle" AND resolved = 0
+             AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
+             LIMIT 1',
             's',
-            [$last_active]
-        )[0]['mins'];
+            [$machine['name']]
+        );
 
-        if ($idle_minutes >= 10) {
-            // Only create one alert if there is no recent unresolved idle alert
-            $existing = db_select(
+        if (empty($existing)) {
+            $msg = "{$machine['name']} has been idle for {$idle_minutes} minutes";
+            db_execute(
                 $conn,
-                'SELECT id FROM alerts
-                 WHERE machine_name = ? AND type = "idle" AND resolved = 0
-                 AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
-                 LIMIT 1',
-                's',
-                [$machine['name']]
+                'INSERT INTO alerts (machine_name, type, message) VALUES (?, "idle", ?)',
+                'ss',
+                [$machine['name'], $msg]
             );
-
-            if (empty($existing)) {
-                $msg = "{$machine['name']} has been idle for {$idle_minutes} minutes";
-                db_execute(
-                    $conn,
-                    'INSERT INTO alerts (machine_name, type, message) VALUES (?, "idle", ?)',
-                    'ss',
-                    [$machine['name'], $msg]
-                );
-
-                db_execute(
-                    $conn,
-                    'INSERT INTO logs (actor, action, target, detail) VALUES (?, ?, ?, ?)',
-                    'ssss',
-                    ['system', 'idle', $machine['name'], "No session for {$idle_minutes} minutes"]
-                );
-            }
+            db_execute(
+                $conn,
+                'INSERT INTO logs (actor, action, target, detail) VALUES (?, ?, ?, ?)',
+                'ssss',
+                ['system', 'idle', $machine['name'], "No session for {$idle_minutes} minutes"]
+            );
         }
     }
 }
 
-// Get all machines
+// -- Get all machines --
 $machines = db_select(
     $conn,
     'SELECT name, mac, status, cpu, ram, disk, pesos_per_minute, last_seen, created_at
      FROM machines ORDER BY name ASC'
 );
 
-// For each machine, check if there is an active session
+// Attach active session info to each machine
 foreach ($machines as &$machine) {
     $session = db_select(
         $conn,
@@ -156,9 +154,7 @@ foreach ($machines as &$machine) {
     );
 
     if (!empty($session)) {
-        $s = $session[0];
-
-        // Calculate remaining seconds: pesos x 60 seconds per peso - time already used
+        $s             = $session[0];
         $total_sec     = (float) $machine['pesos_per_minute'] * 60 * (float) $s['pesos'];
         $remaining_sec = max(0, $total_sec - (int) $s['elapsed_sec']);
 
@@ -173,7 +169,6 @@ foreach ($machines as &$machine) {
         $machine['session'] = null;
     }
 
-    // Make sure numbers come back as numbers not strings
     $machine['cpu']              = (float) $machine['cpu'];
     $machine['ram']              = (float) $machine['ram'];
     $machine['disk']             = (float) $machine['disk'];

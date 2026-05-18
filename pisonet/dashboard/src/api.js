@@ -10,64 +10,59 @@ const api = axios.create({
   }
 });
 
-// This runs before every request
-// It reads the token from localStorage and adds it to the headers
-// This way we don't have to manually pass the token every time
+// Attach auth token automatically to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('pisonet_token');
-  if (token) {
-    config.headers['X-Auth-Token'] = token;
-  }
+  if (token) config.headers['X-Auth-Token'] = token;
   return config;
 });
 
-// Get all machines and their current status
-export const getMachines = () =>
-  api.get('/metrics.php');
+// -- Machine monitoring --
+export const getMachines  = ()                      => api.get('/metrics.php');
+export const getAlerts    = ()                      => api.get('/alerts.php');
+export const getLogs      = (params = {})           => api.get('/logs.php', { params });
+export const getAnalytics = ()                      => api.get('/analytics.php');
 
-// Get all unresolved alerts
-export const getAlerts = () =>
-  api.get('/alerts.php');
+// -- Commands --
+export const sendCommand  = (machine_name, command) =>
+  api.post('/command.php', { action: 'queue', machine_name, command, issued_by: 'admin' });
 
-// Get audit logs — optional params: { actor, action, limit }
-export const getLogs = (params = {}) =>
-  api.get('/logs.php', { params });
-
-// Get analytics — income totals, session stats, chart data
-export const getAnalytics = () =>
-  api.get('/analytics.php');
-
-// Get all admin/staff accounts (admin only)
-export const getAccounts = () =>
-  api.get('/admins.php');
-
-// Send a command (shutdown, restart, lock) to a machine
-export const sendCommand = (machine_name, command) =>
-  api.post('/command.php', {
-    action: 'queue',
-    machine_name,
-    command,
-    issued_by: 'admin',
-  });
-
-// Mark an alert as resolved
 export const resolveAlert = (id) =>
   api.post('/alerts.php', { action: 'resolve', id });
 
-// Admin login
-export const login = (username, password) =>
-  api.post('/login.php', { username, password });
+// -- Auth --
+export const login        = (username, password)    => api.post('/login.php', { username, password });
 
-// Add a new admin or staff account (admin only)
-export const addAccount = (username, password, role) =>
-  api.post('/admins.php', { action: 'add', username, password, role });
+// -- Account management --
+export const getAccounts    = ()                          => api.get('/admins.php');
+export const addAccount     = (username, password, role)  => api.post('/admins.php', { action: 'add', username, password, role });
+export const changePassword = (id, new_password, actor)   => api.post('/admins.php', { action: 'change_password', id, new_password, actor });
+export const deleteAccount  = (id)                        => api.post('/admins.php', { action: 'delete', id });
 
-// Change password for an account
-export const changePassword = (id, new_password, actor) =>
-  api.post('/admins.php', { action: 'change_password', id, new_password, actor });
+// -- Troubleshooting --
 
-// Delete an account (admin only)
-export const deleteAccount = (id) =>
-  api.post('/admins.php', { action: 'delete', id });
+// Get running processes for a machine
+export const getProcesses = (machine_name) =>
+  api.get('/processes.php', { params: { machine_name } });
+
+// Kill a process by PID
+export const killProcess = (machine_name, pid, process_name) =>
+  api.post('/processes.php', { action: 'kill', machine_name, pid, process_name });
+
+// Request a screenshot from a machine (queues a command)
+export const requestScreenshot = (machine_name) =>
+  api.post('/command.php', { action: 'queue', machine_name, command: 'screenshot', issued_by: 'admin' });
+
+// Get the latest screenshot for a machine
+export const getScreenshot = (machine_name) =>
+  api.get('/screenshot.php', { params: { machine_name } });
+
+// Get Windows event logs for a machine
+export const getEventLogs = (machine_name) =>
+  api.get('/eventlogs.php', { params: { machine_name } });
+
+// Get hardware health scores and maintenance recommendations
+export const getHealth = () =>
+  api.get('/health.php');
 
 export default api;

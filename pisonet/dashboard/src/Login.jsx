@@ -103,9 +103,7 @@ export default function Login({ onLogin }) {
           </form>
         </div>
 
-        <div className="login-hint">
-          Default: admin / admin123 — change after first login
-        </div>
+        
       </div>
     </div>
   );

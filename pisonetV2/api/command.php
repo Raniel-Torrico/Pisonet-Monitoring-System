@@ -24,9 +24,22 @@ if ($action === 'queue') {
     if (empty($machine_name)) respond(false, null, 'machine_name is required', 422);
     if (empty($command))      respond(false, null, 'command is required', 422);
 
-    $allowed = ['shutdown', 'restart', 'lock', 'unlock'];
-    if (!in_array($command, $allowed, true)) {
-        respond(false, null, 'command must be: shutdown, restart, lock, or unlock', 422);
+    // Regular commands + coin insert for diskless mode
+    // Coin commands use the format: coin:5 (meaning insert P5)
+    $allowed  = ['shutdown', 'restart', 'lock', 'unlock', 'screenshot'];
+$is_coin  = str_starts_with($command, 'coin:');
+$is_kill  = str_starts_with($command, 'kill:');
+
+if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill) {
+    respond(false, null, 'command must be: shutdown, restart, lock, unlock, screenshot, or coin:[amount]', 422);
+}
+
+    // Validate the coin amount if it is a coin command
+    if ($is_coin) {
+        $amount = (float) substr($command, 5);
+        if ($amount <= 0) {
+            respond(false, null, 'Coin amount must be greater than 0', 422);
+        }
     }
 
     // Check if machine exists
