@@ -65,4 +65,9 @@ export const getEventLogs = (machine_name) =>
 export const getHealth = () =>
   api.get('/health.php');
 
+// Get report data for PDF generation
+// type: 'daily', 'weekly', or 'monthly'
+export const getReport = (type = 'weekly') =>
+  api.get('/report.php', { params: { type } });
+
 export default api;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getMachines, getAlerts, getLogs, getAnalytics, sendCommand, resolveAlert,
   getProcesses, killProcess, requestScreenshot, getScreenshot, getEventLogs, getHealth } from "./api";
+import ReportGenerator from "./ReportGenerator";
 import "./Dashboard.css";
 
 // -- Helper: convert seconds to mm:ss --
@@ -578,6 +579,9 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
         {/* Analytics tab */}
         {activeTab === "analytics" && (
           <div className="analytics-section">
+            {/* PDF Report Generator */}
+            <ReportGenerator />
+
             {!analytics ? (
               <div className="empty-state">Loading analytics…</div>
             ) : (
@@ -743,21 +747,12 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
               </select>
 
               {selectedMachine && (
-                <>
-                  <button
-                    className="troubleshoot-action-btn"
-                    onClick={() => { fetchProcesses(selectedMachine); fetchEventLogs(selectedMachine); }}
-                  >
-                    ↺ Refresh All
-                  </button>
-                  <button
-                    className="troubleshoot-action-btn"
-                    onClick={handleRequestScreenshot}
-                    disabled={screenshotLoading}
-                  >
-                    📷 Take Screenshot
-                  </button>
-                </>
+                <button
+                  className="troubleshoot-action-btn"
+                  onClick={() => { fetchProcesses(selectedMachine); fetchEventLogs(selectedMachine); }}
+                >
+                  ↺ Refresh All
+                </button>
               )}
             </div>
 
