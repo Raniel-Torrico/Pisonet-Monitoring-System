@@ -4,6 +4,13 @@ import { getMachines, getAlerts, getLogs, getAnalytics, sendCommand, resolveAler
 import ReportGenerator from "./ReportGenerator";
 import "./Dashboard.css";
 
+function parseUTC(dateStr) {
+  if (!dateStr) return null;
+  if (dateStr.includes("Z") || dateStr.includes("+")) return new Date(dateStr);
+  // Replace space with T and add Z → "2026-06-04T10:06:19Z"
+  return new Date(dateStr.replace(" ", "T") + "Z");
+}
+
 // -- Helper: convert seconds to mm:ss --
 function fmtTime(s) {
   if (!s || s <= 0) return "--:--";
@@ -15,7 +22,7 @@ function fmtTime(s) {
 // -- Helper: show how long ago a date was --
 function fmtRelative(dateStr) {
   if (!dateStr) return "";
-  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  const diff = Math.floor((Date.now() - parseUTC(dateStr)) / 1000);
   if (diff < 0)    return "just now";
   if (diff < 60)   return `${diff}s ago`;
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
@@ -51,7 +58,7 @@ function useLiveClock() {
 // -- Helper: format a datetime string nicely --
 function fmtDateTime(dateStr) {
   if (!dateStr) return "";
-  const d = new Date(dateStr);
+  const d = parseUTC(dateStr);
   return d.toLocaleString('en-PH', {
     month:  'short',
     day:    'numeric',

@@ -323,7 +323,7 @@ def start_session(server_url, machine_name, pesos):
     if result and result.get('success'):
         # Calculate total seconds using the global PESOS_PER_MINUTE
         # which was set after registration
-        rate          = PESOS_PER_MINUTE if PESOS_PER_MINUTE > 1.0 else 5.0
+        rate          = PESOS_PER_MINUTE if PESOS_PER_MINUTE > 0 else 5.0
         total_seconds = int(float(pesos) * float(rate) * 60)
 
         client_log(server_url, 'INFO', f'Calculating time: P{pesos} x {rate} min/peso x 60 = {total_seconds}s')

@@ -1,61 +1,8 @@
-2026-06-01 00:47:34 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
-2026-06-01 00:47:34 [INFO] Mode: Normal logging, File coin trigger
-2026-06-01 00:47:35 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
-2026-06-01 00:47:35 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
-2026-06-01 00:47:35 [INFO] Registered as: DESKTOP-IR25OBQ
-2026-06-01 00:47:35 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
-2026-06-01 00:47:35 [INFO] File coin watcher started (normal mode)
-2026-06-01 00:47:35 [INFO] All threads started
-2026-06-01 00:48:16 [WARNING] POST heartbeat.php \u2192 Machine not found. Run register.php first.
-2026-06-01 00:48:21 [WARNING] POST heartbeat.php \u2192 Machine not found. Run register.php first.
-2026-06-01 00:48:26 [WARNING] POST heartbeat.php \u2192 Machine not found. Run register.php first.
-2026-06-01 00:48:30 [WARNING] POST heartbeat.php \u2192 Machine not found. Run register.php first.
-2026-06-01 00:48:40 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
-2026-06-01 00:48:40 [INFO] Mode: Normal logging, File coin trigger
-2026-06-01 00:48:40 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
-2026-06-01 00:48:40 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
-2026-06-01 00:48:41 [INFO] Registered as: DESKTOP-IR25OBQ
-2026-06-01 00:48:41 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
-2026-06-01 00:48:41 [INFO] File coin watcher started (normal mode)
-2026-06-01 00:48:41 [INFO] All threads started
-2026-06-01 00:49:12 [INFO] File coin trigger: P1.0
-2026-06-01 00:49:14 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
-2026-06-01 00:49:14 [INFO] Session started — P1.0 = 300s (5min 0sec)
-2026-06-01 00:49:28 [INFO] File coin trigger: P5.0
-2026-06-01 00:49:28 [INFO] Added P5.0 = 1500 more seconds
-2026-06-01 00:49:43 [INFO] Timer: 1770s remaining
-2026-06-01 00:50:00 [INFO] File coin trigger: P5.0
-2026-06-01 00:50:00 [INFO] Added P5.0 = 1500 more seconds
-2026-06-01 00:50:14 [INFO] Timer: 3240s remaining
-2026-06-01 00:50:27 [INFO] File coin trigger: P5.0
-2026-06-01 00:50:27 [INFO] Added P5.0 = 1500 more seconds
-2026-06-01 00:50:43 [INFO] File coin trigger: P5.0
-2026-06-01 00:50:43 [INFO] Added P5.0 = 1500 more seconds
-2026-06-01 00:50:44 [INFO] Timer: 6210s remaining
-2026-06-01 00:51:14 [INFO] Timer: 6180s remaining
-2026-06-01 00:51:44 [INFO] Timer: 6150s remaining
-2026-06-01 00:51:48 [WARNING] POST heartbeat.php \u2192 Machine not found. Run register.php first.
-2026-06-01 00:51:53 [WARNING] POST heartbeat.php \u2192 Machine not found. Run register.php first.
-2026-06-01 00:52:59 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
-2026-06-01 00:52:59 [INFO] Mode: Normal logging, File coin trigger
-2026-06-01 00:52:59 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
-2026-06-01 00:52:59 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
-2026-06-01 00:53:00 [INFO] Registered as: DESKTOP-IR25OBQ
-2026-06-01 00:53:00 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
-2026-06-01 00:53:00 [INFO] File coin watcher started (normal mode)
-2026-06-01 00:53:00 [INFO] All threads started
-2026-06-04 17:47:56 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
-2026-06-04 17:47:56 [INFO] Mode: Normal logging, File coin trigger
-2026-06-04 17:47:57 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
-2026-06-04 17:47:57 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
-2026-06-04 17:47:58 [INFO] Registered as: DESKTOP-IR25OBQ
-2026-06-04 17:47:58 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
-2026-06-04 17:47:58 [INFO] File coin watcher started (normal mode)
-2026-06-04 17:47:58 [INFO] All threads started
-2026-06-04 17:48:58 [INFO] Screenshot sent to server
-2026-06-04 17:49:02 [INFO] Screenshot sent to server
-2026-06-04 17:49:22 [INFO] Screenshot sent to server
-2026-06-04 17:49:41 [INFO] Process 9476 terminated
-2026-06-04 17:49:41 [INFO] Kill PID 9476: success
-2026-06-04 17:49:51 [INFO] Process 17592 terminated
-2026-06-04 17:49:51 [INFO] Kill PID 17592: success
+2026-06-05 02:10:47 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
+2026-06-05 02:10:47 [INFO] Mode: Normal logging, File coin trigger
+2026-06-05 02:10:52 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-06-05 02:10:52 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-06-05 02:10:53 [INFO] Registered as: DESKTOP-IR25OBQ
+2026-06-05 02:10:53 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-06-05 02:10:53 [INFO] File coin watcher started (normal mode)
+2026-06-05 02:10:53 [INFO] All threads started
