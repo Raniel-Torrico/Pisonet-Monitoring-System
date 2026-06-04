@@ -426,3 +426,14 @@
   text-align: center;
   flex-shrink: 0;
 }
+
+/* -- Mobile responsive -- */
+
+@media (max-width: 768px) {
+  .settings-content { padding: 16px; gap: 16px; }
+  .settings-card-body { padding: 16px; }
+  .settings-card-header { padding: 14px 16px; }
+  .account-row { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+  .account-actions { width: 100%; justify-content: flex-end; }
+  .modal-box { padding: 20px; }
+}

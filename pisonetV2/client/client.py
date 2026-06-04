@@ -13,6 +13,10 @@ How to build the .exe:
 
     2. Build:
        pyinstaller --onefile --noconsole client.py
+       python -m PyInstaller --onefile --noconsole client.py
+       to setup the screenshot:
+       pip install pillow
+       python -m PyInstaller --onefile --noconsole client.py
 
     3. The .exe will be inside the dist/ folder.
 
@@ -53,7 +57,7 @@ except ImportError:
 
 
 # ── Settings ───────────────────────────────────────────────────────────────────
-DEFAULT_SERVER_URL    = 'http://192.168.1.7/pisonetV2/api'
+DEFAULT_SERVER_URL    = 'https://monitonet.online/pisonetV2/api'
 API_KEY               = 'pisonet123'  # must match config.php
 HEARTBEAT_INTERVAL    = 3   # seconds between each heartbeat
 COMMAND_POLL_INTERVAL  = 2    # seconds between each command check
@@ -319,7 +323,7 @@ def start_session(server_url, machine_name, pesos):
     if result and result.get('success'):
         # Calculate total seconds using the global PESOS_PER_MINUTE
         # which was set after registration
-        rate          = PESOS_PER_MINUTE if PESOS_PER_MINUTE > 0 else 1.0
+        rate          = PESOS_PER_MINUTE if PESOS_PER_MINUTE > 1.0 else 5.0
         total_seconds = int(float(pesos) * float(rate) * 60)
 
         client_log(server_url, 'INFO', f'Calculating time: P{pesos} x {rate} min/peso x 60 = {total_seconds}s')
@@ -690,7 +694,7 @@ if __name__ == '__main__':
 
     config           = register(SERVER_URL)
     MACHINE_NAME     = config['machine_name']
-    PESOS_PER_MINUTE = float(config.get('pesos_per_minute', 1.0))
+    PESOS_PER_MINUTE = float(config.get('pesos_per_minute', 5.0))
 
     client_log(SERVER_URL, 'INFO', f'Running as {MACHINE_NAME} — rate: P{PESOS_PER_MINUTE}/min')
 

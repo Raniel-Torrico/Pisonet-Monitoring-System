@@ -59,6 +59,10 @@ if ($action === 'change_password') {
     $rows = db_select($conn, 'SELECT username FROM admins WHERE id = ? LIMIT 1', 'i', [$id]);
     if (empty($rows)) respond(false, null, 'Account not found', 404);
 
+    if (password_verify($new_password, $rows[0]['password'])) {
+        respond(false, null, 'New password must be different from your current password', 422);
+    }
+
     $hash = password_hash($new_password, PASSWORD_BCRYPT);
     db_execute($conn, 'UPDATE admins SET password = ? WHERE id = ?', 'si', [$hash, $id]);
 

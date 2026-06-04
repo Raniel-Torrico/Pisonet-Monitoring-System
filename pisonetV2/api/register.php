@@ -45,7 +45,7 @@ $rows = db_select(
 if (!empty($rows)) {
     respond(true, [
         'machine_name'     => $rows[0]['name'],
-        'pesos_per_minute' => (float) $rows[0]['pesos_per_minute'],
+        'pesos_per_minute' => 5.00,
     ], 'Machine recognized');
 }
 
@@ -79,5 +79,5 @@ db_execute(
 
 respond(true, [
     'machine_name'     => $name,
-    'pesos_per_minute' => 1.00,
+    'pesos_per_minute' => 5.00,
 ], 'Machine registered');

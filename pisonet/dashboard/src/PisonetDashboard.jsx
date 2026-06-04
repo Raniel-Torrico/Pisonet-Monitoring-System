@@ -16,9 +16,36 @@ function fmtTime(s) {
 function fmtRelative(dateStr) {
   if (!dateStr) return "";
   const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (diff < 0)    return "just now";
   if (diff < 60)   return `${diff}s ago`;
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
+// -- Hook: auto-updating relative time --
+// Returns a time string that updates every 30 seconds automatically
+function useRelativeTime(dateStr) {
+  const [label, setLabel] = useState(() => fmtRelative(dateStr));
+  useEffect(() => {
+    setLabel(fmtRelative(dateStr));
+    const interval = setInterval(() => {
+      setLabel(fmtRelative(dateStr));
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [dateStr]);
+  return label;
+}
+
+// -- Hook: returns current time, updates every 30 seconds --
+// Used to force relative timestamps to refresh in child components
+function useLiveClock() {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(interval);
+  }, []);
+  return now;
 }
 
 // -- Helper: format a datetime string nicely --
@@ -68,6 +95,7 @@ function MiniBar({ value, warn, danger }) {
 function MachineCard({ machine, onCommand, sending }) {
   const isOffline = machine.status === "offline";
   const serverRemaining = machine.session?.remaining_sec ?? 0;
+  useLiveClock(); // forces re-render every 30s so relative times update
 
   // Local countdown that ticks every second between server polls
   const [localRemaining, setLocalRemaining] = useState(serverRemaining);
@@ -92,6 +120,10 @@ function MachineCard({ machine, onCommand, sending }) {
   const timerBg     = machine.status === "online" ? (isLow ? "#fef2f2" : "#f0fdf4") : "#f9fafb";
   const timerColor  = machine.status === "online" ? (isLow ? "#ef4444" : "#10b981") : "#d1d5db";
   const timerBorder = isLow ? "1px solid #fecaca" : "1px solid transparent";
+
+  // Auto-updating relative times
+  const lastSeenLabel    = useRelativeTime(machine.last_seen);
+  const sessionStartLabel = useRelativeTime(machine.session?.started_at);
 
   return (
     <div className="machine-card" style={{ border: `1.5px solid ${borderColor}`, opacity: isOffline ? 0.75 : 1 }}>
@@ -128,7 +160,7 @@ function MachineCard({ machine, onCommand, sending }) {
         </div>
         {machine.session && (
           <div className="timer-info">
-            ₱{machine.session.pesos} · started {fmtRelative(machine.session.started_at)}
+            ₱{machine.session.pesos} · started {sessionStartLabel}
           </div>
         )}
       </div>
@@ -153,7 +185,7 @@ function MachineCard({ machine, onCommand, sending }) {
       </div>
 
       {machine.last_seen && (
-        <div className="machine-last-seen">Last seen {fmtRelative(machine.last_seen)}</div>
+        <div className="machine-last-seen">Last seen {lastSeenLabel}</div>
       )}
     </div>
   );
@@ -177,13 +209,14 @@ function BarChart({ data }) {
 
 // -- Alert row --
 function AlertRow({ alert, onResolve }) {
-  const icons = { offline: "⚫", cpu: "🔴", ram: "🟠", idle: "🟡" };
+  const icons    = { offline: "⚫", cpu: "🔴", ram: "🟠", idle: "🟡" };
+  const timeLabel = useRelativeTime(alert.created_at);
   return (
     <div className="alert-row">
       <span className="alert-icon">{icons[alert.type] ?? "⚪"}</span>
       <div style={{ flex: 1 }}>
         <div className="alert-message">{alert.message}</div>
-        <div className="alert-time">{fmtRelative(alert.created_at)}</div>
+        <div className="alert-time">{timeLabel}</div>
       </div>
       <button className="resolve-btn" onClick={() => onResolve(alert.id)}>Resolve</button>
     </div>
@@ -252,6 +285,8 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   // Health state
   const [healthData,    setHealthData]    = useState([]);
   const [healthLoading, setHealthLoading] = useState(false);
+  const [syncing,       setSyncing]       = useState(false);
+  const [syncResult,    setSyncResult]    = useState(null);
 
   // Fetch machines every 3 seconds
   useEffect(() => {
@@ -398,6 +433,28 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     finally { setHealthLoading(false); }
   };
 
+  const handleSync = async () => {
+    setSyncing(true);
+    setSyncResult(null);
+    try {
+      // Calls sync.php on local server
+      const res = await fetch('http://localhost/pisonetV2/sync.php?key=pisonet123');
+      const data = await res.json();
+      if (data.success) {
+        setSyncResult({ ok: true, message: data.message, time: data.synced_at });
+        showToast("✓ Cloud sync complete");
+      } else {
+        setSyncResult({ ok: false, message: data.message });
+        showToast("✗ Sync failed");
+      }
+    } catch (err) {
+      setSyncResult({ ok: false, message: "Cannot reach local sync endpoint" });
+      showToast("✗ Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const handleSelectMachine = (name) => {
     setSelectedMachine(name);
     setProcesses([]);
@@ -486,6 +543,9 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
             </div>
 
             {/* User dropdown */}
+            {/* Sync to cloud button */}
+            
+
             <div style={{ position: "relative" }}>
               <button className="user-btn" onClick={() => setShowMenu(p => !p)}>
                 <div className="user-avatar">{session?.username?.[0]?.toUpperCase() ?? "A"}</div>

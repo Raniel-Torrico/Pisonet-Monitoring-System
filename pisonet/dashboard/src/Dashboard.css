@@ -1355,3 +1355,89 @@
   font-size: 11px;
   color: #6b7280;
 }
+
+/* -- Mobile responsive styles -- */
+
+@media (max-width: 768px) {
+
+  /* Header */
+  .header { padding: 0 12px; }
+  .header-inner { height: auto; padding: 10px 0; flex-wrap: wrap; gap: 8px; }
+  .header-logo-name { font-size: 14px; }
+  .header-logo-sub  { display: none; }
+  .header-right { gap: 8px; }
+  .user-name  { font-size: 11px; }
+  .user-role  { display: none; }
+  .poll-label { display: none; }
+
+  /* Tabs */
+  .tabs-bar { padding-bottom: 8px; overflow-x: auto; }
+  .tabs-group { width: max-content; }
+  .tab-btn { padding: 5px 12px; font-size: 12px; }
+
+  /* Content area */
+  .content-area { padding: 12px; }
+
+  /* Summary row */
+  .summary-row { gap: 6px; }
+  .summary-card { padding: 10px 8px; }
+  .summary-value { font-size: 22px; }
+  .summary-label { font-size: 10px; }
+
+  /* Machines grid — single column on mobile */
+  .machines-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Analytics */
+  .income-row { flex-direction: column; gap: 8px; }
+  .stats-grid { grid-template-columns: 1fr; }
+
+  /* Health grid */
+  .health-grid { grid-template-columns: 1fr; }
+  .health-summary-row { gap: 6px; }
+  .health-stats { overflow-x: auto; }
+
+  /* Logs table */
+  .logs-table-header,
+  .logs-table-row {
+    grid-template-columns: 120px 70px 80px 80px 1fr;
+    font-size: 11px;
+  }
+
+  /* Troubleshoot */
+  .troubleshoot-selector { flex-direction: column; align-items: stretch; }
+  .troubleshoot-select   { min-width: unset; width: 100%; }
+  .process-table th,
+  .process-table td { padding: 6px 8px; font-size: 11px; }
+
+  /* Filters */
+  .logs-filters { flex-direction: column; }
+  .logs-filter-input { width: 100%; box-sizing: border-box; }
+}
+
+@media (max-width: 480px) {
+
+  /* Stack header elements vertically on very small screens */
+  .header-right { flex-wrap: wrap; }
+
+  /* Hide some columns in logs on very small screens */
+  .logs-table-header span:nth-child(4),
+  .logs-table-row span:nth-child(4),
+  .logs-table-header span:nth-child(5),
+  .logs-table-row span:nth-child(5) {
+    display: none;
+  }
+
+  .logs-table-header,
+  .logs-table-row {
+    grid-template-columns: 120px 70px 80px;
+  }
+
+  /* Smaller summary cards */
+  .summary-value { font-size: 20px; }
+
+  /* Machine card buttons smaller */
+  .cmd-btn { font-size: 10px; padding: 5px 0; }
+  .timer-display { font-size: 20px; }
+}

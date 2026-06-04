@@ -192,3 +192,12 @@
   font-size: 12px;
   color: #334155;
 }
+
+/* -- Mobile responsive -- */
+
+@media (max-width: 480px) {
+  .login-page { padding: 16px; }
+  .login-logo-title { font-size: 22px; }
+  .login-card { padding: 24px 16px; }
+  .login-btn { font-size: 14px; padding: 11px; }
+}
