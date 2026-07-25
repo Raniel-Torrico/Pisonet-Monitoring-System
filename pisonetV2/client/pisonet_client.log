@@ -29,3 +29,23 @@
 2026-05-18 00:17:50 [INFO] Kill PID 11812: failed
 2026-05-18 00:18:03 [INFO] Screenshot sent to server
 2026-05-18 00:20:33 [INFO] Running: lock
+2026-06-05 16:51:22 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
+2026-06-05 16:51:22 [INFO] Mode: Normal logging, File coin trigger
+2026-06-05 16:51:22 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-06-05 16:51:22 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-06-05 16:56:40 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
+2026-06-05 16:56:40 [INFO] Mode: Normal logging, File coin trigger
+2026-06-05 16:56:41 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-06-05 16:56:41 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-06-05 16:56:42 [INFO] Registered as: DESKTOP-IR25OBQ
+2026-06-05 16:56:42 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-06-05 16:56:42 [INFO] File coin watcher started (normal mode)
+2026-06-05 16:56:42 [INFO] All threads started
+2026-06-06 03:08:56 [INFO] Pisonet Client starting — server: https://monitonet.online/pisonetV2/api
+2026-06-06 03:08:56 [INFO] Mode: Normal logging, File coin trigger
+2026-06-06 03:08:56 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-06-06 03:08:56 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-06-06 03:08:57 [INFO] Registered as: DESKTOP-IR25OBQ
+2026-06-06 03:08:57 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-06-06 03:08:57 [INFO] File coin watcher started (normal mode)
+2026-06-06 03:08:57 [INFO] All threads started

@@ -22,6 +22,16 @@ if ($action === 'start') {
     if (empty($machine_name))       respond(false, null, 'machine_name is required', 422);
     if ($pesos === null || $pesos <= 0) respond(false, null, 'pesos must be greater than 0', 422);
 
+    $machine_row = db_select($conn, 'SELECT pesos_per_minute FROM machines WHERE name = ? LIMIT 1', 's', [$machine_name]);
+    $rate        = (float) ($machine_row[0]['pesos_per_minute'] ?? 5.0);
+
+    $max_hours     = 15;
+    $total_minutes = $pesos * $rate;
+
+    if ($total_minutes > ($max_hours * 60)) {
+        respond(false, null, 'Maximum session time is 15 hours', 422);
+    }
+
     $rows = db_select($conn, 'SELECT id FROM machines WHERE name = ? LIMIT 1', 's', [$machine_name]);
     if (empty($rows)) respond(false, null, 'Machine not found', 404);
 

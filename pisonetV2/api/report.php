@@ -87,12 +87,37 @@ $machines = db_select(
 // -- Top session --
 $top_session = db_select(
     $conn,
-    "SELECT machine_name, pesos, duration_min, started_at
-     FROM sessions
-     WHERE $date_where
-     ORDER BY pesos DESC
-     LIMIT 1"
+    "SELECT machine_name, pesos,
+ COALESCE(duration_min, TIMESTAMPDIFF(MINUTE, started_at, NOW())) AS duration_min,
+ started_at
+ FROM sessions
+ WHERE $date_where
+ ORDER BY pesos DESC
+ LIMIT 1"
 );
+
+$peak_hours = db_select(
+    $conn,
+    'SELECT
+    MOD(HOUR(started_at) + 8, 24) AS hour,
+    COUNT(*) AS sessions,
+    COALESCE(SUM(pesos), 0) AS income
+ FROM sessions
+ WHERE DATE(started_at) = CURDATE()
+ GROUP BY MOD(HOUR(started_at) + 8, 24)
+ ORDER BY sessions DESC
+ LIMIT 5'
+);
+
+// Format the hour label nicely e.g. "2 PM", "10 AM"
+foreach ($peak_hours as &$row) {
+    $h = (int) $row['hour'];
+    $row['hour_label'] = ($h === 0) ? '12 AM'
+        : ($h < 12  ? "{$h} AM"
+        : ($h === 12 ? '12 PM'
+        : ($h - 12) . ' PM'));
+}
+unset($row);
 
 respond(true, [
     'type'        => $type,
@@ -109,4 +134,5 @@ respond(true, [
     'chart'       => $chart,
     'machines'    => $machines,
     'top_session' => !empty($top_session) ? $top_session[0] : null,
+    'peak_hours'  => $peak_hours,
 ], 'OK');

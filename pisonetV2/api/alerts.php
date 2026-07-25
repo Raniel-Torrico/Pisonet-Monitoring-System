@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     respond(true, ['alerts' => $alerts], 'OK');
 }
 
+
 // -- Resolve an alert --
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $body   = get_body();
@@ -33,6 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     db_execute($conn, 'UPDATE alerts SET resolved = 1 WHERE id = ?', 'i', [$id]);
 
+    db_execute(
+        $conn,
+        'DELETE FROM alerts WHERE resolved = 1 AND created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)'
+    );
+    
     respond(true, null, 'Alert resolved');
 }
 

@@ -5,9 +5,9 @@
 
 // -- Database settings --
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'pisonet_db');
+define('DB_USER', 'u396052278_pisonet_user');
+define('DB_PASS', 'PisonetMonitoring@123');
+define('DB_NAME', 'u396052278_pisonet_db');
 
 // -- API Key --
 // This must match the API_KEY in client.py and api.js

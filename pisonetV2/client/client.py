@@ -57,7 +57,7 @@ except ImportError:
 
 
 # ── Settings ───────────────────────────────────────────────────────────────────
-DEFAULT_SERVER_URL    = 'https://monitonet.online/pisonetV2/api'
+DEFAULT_SERVER_URL    = 'https://monitonet.com/pisonetV2/api'
 API_KEY               = 'pisonet123'  # must match config.php
 HEARTBEAT_INTERVAL    = 3   # seconds between each heartbeat
 COMMAND_POLL_INTERVAL  = 2    # seconds between each command check
@@ -110,13 +110,14 @@ session_remaining = 0
 session_pesos     = 0.0
 
 
-# ── Server URL ─────────────────────────────────────────────────────────────────
+# ── Server URLs ────────────────────────────────────────────────────────────────
+CLOUD_URL = 'https://monitonet.com/pisonetV2/api'
+LOCAL_URL  = 'http://localhost/pisonetV2/api'
+
 def get_server_url():
     """
-    Reads the server URL from pisonet_client.txt if it exists.
-    Falls back to DEFAULT_SERVER_URL.
-    Works in both normal and diskless setups.
-    In diskless: if no local file exists, just uses the hardcoded default.
+    Reads URL from pisonet_client.txt if it exists.
+    Falls back to cloud URL by default.
     """
     exe_dir     = os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__)
     config_path = os.path.join(exe_dir, 'pisonet_client.txt')
@@ -124,7 +125,33 @@ def get_server_url():
         url = open(config_path).read().strip().rstrip('/')
         log.info(f'Server URL loaded from pisonet_client.txt: {url}')
         return url
-    return DEFAULT_SERVER_URL.rstrip('/')
+    return CLOUD_URL.rstrip('/')
+
+
+def get_local_url():
+    """
+    Reads local server URL from pisonet_client_local.txt if it exists.
+    Falls back to localhost by default.
+    """
+    exe_dir     = os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__)
+    local_path  = os.path.join(exe_dir, 'pisonet_client_local.txt')
+    if os.path.exists(local_path):
+        url = open(local_path).read().strip().rstrip('/')
+        log.info(f'Local server URL loaded from pisonet_client_local.txt: {url}')
+        return url
+    return LOCAL_URL.rstrip('/')
+
+
+def is_server_reachable(url):
+    """
+    Quick check if a server is reachable.
+    Returns True if reachable, False if not.
+    """
+    try:
+        requests.get(f'{url}/metrics.php', headers=HEADERS, timeout=2)
+        return True
+    except Exception:
+        return False
 
 
 # ── MAC address ────────────────────────────────────────────────────────────────
@@ -242,77 +269,107 @@ def get(server_url, endpoint, params):
 def register(server_url):
     """
     Registers this PC with the server using its MAC address.
-    Works in both normal and diskless setups.
-    In diskless: MAC is still hardware-based so registration works the same way.
+    Tries cloud first, falls back to local if cloud is unreachable.
     """
+    local_url = get_local_url()
+    
     payload = {
         'mac':      get_mac(),
         'hostname': socket.gethostname(),
     }
     log.info(f'Registering — MAC: {payload["mac"]}, hostname: {payload["hostname"]}')
+
     while True:
-        result = post(server_url, 'register.php', payload)
-        if result and result.get('success') and result.get('data'):
-            config = result['data']
-            log.info(f'Registered as: {config["machine_name"]}')
-            return config
-        log.warning('Registration failed. Retrying in 5s...')
+        # try cloud first, then local
+        for current_server in [server_url, local_url]:
+            result = post(current_server, 'register.php', payload)
+            if result and result.get('success') and result.get('data'):
+                config = result['data']
+                # save which server worked so all threads use the same one
+                log.info(f'Registered as: {config["machine_name"]} via {current_server}')
+                return config, current_server  # ← return both config AND working server
+
+        log.warning('Registration failed on all servers. Retrying in 5s...')
         time.sleep(5)
 
 
 # ── Heartbeat thread ───────────────────────────────────────────────────────────
 def heartbeat_loop(server_url, machine_name):
+    """
+    Sends heartbeat to cloud first.
+    If cloud is unreachable, sends to local server instead.
+    This ensures machine status is always recorded somewhere.
+    """
+    local_url = get_local_url()
+
     while True:
         metrics = get_metrics()
         metrics['machine_name'] = machine_name
-        post(server_url, 'heartbeat.php', metrics)
+
+        # try cloud first
+        sent = False
+        for current_server in [server_url, local_url]:
+            try:
+                resp = requests.post(
+                    f'{current_server}/heartbeat.php',
+                    json=metrics,
+                    headers=HEADERS,
+                    timeout=5,
+                )
+                data = resp.json()
+                if data.get('success'):
+                    sent = True
+                    break  # cloud worked, no need to try local
+            except Exception:
+                continue  # try next server
+
+        if not sent:
+            log.warning('Heartbeat failed on all servers')
+
         time.sleep(HEARTBEAT_INTERVAL)
 
 
 # ── Session timer thread ───────────────────────────────────────────────────────
 def session_timer_loop(server_url, machine_name):
-    """
-    Counts down the session timer every second.
-    When time runs out, ends the session and locks the PC.
-    Works the same in both normal and diskless setups.
-    """
-    global session_active, session_remaining
+    global session_active, session_remaining, session_deadline
 
     while True:
-        time.sleep(1)
+        time.sleep(0.5)  
 
-        # Read current state safely
         with session_lock:
-            active    = session_active
-            remaining = session_remaining
+            if not session_active or session_deadline is None:
+                continue
+            remaining = session_deadline - time.monotonic()  # ← calculate from wall clock
+            session_remaining = max(0, int(remaining))
 
-        # Nothing to count down
-        if not active:
-            continue
+        if int(remaining) % 10 == 0 and remaining > 0:
+            client_log(server_url, 'INFO', f'Timer tick: {int(remaining)}s left')
 
-        # Subtract one second
-        with session_lock:
-            session_remaining -= 1
-            remaining = session_remaining
-
-        # Log every 30 seconds so you can see it working
-        if remaining % 30 == 0 and remaining > 0:
-            client_log(server_url, 'INFO', f'Timer: {remaining}s remaining')
-
-        # Time is up
         if remaining <= 0:
+            client_log(server_url, 'INFO', '>>> TIMER EXPIRED — calling cmd_lock now')
+            
             with session_lock:
                 session_active    = False
                 session_remaining = 0
+                session_deadline  = None
 
-            client_log(server_url, 'INFO', 'Session time is up — locking PC')
-            end_session(server_url, machine_name)
             cmd_lock()
+            client_log(server_url, 'INFO', '>>> cmd_lock() was called')
+
+
+            threading.Thread(
+                target=end_session,
+                args=(server_url, machine_name),
+                daemon=True
+            ).start()
+
+            
+            
 
 
 # ── Session functions ──────────────────────────────────────────────────────────
 def start_session(server_url, machine_name, pesos):
-    global session_active, session_remaining, session_pesos, PESOS_PER_MINUTE
+    global session_active, session_remaining, session_pesos, PESOS_PER_MINUTE, session_deadline
 
     result = post(server_url, 'session.php', {
         'action':       'start',
@@ -332,6 +389,7 @@ def start_session(server_url, machine_name, pesos):
             session_active    = True
             session_remaining = total_seconds
             session_pesos     = float(pesos)
+            session_deadline  = time.monotonic() + total_seconds
 
         client_log(server_url, 'INFO', f'Session started — P{pesos} = {total_seconds}s ({total_seconds//60}min {total_seconds%60}sec)')
         return result['data']['session_id']
@@ -341,11 +399,12 @@ def start_session(server_url, machine_name, pesos):
 
 
 def end_session(server_url, machine_name):
-    global session_active, session_remaining
+    global session_active, session_remaining, session_deadline
 
     with session_lock:
         session_active    = False
         session_remaining = 0
+        session_deadline  = None
 
     result = post(server_url, 'session.php', {
         'action':       'end',
@@ -367,6 +426,7 @@ def add_time(server_url, machine_name, pesos):
 
     if is_active:
         with session_lock:
+            session_deadline  += extra_seconds
             session_remaining += extra_seconds
         client_log(server_url, 'INFO', f'Added P{pesos} = {extra_seconds} more seconds')
     else:
@@ -406,6 +466,11 @@ def cmd_insert_coin(pesos_str, server_url, machine_name):
     try:
         pesos = float(pesos_str)
         if pesos > 0:
+            MAX_HOURS     = 15
+            total_minutes = pesos * PESOS_PER_MINUTE
+            if total_minutes > (MAX_HOURS * 60):
+                client_log(server_url, 'WARNING', f'P{pesos} exceeds 15hr limit, ignoring')
+        else:
             client_log(server_url, 'INFO', f'Server coin trigger: P{pesos}')
             with session_lock:
                 is_active = session_active
@@ -427,51 +492,85 @@ COMMAND_MAP = {
 # ── Command poll thread ────────────────────────────────────────────────────────
 def command_poll_loop(server_url, machine_name):
     """
-    Checks for new commands from the server every few seconds.
-    Handles both regular commands and coin insert commands (diskless mode).
+    Checks for commands from cloud first, then local server as fallback.
+    Cloud first = instant commands when internet is up.
+    Local fallback = still works when internet is down.
     """
-    while True:
-        result = get(server_url, 'get_command.php', {'machine_name': machine_name})
+    local_url = get_local_url()
 
-        if result and result.get('success'):
+    while True:
+        # always try cloud first, then local as fallback
+        servers = [server_url, local_url]
+
+        for current_server in servers:
+            try:
+                resp = requests.get(
+                    f'{current_server}/get_command.php',
+                    params={'machine_name': machine_name},
+                    headers=HEADERS,
+                    timeout=2,  # short timeout so fallback is fast
+                )
+                result = resp.json()
+            except Exception:
+                # this server failed, try the next one
+                continue
+
+            if not result.get('success'):
+                break  # server responded but something wrong, skip
+
             cmd_data = result.get('data', {})
             cmd_id   = cmd_data.get('id')
             command  = cmd_data.get('command')
 
-            if cmd_id and command:
-                # Acknowledge before running
-                post(server_url, 'command.php', {
-                    'action': 'ack',
-                    'id':     cmd_id,
-                    'status': 'executed',
-                })
+            if not cmd_id or not command:
+                break  # no pending command on this server
 
-                # Coin insert command (diskless mode)
-                if command.startswith('coin:'):
-                    pesos_str = command.split('coin:')[1]
-                    cmd_insert_coin(pesos_str, server_url, machine_name)
+            # acknowledge on the SAME server the command came from
+            try:
+                requests.post(
+                    f'{current_server}/command.php',
+                    json={
+                        'action': 'ack',
+                        'id':     cmd_id,
+                        'status': 'executed',
+                    },
+                    headers=HEADERS,
+                    timeout=3,
+                )
+            except Exception:
+                pass  # ack failed but still run the command
 
-                # Kill process command
-                elif command.startswith('kill:'):
-                    pid = int(command.split('kill:')[1])
-                    success = kill_process(pid)
-                    client_log(server_url, 'INFO', f'Kill PID {pid}: {"success" if success else "failed"}')
+            # handle each command type
+            if command.startswith('coin:'):
+                pesos_str = command.split('coin:')[1]
+                cmd_insert_coin(pesos_str, current_server, machine_name)
 
-                # Screenshot command — take and send immediately
-                elif command == 'screenshot':
-                    threading.Thread(
-                        target=take_screenshot,
-                        args=(server_url, machine_name),
-                        daemon=True
-                    ).start()
+            elif command.startswith('kill:'):
+                pid     = int(command.split('kill:')[1])
+                success = kill_process(pid)
+                client_log(current_server, 'INFO',
+                    f'Kill PID {pid}: {"success" if success else "failed"}')
 
-                elif command in COMMAND_MAP:
-                    try:
-                        COMMAND_MAP[command]()
-                    except Exception as e:
-                        client_log(server_url, 'ERROR', f'Command "{command}" failed: {e}')
-                else:
-                    client_log(server_url, 'WARNING', f'Unknown command: {command}')
+            elif command == 'screenshot':
+                threading.Thread(
+                    target=take_screenshot,
+                    args=(current_server, machine_name),
+                    daemon=True
+                ).start()
+
+            elif command in COMMAND_MAP:
+                try:
+                    COMMAND_MAP[command]()
+                    client_log(current_server, 'INFO',
+                        f'Command executed: {command}')
+                except Exception as e:
+                    client_log(current_server, 'ERROR',
+                        f'Command "{command}" failed: {e}')
+            else:
+                client_log(current_server, 'WARNING',
+                    f'Unknown command: {command}')
+
+            break  # command found and handled, stop checking other servers
 
         time.sleep(COMMAND_POLL_INTERVAL)
 
@@ -499,13 +598,19 @@ def file_coin_watcher(server_url, machine_name):
                 pesos   = float(content)
 
                 if pesos > 0:
-                    client_log(server_url, 'INFO', f'File coin trigger: P{pesos}')
-                    with session_lock:
-                        is_active = session_active
-                    if is_active:
-                        add_time(server_url, machine_name, pesos)
+
+                    MAX_HOURS     = 15
+                    total_minutes = pesos * PESOS_PER_MINUTE
+                    if total_minutes > (MAX_HOURS * 60):
+                        client_log(server_url, 'WARNING', f'P{pesos} exceeds 15hr limit, ignoring')
                     else:
-                        start_session(server_url, machine_name, pesos)
+                        client_log(server_url, 'INFO', f'File coin trigger: P{pesos}')
+                        with session_lock:
+                            is_active = session_active
+                        if is_active:
+                            add_time(server_url, machine_name, pesos)
+                        else:
+                            start_session(server_url, machine_name, pesos)
 
             except ValueError:
                 client_log(server_url, 'WARNING', f'insert_coin.txt has invalid content: "{content}"')
@@ -689,23 +794,20 @@ if __name__ == '__main__':
     log.info(f'Mode: {"Diskless" if LOG_TO_SERVER else "Normal"} logging, '
              f'{"Server" if COIN_FROM_SERVER else "File"} coin trigger')
 
-    # Step 1: Register
-    
-
-    config           = register(SERVER_URL)
-    MACHINE_NAME     = config['machine_name']
-    PESOS_PER_MINUTE = float(config.get('pesos_per_minute', 5.0))
+    # Step 1: Register — now returns config AND the server that worked
+    config, SERVER_URL   = register(SERVER_URL)  # ← update SERVER_URL to whichever worked
+    MACHINE_NAME         = config['machine_name']
+    PESOS_PER_MINUTE     = float(config.get('pesos_per_minute', 5.0))
 
     client_log(SERVER_URL, 'INFO', f'Running as {MACHINE_NAME} — rate: P{PESOS_PER_MINUTE}/min')
 
-    # Step 2: Start background threads
+    # Step 2: Start background threads (same as before)
     threading.Thread(target=heartbeat_loop,     args=(SERVER_URL, MACHINE_NAME), daemon=True, name='heartbeat').start()
     threading.Thread(target=command_poll_loop,  args=(SERVER_URL, MACHINE_NAME), daemon=True, name='commands').start()
     threading.Thread(target=session_timer_loop, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='timer').start()
     threading.Thread(target=process_send_loop,  args=(SERVER_URL, MACHINE_NAME), daemon=True, name='processes').start()
     threading.Thread(target=eventlog_send_loop, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='eventlogs').start()
 
-    # Only start file watcher in normal (non-diskless) mode
     if not COIN_FROM_SERVER:
         threading.Thread(target=file_coin_watcher, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='coin_watcher').start()
 

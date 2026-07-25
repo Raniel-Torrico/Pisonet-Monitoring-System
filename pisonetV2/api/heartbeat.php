@@ -57,6 +57,13 @@ db_execute(
     [$machine_name, $cpu, $ram, $disk, $uptime]
 );
 
+if (mt_rand(1, 200) === 1) {
+    db_execute(
+        $conn,
+        'DELETE FROM metrics WHERE recorded_at < DATE_SUB(NOW(), INTERVAL 7 DAY)'
+    );
+}
+
 // Create alerts if CPU or RAM is too high
 // Only create a new alert if there is no recent unresolved one (within 5 minutes)
 $thresholds = [

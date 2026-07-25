@@ -96,6 +96,29 @@ $top_machines = db_select(
      LIMIT 5'
 );
 
+$peak_hours = db_select(
+    $conn,
+    'SELECT
+    MOD(HOUR(started_at) + 8, 24) AS hour,
+    COUNT(*) AS sessions,
+    COALESCE(SUM(pesos), 0) AS income
+ FROM sessions
+ WHERE DATE(started_at) = CURDATE()
+ GROUP BY MOD(HOUR(started_at) + 8, 24)
+ ORDER BY sessions DESC
+ LIMIT 5'
+);
+
+foreach ($peak_hours as &$row) {
+    $h = (int) $row['hour'];
+    $row['hour_label'] = $h === 0  ? '12 AM'
+        : ($h < 12  ? "{$h} AM"
+        : ($h === 12 ? '12 PM'
+        : ($h - 12) . ' PM'));
+}
+unset($row);
+
+
 respond(true, [
     'income' => [
         'today' => [
@@ -117,4 +140,5 @@ respond(true, [
     ],
     'chart'        => $chart_data,
     'top_machines' => $top_machines,
+    'peak_hours'   => $peak_hours,
 ], 'OK');
