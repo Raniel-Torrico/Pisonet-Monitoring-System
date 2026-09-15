@@ -45,7 +45,7 @@ $rows = db_select(
 if (!empty($rows)) {
     respond(true, [
         'machine_name'     => $rows[0]['name'],
-        'pesos_per_minute' => 5.00,
+        'pesos_per_minute' => (float) $rows[0]['pesos_per_minute'],
     ], 'Machine recognized');
 }
 
@@ -64,7 +64,7 @@ $name = empty($existing)
 
 db_execute(
     $conn,
-    'INSERT INTO machines (name, mac, status) VALUES (?, ?, "offline")',
+    'INSERT INTO machines (name, mac, status, pesos_per_minute) VALUES (?, ?, "offline", 5.00)',
     'ss',
     [$name, $mac]
 );

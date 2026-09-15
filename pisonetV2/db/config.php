@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../db/config.php';
 // config.php
 // This file is included by all API endpoints.
 // It sets up the database connection and shared helper functions.

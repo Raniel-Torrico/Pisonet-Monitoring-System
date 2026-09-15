@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Login from "./Login";
 import PisonetDashboard from "./PisonetDashboard";
 import Settings from "./Settings";
+import { showSuccess } from "./confirmDialog";
 
 // Check if there is a saved login session in localStorage
 function getStoredSession() {
@@ -13,6 +14,10 @@ function getStoredSession() {
 
   if (!token || !expires) return null;
 
+  const expiresDate = expires.includes("Z") || expires.includes("+")
+    ? new Date(expires)
+    : new Date(expires.replace(" ", "T") + "Z");
+    
   // Clear session if token has expired
   if (new Date(expires) < new Date()) {
     localStorage.clear();
@@ -34,11 +39,12 @@ export default function App() {
     setChecking(false);
   }, []);
 
-  const handleLogin = (sessionData) => {
-    localStorage.setItem("pisonet_id", sessionData.id ?? "");
-    setSession(sessionData);
-    setPage("dashboard");
-  };
+ const handleLogin = (sessionData) => {
+  localStorage.setItem("pisonet_id", sessionData.id ?? "");
+  setSession(sessionData);
+  setPage("dashboard");
+  showSuccess(`Welcome back, ${sessionData.username}!`);
+};
 
   const handleLogout = () => {
     localStorage.clear();

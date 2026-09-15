@@ -1,20 +1,43 @@
 import axios from 'axios';
 
-// -- Server configuration --
-// Set USE_CLOUD = true  → connects to Hostinger (monitonet.online)
-// Set USE_CLOUD = false → connects to local XAMPP (localhost)
-const USE_CLOUD = true;
+// api.js — smart detection
+async function detectServer() {
+  const CLOUD_URL = 'https://monitonet.com/pisonetV2/api';
+  const LOCAL_URL  = 'http://192.168.1.6/pisonetV2/api';
 
-const BASE_URL = USE_CLOUD
-  ? 'https://monitonet.online/pisonetV2/api'
-  : 'http://localhost/pisonetV2/api';
+  try {
+    // try cloud first with a short timeout
+    await axios.get(`${CLOUD_URL}/metrics.php`, { 
+      headers: { 'X-API-Key': 'pisonet123' }, 
+      timeout: 2000 
+    });
+    return CLOUD_URL;
+  } catch {
+    // cloud failed, try local
+    try {
+      await axios.get(`${LOCAL_URL}/metrics.php`, { 
+        headers: { 'X-API-Key': 'pisonet123' }, 
+        timeout: 2000 
+      });
+      return LOCAL_URL;
+    } catch {
+      return CLOUD_URL; // both failed, default to cloud (will show error)
+    }
+  }
+}
+
+let BASE_URL = 'https://monitonet.com/pisonetV2/api'; // default
 
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'X-API-Key':    'pisonet123',
-  }
+  headers: { 'Content-Type': 'application/json', 'X-API-Key': 'pisonet123' }
+});
+
+// detect and update on app start
+detectServer().then(url => {
+  BASE_URL = url;
+  api.defaults.baseURL = url;
+  console.log('Using server:', url);
 });
 
 // Attach auth token automatically to every request
@@ -49,6 +72,7 @@ export const deleteAccount  = (id)                       => api.post('/admins.ph
 // -- Troubleshooting --
 export const getProcesses      = (machine_name) => api.get('/processes.php', { params: { machine_name } });
 export const killProcess       = (machine_name, pid, process_name) => api.post('/processes.php', { action: 'kill', machine_name, pid, process_name });
+export const restartApp = (machine_name, exe_path) => api.post('/command.php', { action: 'queue', machine_name, command: `restart_app:${exe_path}`, issued_by: 'admin' });
 export const requestScreenshot = (machine_name) => api.post('/command.php', { action: 'queue', machine_name, command: 'screenshot', issued_by: 'admin' });
 export const getScreenshot     = (machine_name) => api.get('/screenshot.php', { params: { machine_name } });
 export const getEventLogs      = (machine_name) => api.get('/eventlogs.php', { params: { machine_name } });
@@ -58,5 +82,24 @@ export const getHealth = () => api.get('/health.php');
 
 // -- Reports --
 export const getReport = (type = 'weekly') => api.get('/report.php', { params: { type } });
+
+// -- Wake-on-LAN --
+export const wakeMachine = (machine_name) =>
+  api.post('/command.php', { action: 'queue', machine_name, command: 'wake', issued_by: 'admin' });
+
+export const wakeAllMachines = (machineNames) =>
+  Promise.all(machineNames.map(name => wakeMachine(name)));
+
+export const updateMachineRate = (machine_name, pesos_per_minute) =>
+  api.post('/machine_settings.php', { machine_name, pesos_per_minute });
+
+export const refreshSpecs = (machine_name) =>
+  api.post('/command.php', { action: 'queue', machine_name, command: 'refresh_specs', issued_by: 'admin' });
+
+export const archiveMachine  = (machine_name) => api.post('/machine_manage.php', { action: 'archive', machine_name });
+export const restoreMachine  = (machine_name) => api.post('/machine_manage.php', { action: 'restore', machine_name });
+export const deleteMachine   = (machine_name) => api.post('/machine_manage.php', { action: 'delete', machine_name });
+export const getArchivedMachines = () => api.get('/archived_machines.php');
+
 
 export default api;

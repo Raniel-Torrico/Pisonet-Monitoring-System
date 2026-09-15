@@ -26,12 +26,13 @@ if ($action === 'queue') {
 
     // Regular commands + coin insert for diskless mode
     // Coin commands use the format: coin:5 (meaning insert P5)
-    $allowed  = ['shutdown', 'restart', 'lock', 'unlock', 'screenshot'];
+    $allowed  = ['shutdown', 'restart', 'lock', 'unlock', 'screenshot', 'wake', 'refresh_specs'];
 $is_coin  = str_starts_with($command, 'coin:');
 $is_kill  = str_starts_with($command, 'kill:');
+$is_restart_app = str_starts_with($command, 'restart_app:');
 
-if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill) {
-    respond(false, null, 'command must be: shutdown, restart, lock, unlock, screenshot, or coin:[amount]', 422);
+if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill && !$is_restart_app) {
+    respond(false, null, 'command must be: shutdown, restart, lock, unlock, screenshot, wake, refresh_specs, coin:[amount], kill:[pid], or restart_app:[path]', 422);
 }
 
     // Validate the coin amount if it is a coin command
@@ -52,6 +53,13 @@ if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill) {
         'sss',
         [$machine_name, $command, $issued_by]
     );
+
+    if (mt_rand(1, 100) === 1) {
+    db_execute(
+        $conn,
+        'DELETE FROM commands WHERE issued_at < DATE_SUB(NOW(), INTERVAL 30 DAY)'
+    );
+}
 
     // Save to logs
     db_execute(
@@ -90,3 +98,8 @@ if ($action === 'ack') {
 }
 
 respond(false, null, 'action must be: queue or ack', 422);
+
+$is_restart_app = str_starts_with($command, 'restart_app:');
+if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill && !$is_restart_app) {
+    respond(false, null, 'command must be: ...', 422);
+}

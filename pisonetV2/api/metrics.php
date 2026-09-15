@@ -33,17 +33,15 @@ db_execute(
 // Create an offline alert for each machine that just went offline
 foreach ($went_offline as $machine) {
     $existing = db_select(
-    $conn,
-    'SELECT id, pesos,
-     DATE_FORMAT(started_at, "%Y-%m-%dT%H:%i:%sZ") AS started_at,
-     TIMESTAMPDIFF(SECOND, started_at, NOW()) AS elapsed_sec
-     FROM sessions
-     WHERE machine_name = ? AND ended_at IS NULL
-     ORDER BY started_at DESC
-     LIMIT 1',
-    's',
-    [$machine['name']]
-);
+        $conn,
+        'SELECT id FROM alerts
+         WHERE machine_name = ? AND type = "offline" AND resolved = 0
+         AND created_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+         LIMIT 1',
+        's',
+        [$machine['name']]
+    );
+
 
     if (empty($existing)) {
         db_execute(
@@ -140,17 +138,20 @@ foreach ($online_machines as $machine) {
 // -- Get all machines --
 $machines = db_select(
     $conn,
-    'SELECT name, mac, status, cpu, ram, disk, pesos_per_minute,
+    'SELECT name, mac, status, cpu, ram, disk, pesos_per_minute, os,
+ ip_address, cpu_model, cpu_cores, total_ram, total_disk, free_disk,
+ win_user, system_model, client_version,
  DATE_FORMAT(last_seen, "%Y-%m-%dT%H:%i:%sZ") AS last_seen,
- DATE_FORMAT(created_at, "%Y-%m-%dT%H:%i:%sZ") AS created_at
- FROM machines ORDER BY name ASC'
+ DATE_FORMAT(created_at, "%Y-%m-%dT%H:%i:%sZ") AS created_at,
+ DATE_FORMAT(specs_updated_at, "%Y-%m-%dT%H:%i:%sZ") AS specs_updated_at
+ FROM machines WHERE archived = 0 ORDER BY name ASC'
 );
 
 // Attach active session info to each machine
 foreach ($machines as &$machine) {
     $session = db_select(
     $conn,
-    "SELECT id, pesos,
+    "SELECT id, pesos, rate_used,
      DATE_FORMAT(started_at, '%Y-%m-%dT%H:%i:%sZ') AS started_at,
      TIMESTAMPDIFF(SECOND, started_at, NOW()) AS elapsed_sec
      FROM sessions
@@ -162,7 +163,7 @@ foreach ($machines as &$machine) {
 );
     if (!empty($session)) {
         $s             = $session[0];
-        $total_sec = (float) $s['pesos'] * (float) $machine['pesos_per_minute'] * 60;
+        $total_sec = (float) $s['pesos'] * (float) $s['rate_used'] * 60;
         $remaining_sec = max(0, $total_sec - (int) $s['elapsed_sec']);
 
         $machine['session'] = [

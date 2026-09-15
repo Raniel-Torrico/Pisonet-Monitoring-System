@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { getMachines, getAlerts, getLogs, getAnalytics, sendCommand, resolveAlert,
-  getProcesses, killProcess, requestScreenshot, getScreenshot, getEventLogs, getHealth } from "./api";
+  getProcesses, killProcess, requestScreenshot, getScreenshot, getEventLogs, getHealth, wakeMachine,
+  updateMachineRate, getArchivedMachines, restoreMachine, restartApp } from "./api";
 import ReportGenerator from "./ReportGenerator";
+import MachineDetailsModal from "./MachineDetailsModal";
+import { confirmAction, confirmDanger, showSuccess } from "./confirmDialog";
 import "./Dashboard.css";
 
 function parseUTC(dateStr) {
@@ -99,10 +102,14 @@ function MiniBar({ value, warn, danger }) {
 }
 
 // -- Machine card with live countdown timer --
-function MachineCard({ machine, onCommand, sending }) {
+function MachineCard({ machine, onCommand, sending, onShowDetails }) {
   const isOffline = machine.status === "offline";
   const serverRemaining = machine.session?.remaining_sec ?? 0;
   useLiveClock(); // forces re-render every 30s so relative times update
+
+  const [editingRate, setEditingRate] = useState(false);
+  const [rateValue,   setRateValue]   = useState(machine.pesos_per_minute);
+  
 
   // Local countdown that ticks every second between server polls
   const [localRemaining, setLocalRemaining] = useState(serverRemaining);
@@ -132,6 +139,15 @@ function MachineCard({ machine, onCommand, sending }) {
   const lastSeenLabel    = useRelativeTime(machine.last_seen);
   const sessionStartLabel = useRelativeTime(machine.session?.started_at);
 
+  const handleRateSave = async () => {
+    try {
+      await updateMachineRate(machine.name, parseFloat(rateValue));
+      setEditingRate(false);
+    } catch {
+      alert("Failed to update rate");
+    }
+  };
+
   return (
     <div className="machine-card" style={{ border: `1.5px solid ${borderColor}`, opacity: isOffline ? 0.75 : 1 }}>
       <div className="machine-header">
@@ -140,9 +156,45 @@ function MachineCard({ machine, onCommand, sending }) {
           <div>
             <div className="machine-name">{machine.name}</div>
             {machine.os && <div className="machine-os">{machine.os}</div>}
+            {editingRate ? (
+              <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 11, marginTop: 2 }}>
+                <input
+                  type="number"
+                  step="0.5"
+                  value={rateValue}
+                  onChange={e => setRateValue(e.target.value)}
+                  style={{ width: 50, fontSize: 11, padding: "2px 4px" }}
+                />
+                <span>min/₱</span>
+                <button onClick={handleRateSave} style={{ fontSize: 10 }}>✓</button>
+                <button onClick={() => setEditingRate(false)} style={{ fontSize: 10 }}>✗</button>
+              </div>
+            ) : (
+              <div
+                style={{ fontSize: 10, color: "#9ca3af", cursor: "pointer", marginTop: 2 }}
+                onClick={() => setEditingRate(true)}
+                title="Click to edit rate"
+              >
+                ₱1 = {machine.pesos_per_minute} min ✎
+              </div>
+            )}
           </div>
         </div>
-        <StatusBadge status={machine.status} />
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button
+            onClick={onShowDetails}
+            title="View machine details"
+            style={{
+              background: "none", border: "1px solid #e5e7eb", borderRadius: 6,
+              width: 22, height: 22, fontSize: 11, color: "#6b7280",
+              cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >
+            ℹ
+          </button>
+          <StatusBadge status={machine.status} />
+        </div>
       </div>
 
       {!isOffline && (
@@ -157,8 +209,30 @@ function MachineCard({ machine, onCommand, sending }) {
             {machine.ram >= 90 && <span className="metric-warn">⚠ High</span>}
           </div>
           <MiniBar value={machine.ram} warn={75} danger={90} />
+          <div className="metric-label-row" style={{ marginTop: 2 }}>
+      <span>DISK</span>
+      {machine.disk >= 90 && <span className="metric-warn">⚠ High</span>}
+    </div>
+    <MiniBar value={machine.disk} warn={75} danger={90} />
         </div>
       )}
+
+
+      {isOffline ? (
+        // Machine is offline — show only Wake button
+        <div className="cmd-row">
+          <button
+            className="cmd-btn"
+            disabled={sending === machine.name}
+            onClick={() => onCommand(machine.name, 'wake')}
+            title="Wake On LAN"
+            style={{ background: "#eff6ff", borderColor: "#93c5fd", color: "#1d4ed8" }}
+          >
+            <span>⚡</span>
+            <span style={{ fontSize: 10 }}>Wake PC</span>
+          </button>
+        </div>
+      ) : null}
 
       <div className="timer-box" style={{ background: timerBg, border: timerBorder }}>
         <div className="timer-label">TIME REMAINING</div>
@@ -172,24 +246,38 @@ function MachineCard({ machine, onCommand, sending }) {
         )}
       </div>
 
-      <div className="cmd-row">
-        {[
-          { cmd: "shutdown", label: "Shutdown", emoji: "⏻" },
-          { cmd: "restart",  label: "Restart",  emoji: "↺" },
-          { cmd: "lock",     label: "Lock",     emoji: "🔒" },
-        ].map(({ cmd, label, emoji }) => (
-          <button
-            key={cmd}
-            className="cmd-btn"
-            disabled={isOffline || sending === machine.name}
-            onClick={() => onCommand(machine.name, cmd)}
-            title={label}
-          >
-            <span>{emoji}</span>
-            <span style={{ fontSize: 10 }}>{label}</span>
-          </button>
-        ))}
-      </div>
+      {!isOffline && (
+        // Machine is online/idle — show normal command buttons
+        <div className="cmd-row">
+          {[
+            { cmd: "shutdown", label: "Shutdown", emoji: "⏻" },
+            { cmd: "restart",  label: "Restart",  emoji: "↺" },
+            { cmd: "lock",     label: "Lock",     emoji: "🔒" },
+          ].map(({ cmd, label, emoji }) => (
+            <button
+              key={cmd}
+              className="cmd-btn"
+              disabled={sending === machine.name}
+              onClick={async () => {
+      const result = await confirmAction({
+        title: `${label} ${machine.name}?`,
+        text: machine.session
+          ? `This PC has an active session (₱${machine.session.pesos}). The customer's session will be interrupted.`
+          : `Are you sure you want to ${label.toLowerCase()} this machine?`,
+        confirmText: `Yes, ${label.toLowerCase()}`,
+      });
+      if (result.isConfirmed) {
+        onCommand(machine.name, cmd);
+      }
+    }}
+              title={label}
+            >
+              <span>{emoji}</span>
+              <span style={{ fontSize: 10 }}>{label}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {machine.last_seen && (
         <div className="machine-last-seen">Last seen {lastSeenLabel}</div>
@@ -267,12 +355,15 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   const [activeTab,   setActiveTab]   = useState("machines");
   const [pollStatus,  setPollStatus]  = useState("connecting");
   const [toast,       setToast]       = useState(null);
+  const [detailsMachine, setDetailsMachine] = useState(null);
   const [sendingCmd,  setSendingCmd]  = useState(null);
   const [error,       setError]       = useState(null);
   const [showMenu,    setShowMenu]    = useState(false);
   const [logsLoading, setLogsLoading] = useState(false);
   const [logFilter,   setLogFilter]   = useState("");
   const [logLimit,    setLogLimit]    = useState(50);
+  const [archivedMachines, setArchivedMachines] = useState([]);
+  const greetedRef = useRef(false);
 
   // Troubleshooting state
   const [selectedMachine,  setSelectedMachine]  = useState("");
@@ -287,7 +378,7 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   const [eventLogs,        setEventLogs]         = useState([]);
   const [eventLogTime,     setEventLogTime]      = useState(null);
   const [eventLogLoading,  setEventLogLoading]   = useState(false);
-  const [killConfirm,      setKillConfirm]       = useState(null);
+
 
   // Health state
   const [healthData,    setHealthData]    = useState([]);
@@ -304,6 +395,23 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
         if (res.data.success) {
           setMachines(res.data.data.machines);
           setError(null);
+
+          if (!greetedRef.current) {
+  const m = res.data.data.machines;
+  const onlineCount  = m.filter(x => x.status === "online").length;
+  const offlineCount = m.filter(x => x.status === "offline").length;
+  const total        = m.length;
+
+  const hour = new Date().getHours();
+  const timeGreeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
+  showSuccess(
+    `${onlineCount}/${total} PCs online${offlineCount > 0 ? `, ${offlineCount} offline` : ''}.`,
+    `${timeGreeting}, ${session?.username}!`,
+    3000
+  );
+  greetedRef.current = true;
+}
         } else {
           setError(res.data.message);
         }
@@ -346,6 +454,10 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     if (activeTab === "health") fetchHealth();
   }, [activeTab]);
 
+  useEffect(() => {
+  if (activeTab === "archived") fetchArchivedMachines();
+}, [activeTab]);
+
   const fetchAnalytics = async () => {
     try {
       const res = await getAnalytics();
@@ -363,6 +475,13 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     } catch {}
     finally { setLogsLoading(false); }
   };
+
+  const fetchArchivedMachines = async () => {
+  try {
+    const res = await getArchivedMachines();
+    if (res.data.success) setArchivedMachines(res.data.data.machines);
+  } catch {}
+};
 
   const handleCommand = async (machineName, cmd) => {
     setSendingCmd(machineName);
@@ -385,6 +504,16 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
       }
     } catch {}
   };
+
+  const handleRestore = async (machineName) => {
+  try {
+    await restoreMachine(machineName);
+    showToast(`✓ ${machineName} restored`);
+    fetchArchivedMachines();
+  } catch {
+    showToast("✗ Failed to restore machine");
+  }
+};
 
   const showToast = (msg) => {
     setToast(msg);
@@ -473,29 +602,64 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   };
 
   const handleRequestScreenshot = async (machine) => {
-    const target = machine || selectedMachine;
-    if (!target) return;
-    setScreenshotLoading(true);
-    try {
-      await requestScreenshot(target);
-      setTimeout(() => fetchScreenshot(target), 3000);
-    } catch { showToast("Failed to request screenshot"); }
-    finally { setScreenshotLoading(false); }
-  };
+  const target = machine || selectedMachine;
+  if (!target) return;
+  setScreenshotLoading(true);
+
+  const previousTime = screenshotTime; // remember what we had before
+
+  try {
+    await requestScreenshot(target);
+
+    // poll a few times until a NEW screenshot appears, instead of one fixed wait
+    let attempts = 0;
+    const maxAttempts = 6; // 6 tries × 1.5s = up to 9 seconds total
+
+    const poll = async () => {
+      attempts++;
+      const res = await getScreenshot(target);
+      if (res.data.success && res.data.data.recorded_at !== previousTime) {
+        // got a genuinely new screenshot
+        setScreenshot(res.data.data.image);
+        setScreenshotTime(res.data.data.recorded_at);
+        setScreenshotLoading(false);
+        return;
+      }
+      if (attempts < maxAttempts) {
+        setTimeout(poll, 1500);
+      } else {
+        setScreenshotLoading(false); // give up gracefully after max attempts
+      }
+    };
+
+    setTimeout(poll, 1500); // first check after 1.5s, then retry every 1.5s
+  } catch {
+    showToast("Failed to request screenshot");
+    setScreenshotLoading(false);
+  }
+};
 
   const toggleAutoRefresh = (machine) => {
-    if (autoRefresh) {
-      // Stop auto refresh
-      clearInterval(autoRefreshRef.current);
-      setAutoRefresh(false);
-    } else {
-      // Start auto refresh every 8 seconds
-      setAutoRefresh(true);
-      autoRefreshRef.current = setInterval(() => {
-        handleRequestScreenshot(machine);
-      }, 8000);
-    }
-  };
+  if (autoRefresh) {
+    clearInterval(autoRefreshRef.current);
+    setAutoRefresh(false);
+  } else {
+    setAutoRefresh(true);
+    let elapsed = 0;
+    const maxDuration = 2 * 60 * 1000; // auto-stop after 2 minutes
+
+    autoRefreshRef.current = setInterval(() => {
+      elapsed += 3000;
+      if (elapsed >= maxDuration) {
+        clearInterval(autoRefreshRef.current);
+        setAutoRefresh(false);
+        showToast("Auto-refresh stopped after 2 minutes");
+        return;
+      }
+      handleRequestScreenshot(machine);
+    }, 3000);
+  }
+};
 
   // Clean up auto refresh interval when machine changes or tab changes
   useEffect(() => {
@@ -506,17 +670,41 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   }, [selectedMachine, activeTab]);
 
   const handleKillProcess = async (proc) => {
-    if (!killConfirm) {
-      setKillConfirm(proc);
-      return;
-    }
-    try {
-      await killProcess(selectedMachine, proc.pid, proc.name);
-      showToast(`Kill command sent for ${proc.name} (PID: ${proc.pid})`);
-      setKillConfirm(null);
-      setTimeout(() => fetchProcesses(selectedMachine), 3000);
-    } catch { showToast("Failed to send kill command"); }
-  };
+  const result = await confirmDanger({
+    title: `Kill "${proc.name}"?`,
+    text: `PID: ${proc.pid} — this will force-close the process immediately. Unsaved work in this program will be lost.`,
+    confirmText: 'Yes, kill process',
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await killProcess(selectedMachine, proc.pid, proc.name);
+    showToast(`Kill command sent for ${proc.name} (PID: ${proc.pid})`);
+    setTimeout(() => fetchProcesses(selectedMachine), 3000);
+  } catch {
+    showToast("Failed to send kill command");
+  }
+};
+
+const handleRestartApp = async (proc) => {
+  const result = await confirmAction({
+    title: `Restart "${proc.name}"?`,
+    text: `This will close and relaunch the application. Any unsaved progress in it will be lost.`,
+    confirmText: 'Yes, restart it',
+    icon: 'question',
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await restartApp(selectedMachine, proc.exe);
+    showToast(`Restart requested for ${proc.name}`);
+    setTimeout(() => fetchProcesses(selectedMachine), 5000); // give it time to relaunch
+  } catch {
+    showToast("Failed to send restart command");
+  }
+};
 
   const counts = {
     online:  machines.filter(m => m.status === "online").length,
@@ -524,8 +712,9 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     offline: machines.filter(m => m.status === "offline").length,
     total:   machines.length,
   };
+  
 
-  const tabs = ["machines", "analytics", "alerts", "logs", "troubleshoot", "health"];
+  const tabs = ["machines", "analytics", "alerts", "logs", "troubleshoot", "health", "archived"];
 
   return (
     <div className="dashboard">
@@ -576,11 +765,20 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
                       {session?.role === "admin" ? "⚙ Settings" : "👤 My Account"}
                     </button>
                     <button
-                      className="logout-btn"
-                      onClick={() => { setShowMenu(false); onLogout(); }}
-                    >
-                      🚪 Sign Out
-                    </button>
+  className="logout-btn"
+  onClick={async () => {
+    setShowMenu(false);
+    const result = await confirmAction({
+      title: 'Sign out?',
+      text: 'You will need to log in again to access the dashboard.',
+      confirmText: 'Yes, sign out',
+      icon: 'question',
+    });
+    if (result.isConfirmed) onLogout();
+  }}
+>
+  🚪 Sign Out
+</button>
                   </div>
                 </>
               )}
@@ -630,16 +828,37 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
         {/* Machines tab */}
         {activeTab === "machines" && (
           <>
+          <button
+  className="troubleshoot-action-btn"
+  onClick={async () => {
+    const offlineMachines = machines.filter(m => m.status === 'offline').map(m => m.name);
+    if (offlineMachines.length === 0) {
+      showToast('No offline machines to wake');
+      return;
+    }
+    await wakeAllMachines(offlineMachines);
+    showToast(`Wake command sent to ${offlineMachines.length} machine(s)`);
+  }}
+  style={{ marginBottom: 16 }}
+>
+  ⚡ Wake All Offline PCs
+</button>
             {machines.length === 0 && !error && (
               <div className="empty-state">
                 {pollStatus === "connecting" ? "Connecting to server…" : "No machines registered yet. Run client.exe on each PC."}
               </div>
             )}
-            <div className="machines-grid">
-              {machines.map(m => (
-                <MachineCard key={m.name} machine={m} onCommand={handleCommand} sending={sendingCmd} />
-              ))}
-            </div>
+          <div className="machines-grid">
+  {machines.map(m => (
+    <MachineCard
+      key={m.name}
+      machine={m}
+      onCommand={handleCommand}
+      sending={sendingCmd}
+      onShowDetails={() => setDetailsMachine(m)}
+    />
+  ))}
+</div>
           </>
         )}
 
@@ -705,6 +924,38 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
                     )}
                   </div>
                 </div>
+                {/* Peak Hours */}
+                {analytics.peak_hours && analytics.peak_hours.length > 0 && (
+                  <div className="stats-card" style={{ gridColumn: "1 / -1" }}>
+                    <div className="stats-title">Peak Hours Today</div>
+                    {analytics.peak_hours.map((row, i) => {
+                      const max = analytics.peak_hours[0].sessions;
+                      const pct = max > 0 ? (row.sessions / max) * 100 : 0;
+                      return (
+                        <div key={row.hour} style={{ padding: "8px 0", borderBottom: "1px solid #f3f4f6" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}>
+                            <span style={{ fontWeight: 600, color: "#111827", width: 60 }}>{row.hour_label}</span>
+                            <span style={{ color: "#6b7280" }}>{row.sessions} session{row.sessions !== 1 ? "s" : ""}</span>
+                            <span style={{ fontWeight: 700, color: "#10b981" }}>₱{(+row.income).toLocaleString()}</span>
+                          </div>
+                          {/* activity bar */}
+                          <div style={{ background: "#e5e7eb", borderRadius: 3, height: 6 }}>
+                            <div style={{
+                              width: `${pct}%`,
+                              height: "100%",
+                              background: i === 0 ? "#10b981" : "#6ee7b7",
+                              borderRadius: 3,
+                              transition: "width 0.6s ease",
+                            }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {analytics.peak_hours.length === 0 && (
+                      <div className="no-data-small">No sessions recorded today</div>
+                    )}
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -852,35 +1103,6 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
                     </div>
                   </div>
 
-                  {/* Kill confirm banner */}
-                  {killConfirm && (
-                    <div style={{
-                      background: "#fef2f2", padding: "10px 16px",
-                      borderBottom: "1px solid #fecaca",
-                      display: "flex", alignItems: "center",
-                      justifyContent: "space-between", gap: 12,
-                    }}>
-                      <span style={{ fontSize: 13, color: "#991b1b" }}>
-                        ⚠ Kill <strong>{killConfirm.name}</strong> (PID: {killConfirm.pid})?
-                        This will force-close the process.
-                      </span>
-                      <div style={{ display: "flex", gap: 8 }}>
-                        <button
-                          className="troubleshoot-action-btn danger"
-                          onClick={() => handleKillProcess(killConfirm)}
-                        >
-                          Confirm Kill
-                        </button>
-                        <button
-                          className="troubleshoot-action-btn"
-                          onClick={() => setKillConfirm(null)}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
                   {processLoading ? (
                     <div className="troubleshoot-loading">Loading processes…</div>
                   ) : processes.length === 0 ? (
@@ -910,17 +1132,25 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
                               </td>
                               <td className="process-cpu-low">{proc.ram.toFixed(1)}%</td>
                               <td>
-                                <button
-                                  className="troubleshoot-action-btn danger"
-                                  style={{ padding: "3px 10px", fontSize: 11 }}
-                                  onClick={() => {
-                                    setKillConfirm(null);
-                                    handleKillProcess(proc);
-                                  }}
-                                >
-                                  Kill
-                                </button>
-                              </td>
+  <div style={{ display: "flex", gap: 4 }}>
+    <button
+      className="troubleshoot-action-btn danger"
+      style={{ padding: "3px 10px", fontSize: 11 }}
+      onClick={() => handleKillProcess(proc)}
+    >
+      Kill
+    </button>
+    {proc.exe && (
+      <button
+        className="troubleshoot-action-btn"
+        style={{ padding: "3px 10px", fontSize: 11 }}
+        onClick={() => handleRestartApp(proc)}
+      >
+        ↺ Restart
+      </button>
+    )}
+  </div>
+</td>
                             </tr>
                           ))}
                         </tbody>
@@ -928,6 +1158,32 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
                     </div>
                   )}
                 </div>
+
+                {processes.length > 0 && (() => {
+  const topProcess = processes[0]; // already sorted by CPU descending
+  const machine = machines.find(m => m.name === selectedMachine);
+  
+  if (!machine || (machine.cpu < 70 && machine.ram < 75)) return null;
+
+  return (
+    <div style={{
+      background: "#fffbeb", border: "1px solid #fcd34d", borderRadius: 10,
+      padding: "12px 16px", marginBottom: 12, fontSize: 13,
+    }}>
+      <div style={{ fontWeight: 700, color: "#92400e", marginBottom: 4 }}>
+        💡 Suggested Diagnosis
+      </div>
+      <div style={{ color: "#78350f" }}>
+        {machine.cpu >= 70 && (
+          <div>
+            High CPU ({machine.cpu.toFixed(0)}%) is likely caused by <strong>{topProcess.name}</strong> (using {topProcess.cpu.toFixed(1)}% CPU).
+            {' '}Consider restarting this application or closing it if unresponsive.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+})()}
 
                 {/* Screenshot */}
                 <div className="troubleshoot-card">
@@ -955,7 +1211,7 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
                           onClick={() => toggleAutoRefresh(selectedMachine)}
                           style={{ padding: "4px 10px", fontSize: 11 }}
                         >
-                          {autoRefresh ? "⏹ Stop Auto" : "▶ Auto (8s)"}
+                          {autoRefresh ? "⏹ Stop Auto" : "▶ Auto (3s)"}
                         </button>
                       </div>
                     </div>
@@ -1144,6 +1400,35 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
             )}
           </div>
         )}
+
+        {activeTab === "archived" && (
+  <div className="alerts-card">
+    <div className="alerts-title">Archived Machines</div>
+    {archivedMachines.length === 0 ? (
+      <div className="no-alerts">No archived machines</div>
+    ) : (
+      archivedMachines.map(m => (
+        <div key={m.name} className="alert-row">
+          <span className="alert-icon">🖥</span>
+          <div style={{ flex: 1 }}>
+            <div className="alert-message">{m.name}</div>
+            <div className="alert-time">{m.os || "Unknown OS"} · MAC: {m.mac}</div>
+          </div>
+          <button className="resolve-btn" onClick={() => handleRestore(m.name)}>
+            ↺ Restore
+          </button>
+        </div>
+      ))
+    )}
+  </div>
+)}
+{detailsMachine && (
+        <MachineDetailsModal
+          machine={detailsMachine}
+          onClose={() => setDetailsMachine(null)}
+          onArchived={() => setDetailsMachine(null)}
+        />
+      )}
 
       {toast && <div className="toast">{toast}</div>}
     </div>

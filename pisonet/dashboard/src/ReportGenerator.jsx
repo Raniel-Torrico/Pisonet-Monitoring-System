@@ -251,11 +251,60 @@ export default function ReportGenerator() {
         doc.setFont("helvetica", "normal");
         doc.setTextColor(55, 65, 81);
         doc.text(
-          `P${data.top_session.pesos} — ${data.top_session.duration_min} minutes — ${data.top_session.started_at}`,
+          `P${data.top_session.pesos} — ${data.top_session.duration_min ?? 0} minutes — ${data.top_session.started_at}`,
           margin + 4, y + 13
         );
         y += 22;
       }
+      
+      // ── Peak Hours ────────────────────────────────────────────────────────────────
+if (data.peak_hours && data.peak_hours.length > 0) {
+  doc.setTextColor(17, 24, 39);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.text("Peak Hours", margin, y);
+  y += 6;
+
+  // Table header
+  doc.setFillColor(15, 23, 42);
+  doc.rect(margin, y, contentW, 8, 'F');
+
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(255, 255, 255);
+  doc.text("Hour",     margin + 2,              y + 5.5);
+  doc.text("Sessions", margin + 50,             y + 5.5);
+  doc.text("Income",   margin + 100,            y + 5.5);
+  doc.text("Activity", margin + contentW - 40,  y + 5.5);
+  y += 8;
+
+  const maxSessions = Math.max(...data.peak_hours.map(r => r.sessions));
+
+  data.peak_hours.forEach((row, idx) => {
+    const rowColor = idx % 2 === 0 ? [255, 255, 255] : [248, 250, 252];
+    doc.setFillColor(...rowColor);
+    doc.rect(margin, y, contentW, 7, 'F');
+
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(55, 65, 81);
+    doc.text(row.hour_label,            margin + 2,   y + 5);
+    doc.text(String(row.sessions),      margin + 50,  y + 5);
+    doc.text(`P${parseFloat(row.income).toFixed(2)}`, margin + 100, y + 5);
+
+    // Activity bar
+    const barPct = maxSessions > 0 ? row.sessions / maxSessions : 0;
+    doc.setFillColor(16, 185, 129);
+    doc.rect(margin + contentW - 40, y + 2, barPct * 38, 3, 'F');
+
+    y += 7;
+  });
+
+  doc.setDrawColor(229, 231, 235);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, margin + contentW, y);
+  y += 8;
+}
 
       // ── Footer ────────────────────────────────────────────────────────────────
       doc.setFontSize(8);

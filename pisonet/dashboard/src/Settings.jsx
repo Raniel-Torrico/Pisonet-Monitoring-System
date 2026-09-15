@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getAccounts, addAccount, changePassword, deleteAccount } from "./api";
 import { checkPasswordStrength } from "./passwordStrength";
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
+import { confirmAction, confirmDanger, showSuccess } from "./confirmDialog";
 import "./Settings.css";
 
 // -- Change password form (for your own account) --
@@ -280,19 +281,27 @@ function AccountsList({ session, onRefresh }) {
   useEffect(() => { fetchAccounts(); }, []);
   useEffect(() => { fetchAccounts(); }, [onRefresh]);
 
-  const handleDelete = async (id, username) => {
-    if (!window.confirm(`Are you sure you want to delete "${username}"?`)) return;
-    try {
-      const res = await deleteAccount(id);
-      if (res.data.success) {
-        setAccounts(prev => prev.filter(a => a.id !== id));
-      } else {
-        alert(res.data.message);
-      }
-    } catch {
-      alert("Failed to delete account");
+const handleDelete = async (id, username) => {
+  const result = await confirmDanger({
+    title: `Delete "${username}"?`,
+    text: 'This account will be permanently removed and will no longer be able to log in.',
+    confirmText: 'Yes, delete account',
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const res = await deleteAccount(id);
+    if (res.data.success) {
+      setAccounts(prev => prev.filter(a => a.id !== id));
+      showSuccess(`"${username}" was deleted`);
+    } else {
+      confirmAction({ title: 'Error', text: res.data.message, icon: 'error', confirmText: 'OK' });
     }
-  };
+  } catch {
+    confirmAction({ title: 'Error', text: 'Failed to delete account', icon: 'error', confirmText: 'OK' });
+  }
+};
 
   const handleChangePass = async (e, accountId) => {
     e.preventDefault();

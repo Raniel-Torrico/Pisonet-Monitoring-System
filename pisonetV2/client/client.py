@@ -35,6 +35,7 @@ import threading
 import subprocess
 import ctypes
 import logging
+import tkinter as tk
 
 import requests
 import psutil
@@ -65,6 +66,7 @@ PESOS_PER_MINUTE       = 5.0  # 1 peso = 5 minutes, updated after registration
 PROCESS_SEND_INTERVAL  = 10   # seconds between each process list update
 SCREENSHOT_ON_REQUEST  = True # take screenshot when dashboard requests it
 EVENTLOG_SEND_INTERVAL = 60   # seconds between each event log update
+CLIENT_VERSION = '1.0.0'
 
 
 # ── DISKLESS MODE ──────────────────────────────────────────────────────────────
@@ -199,6 +201,112 @@ def get_metrics():
         'uptime': int(time.time() - psutil.boot_time()),
     }
 
+def get_all_disks_total():
+    """
+    Sums up total and free space across all LOCAL FIXED drives only —
+    excludes network drives, removable/USB drives, and CD/DVD drives
+    to avoid inflated totals.
+    """
+    total_all = 0
+    free_all  = 0
+    for partition in psutil.disk_partitions(all=False):
+        # skip anything that isn't a genuine fixed local drive
+        opts = partition.opts.lower() if partition.opts else ''
+        if 'cdrom' in opts or 'removable' in opts:
+            continue
+        if partition.fstype == '':  # often indicates a non-mounted or network path
+            continue
+        try:
+            usage = psutil.disk_usage(partition.mountpoint)
+            total_all += usage.total
+            free_all  += usage.free
+        except (PermissionError, OSError):
+            continue
+    return total_all, free_all
+    
+def get_cpu_name():
+    """
+    Gets the actual marketed CPU name using PowerShell's CIM cmdlets,
+    since wmic is being phased out on newer Windows 11 builds.
+    """
+    try:
+        if platform.system() == 'Windows':
+            result = subprocess.run(
+                ['powershell', '-NoProfile', '-Command',
+                 '(Get-CimInstance -ClassName Win32_Processor).Name'],
+                capture_output=True, text=True, timeout=10
+            )
+            name = result.stdout.strip()
+            if name:
+                return name
+    except Exception:
+        pass
+
+    return platform.processor() or "Unknown CPU"
+
+def get_hardware_specs():
+    """
+    Collects static hardware info. Sent once at registration,
+    and again whenever the Refresh Specs button is clicked.
+    """
+    cpu_info = get_cpu_name()
+    cpu_cores = psutil.cpu_count(logical=True)
+
+    total_ram_gb  = round(psutil.virtual_memory().total / (1024 ** 3), 1)
+    total_bytes, free_bytes = get_all_disks_total()
+    total_disk_gb = round(total_bytes / (1024 ** 3), 1)
+    free_disk_gb  = round(free_bytes / (1024 ** 3), 1)
+
+    os_info  = f"{platform.system()} {platform.release()}"
+    win_user = os.getlogin() if hasattr(os, 'getlogin') else 'Unknown'
+
+    system_model = 'Unknown'
+    try:
+        if platform.system() == 'Windows':
+            result = subprocess.run(
+                ['wmic', 'computersystem', 'get', 'model', '/value'],
+                capture_output=True, text=True
+            )
+            for line in result.stdout.strip().split('\n'):
+                if line.startswith('Model='):
+                    model = line.split('=', 1)[1].strip()
+                    if model and model not in ('', 'System Product Name', 'To Be Filled By O.E.M.'):
+                        system_model = model
+                        break
+            if system_model == 'Unknown':
+                result = subprocess.run(
+                    ['wmic', 'baseboard', 'get', 'product', '/value'],
+                    capture_output=True, text=True
+                )
+                for line in result.stdout.strip().split('\n'):
+                    if line.startswith('Product='):
+                        board = line.split('=', 1)[1].strip()
+                        if board and board not in ('', 'To Be Filled By O.E.M.'):
+                            system_model = f'Motherboard: {board}'
+                            break
+    except Exception:
+        pass
+
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip_address = s.getsockname()[0]
+        s.close()
+    except Exception:
+        ip_address = 'Unknown'
+
+    return {
+        'cpu_model':      cpu_info,
+        'cpu_cores':      cpu_cores,
+        'total_ram':      total_ram_gb,
+        'total_disk':     total_disk_gb,
+        'free_disk':      free_disk_gb,
+        'os_info':        os_info,
+        'win_user':       win_user,
+        'system_model':   system_model,
+        'ip_address':     ip_address,
+        'client_version': CLIENT_VERSION,
+    }
 
 # ── Logging helper ─────────────────────────────────────────────────────────────
 def client_log(server_url, level, message):
@@ -231,11 +339,11 @@ def client_log(server_url, level, message):
 
 
 # ── HTTP helpers ───────────────────────────────────────────────────────────────
-def post(server_url, endpoint, payload):
+def post(server_url, endpoint, payload, timeout=5):
     try:
         resp = requests.post(
             f'{server_url}/{endpoint}',
-            json=payload, headers=HEADERS, timeout=5,
+            json=payload, headers=HEADERS, timeout=timeout,
         )
         data = resp.json()
         if not data.get('success'):
@@ -246,7 +354,6 @@ def post(server_url, endpoint, payload):
     except Exception as e:
         log.error(f'POST {endpoint} → error: {e}')
     return None
-
 
 def get(server_url, endpoint, params):
     try:
@@ -287,6 +394,12 @@ def register(server_url):
                 config = result['data']
                 # save which server worked so all threads use the same one
                 log.info(f'Registered as: {config["machine_name"]} via {current_server}')
+
+                specs = get_hardware_specs()
+                specs['machine_name'] = config['machine_name']
+                post(current_server, 'specs.php', specs)
+                log.info('Hardware specs sent')
+
                 return config, current_server  # ← return both config AND working server
 
         log.warning('Registration failed on all servers. Retrying in 5s...')
@@ -375,7 +488,7 @@ def start_session(server_url, machine_name, pesos):
         'action':       'start',
         'machine_name': machine_name,
         'pesos':        pesos,
-    })
+    }, timeout=10)
 
     if result and result.get('success'):
         # Calculate total seconds using the global PESOS_PER_MINUTE
@@ -416,15 +529,103 @@ def end_session(server_url, machine_name):
     else:
         client_log(server_url, 'WARNING', 'Failed to notify server of session end')
 
+# ── Customer Countdown Overlay ─────────────────────────────────────────────────
+# Small always-on-top window showing the customer their remaining time.
+# Runs on the main thread since tkinter requires it.
+
+overlay_root  = None
+overlay_label = None
+
+def create_overlay():
+    """
+    Builds the borderless, always-on-top overlay window.
+    Starts hidden — only appears when a session is active.
+    """
+    global overlay_root, overlay_label
+
+    overlay_root = tk.Tk()
+    overlay_root.overrideredirect(True)   # no title bar / borders
+    overlay_root.attributes('-topmost', True)
+    overlay_root.attributes('-alpha', 0.75)  # more see-through
+    overlay_root.configure(bg='#0f172a')
+
+    width, height = 190, 60
+    screen_w = overlay_root.winfo_screenwidth()
+    screen_h = overlay_root.winfo_screenheight()
+    x = screen_w - width - 20
+    y = screen_h - height - 60  # sits above the taskbar
+    overlay_root.geometry(f'{width}x{height}+{x}+{y}')
+
+    overlay_label = tk.Label(
+        overlay_root,
+        text='',
+        font=('Segoe UI', 14, 'bold'),
+        bg='#0f172a',
+        fg='#10b981',
+        justify='center',
+    )
+    overlay_label.pack(expand=True, fill='both')
+    overlay_label.bind('<ButtonPress-1>', start_drag)
+    overlay_label.bind('<B1-Motion>', do_drag)
+    overlay_root.withdraw()  # start hidden until a session begins
+    poll_overlay()
+
+
+def poll_overlay():
+    """
+    Reads the current session state every 500ms and updates the overlay.
+    Hides the window when there's no active session.
+    """
+    global overlay_root, overlay_label
+
+    with session_lock:
+        is_active = session_active
+        remaining = session_remaining
+        pesos     = session_pesos
+
+    if is_active and remaining > 0:
+        mins = remaining // 60
+        secs = remaining % 60
+        overlay_label.config(
+            text=f'⏱ {mins:02d}:{secs:02d}\n₱{pesos:g} remaining',
+            fg='#ef4444' if remaining < 300 else '#10b981',  # red under 5 min
+        )
+        overlay_root.deiconify()  # show
+    else:
+        overlay_root.withdraw()  # hide
+
+    overlay_root.after(500, poll_overlay)
+
+def start_drag(event):
+    """Records the mouse position when the user starts dragging."""
+    overlay_root._drag_start_x = event.x
+    overlay_root._drag_start_y = event.y
+
+
+def do_drag(event):
+    """Moves the overlay window as the mouse moves while dragging."""
+    x = overlay_root.winfo_pointerx() - overlay_root._drag_start_x
+    y = overlay_root.winfo_pointery() - overlay_root._drag_start_y
+    overlay_root.geometry(f'+{x}+{y}')
 
 def add_time(server_url, machine_name, pesos):
-    global session_active, session_remaining
+    global session_active, session_remaining, session_deadline
     extra_seconds = int(pesos * PESOS_PER_MINUTE * 60)
 
     with session_lock:
         is_active = session_active
 
     if is_active:
+        result = post(server_url, 'session.php', {
+            'action':       'add_time',
+            'machine_name': machine_name,
+            'pesos':        pesos,
+        })
+
+        if not result or not result.get('success'):
+            client_log(server_url, 'WARNING', f'Server rejected add_time: {result.get("message") if result else "no response"}')
+            return
+            
         with session_lock:
             session_deadline  += extra_seconds
             session_remaining += extra_seconds
@@ -551,12 +752,25 @@ def command_poll_loop(server_url, machine_name):
                 client_log(current_server, 'INFO',
                     f'Kill PID {pid}: {"success" if success else "failed"}')
 
+            elif command.startswith('restart_app:'):
+                exe_path = command.split('restart_app:')[1]
+                success = restart_application(exe_path)
+                client_log(current_server, 'INFO', f'Restart app {exe_path}: {"success" if success else "failed"}')
+
             elif command == 'screenshot':
                 threading.Thread(
                     target=take_screenshot,
                     args=(current_server, machine_name),
                     daemon=True
                 ).start()
+
+          
+            elif command == 'refresh_specs':
+                specs = get_hardware_specs()
+                specs['machine_name'] = machine_name
+                post(current_server, 'specs.php', specs)
+                client_log(current_server, 'INFO', 'Specs refreshed on request')
+
 
             elif command in COMMAND_MAP:
                 try:
@@ -628,25 +842,37 @@ def file_coin_watcher(server_url, machine_name):
 # ── Process list functions ─────────────────────────────────────────────────────
 def get_process_list():
     """
-    Returns a list of all running processes with name, PID, CPU and RAM usage.
-    Sorted by CPU usage so the most active processes appear first.
+    Returns a list of all running processes with name, PID, CPU, RAM usage,
+    and the full executable path (needed for the Restart Application feature).
+    Excludes this client's own process to prevent accidental self-restart.
     """
+    own_pid = os.getpid()
     processes = []
-    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'exe']):
         try:
             info = proc.info
-            processes.append({
-                'pid':    info['pid'],
-                'name':   info['name'],
-                'cpu':    round(info['cpu_percent'] or 0, 1),
-                'ram':    round(info['memory_percent'] or 0, 1),
-            })
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
+            pid = info.get('pid')
 
-    # Sort by CPU usage descending
+            if pid == own_pid:
+                continue  # never list ourselves as a restartable process
+
+            exe_path = info.get('exe') or ''
+            # only keep exe paths that are actual files, not folders
+            if exe_path and not (exe_path.endswith('.exe') and os.path.isfile(exe_path)):
+                exe_path = ''
+
+            processes.append({
+                'pid':    pid,
+                'name':   info.get('name') or 'Unknown',
+                'cpu':    round(info.get('cpu_percent') or 0, 1),
+                'ram':    round(info.get('memory_percent') or 0, 1),
+                'exe':    exe_path,
+            })
+        except (psutil.NoSuchProcess, psutil.AccessDenied, KeyError):
+            continue
+
     processes.sort(key=lambda p: p['cpu'], reverse=True)
-    return processes[:50]  # return top 50 processes only
+    return processes[:50]
 
 
 def process_send_loop(server_url, machine_name):
@@ -690,7 +916,35 @@ def kill_process(pid):
         log.error(f'Error killing process {pid}: {e}')
         return False
 
+def restart_application(exe_path):
+    """
+    Kills all running instances of the given executable, waits briefly,
+    then relaunches it from the same path.
+    """
+    if not exe_path or not os.path.isfile(exe_path):
+        log.error(f'Restart app failed: invalid exe path "{exe_path}"')
+        return False
 
+    try:
+        exe_name = os.path.basename(exe_path)
+        for proc in psutil.process_iter(['pid', 'name']):
+            try:
+                if proc.info['name'].lower() == exe_name.lower():
+                    psutil.Process(proc.info['pid']).terminate()
+            except psutil.AccessDenied:
+                log.warning(f'Access denied terminating PID {proc.info["pid"]} — may need to run client as Administrator')
+                return False
+            except psutil.NoSuchProcess:
+                continue  # already closed, fine
+
+        time.sleep(2)
+
+        subprocess.Popen([exe_path])
+        return True
+    except Exception as e:
+        log.error(f'Restart app failed for {exe_path}: {e}')
+        return False
+        
 # ── Screenshot functions ────────────────────────────────────────────────────────
 def take_screenshot(server_url, machine_name):
     """
@@ -703,7 +957,7 @@ def take_screenshot(server_url, machine_name):
 
     try:
         # Capture the screen
-        screenshot = ImageGrab.grab()
+        screenshot = ImageGrab.grab(all_screens=True)
 
         # Resize to reduce file size (max 1280px wide)
         max_width = 1280
@@ -813,10 +1067,11 @@ if __name__ == '__main__':
 
     client_log(SERVER_URL, 'INFO', 'All threads started')
 
-    # Step 3: Keep running
+    # Step 3: Create the countdown overlay and run it on the main thread
+    # (tkinter must run on main thread — this replaces the old sleep loop)
     try:
-        while True:
-            time.sleep(60)
+        create_overlay()
+        overlay_root.mainloop()
     except KeyboardInterrupt:
         client_log(SERVER_URL, 'INFO', 'Client stopped.')
         print('Pisonet Client stopped.')

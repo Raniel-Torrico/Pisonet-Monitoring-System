@@ -45,7 +45,7 @@ if (!password_verify($password, $admin['password'])) {
 // Generate a random token and save it
 // Token expires after 8 hours
 $token   = bin2hex(random_bytes(32));
-$expires = date('Y-m-d H:i:s', strtotime('+8 hours'));
+$expires = gmdate('Y-m-d\TH:i:s\Z', strtotime('+8 hours'));
 
 db_execute(
     $conn,

@@ -118,7 +118,16 @@ foreach ($peak_hours as &$row) {
 }
 unset($row);
 
+$this_month = db_select($conn, 'SELECT COALESCE(SUM(pesos),0) AS total FROM sessions 
+    WHERE MONTH(started_at)=MONTH(CURDATE()) AND YEAR(started_at)=YEAR(CURDATE())');
+$last_month = db_select($conn, 'SELECT COALESCE(SUM(pesos),0) AS total FROM sessions 
+    WHERE MONTH(started_at)=MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) 
+    AND YEAR(started_at)=YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))');
 
+$change_pct = $last_month[0]['total'] > 0 
+    ? round((($this_month[0]['total'] - $last_month[0]['total']) / $last_month[0]['total']) * 100, 1)
+    : 0;
+    
 respond(true, [
     'income' => [
         'today' => [
