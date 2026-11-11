@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { getMachines, getAlerts, getLogs, getAnalytics, sendCommand, resolveAlert,
+import { useState, useEffect, useRef, Fragment } from "react";
+import { getMachines, getAlerts, getLogs, getAnalyticsPeriod, sendCommand, resolveAlert,
   getProcesses, killProcess, requestScreenshot, getScreenshot, getEventLogs, getHealth, wakeMachine,
-  updateMachineRate, getArchivedMachines, restoreMachine, restartApp } from "./api";
+  wakeAllMachines, updateMachineRate, getArchivedMachines, restoreMachine, restartApp, stopTimer } from "./api";
 import ReportGenerator from "./ReportGenerator";
 import MachineDetailsModal from "./MachineDetailsModal";
 import { confirmAction, confirmDanger, showSuccess } from "./confirmDialog";
@@ -72,6 +72,26 @@ function fmtDateTime(dateStr) {
   });
 }
 
+// -- Helpers for the analytics period selector --
+
+// today's date as "2026-10-17" in Philippine time
+function todayStr() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Manila" });
+}
+
+// move a date forward (+1) or backward (-1) by one day / week / month
+function shiftDate(dateStr, mode, dir) {
+  const d = new Date(dateStr + "T00:00:00Z");
+  if (mode === "day")   d.setUTCDate(d.getUTCDate() + dir);
+  if (mode === "week")  d.setUTCDate(d.getUTCDate() + 7 * dir);
+  if (mode === "month") { d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth() + dir); }
+  return d.toISOString().slice(0, 10);
+}
+
+function fmtPeso(n) {
+  return `₱${Number(n || 0).toLocaleString()}`;
+}
+
 // -- Status badge --
 function StatusBadge({ status }) {
   const config = {
@@ -102,7 +122,7 @@ function MiniBar({ value, warn, danger }) {
 }
 
 // -- Machine card with live countdown timer --
-function MachineCard({ machine, onCommand, sending, onShowDetails }) {
+function MachineCard({ machine, onCommand, sending, onShowDetails, onToast }) {
   const isOffline = machine.status === "offline";
   const serverRemaining = machine.session?.remaining_sec ?? 0;
   useLiveClock(); // forces re-render every 30s so relative times update
@@ -156,7 +176,8 @@ function MachineCard({ machine, onCommand, sending, onShowDetails }) {
           <div>
             <div className="machine-name">{machine.name}</div>
             {machine.os && <div className="machine-os">{machine.os}</div>}
-            {editingRate ? (
+            
+            {/* {editingRate ? (
               <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 11, marginTop: 2 }}>
                 <input
                   type="number"
@@ -177,7 +198,7 @@ function MachineCard({ machine, onCommand, sending, onShowDetails }) {
               >
                 ₱1 = {machine.pesos_per_minute} min ✎
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -218,7 +239,7 @@ function MachineCard({ machine, onCommand, sending, onShowDetails }) {
       )}
 
 
-      {isOffline ? (
+      {/*{isOffline ? (
         // Machine is offline — show only Wake button
         <div className="cmd-row">
           <button
@@ -232,7 +253,7 @@ function MachineCard({ machine, onCommand, sending, onShowDetails }) {
             <span style={{ fontSize: 10 }}>Wake PC</span>
           </button>
         </div>
-      ) : null}
+      ) : null}*/}
 
       <div className="timer-box" style={{ background: timerBg, border: timerBorder }}>
         <div className="timer-label">TIME REMAINING</div>
@@ -245,6 +266,25 @@ function MachineCard({ machine, onCommand, sending, onShowDetails }) {
           </div>
         )}
       </div>
+      {machine.session && (
+  <button
+    className="cmd-btn"
+    style={{ background: "#fef2f2", borderColor: "#fecaca", color: "#991b1b" }}
+    onClick={async () => {
+      const result = await confirmDanger({
+        title: `Stop timer for ${machine.name}?`,
+        text: 'This will immediately end the active session and lock the PC. The customer\'s remaining time will not be refunded automatically.',
+        confirmText: 'Yes, stop it',
+      });
+      if (result.isConfirmed) {
+        await stopTimer(machine.name);
+        onToast(`Timer stopped for ${machine.name}`);
+      }
+    }}
+  >
+    ⏹ Stop Timer
+  </button>
+)}
 
       {!isOffline && (
         // Machine is online/idle — show normal command buttons
@@ -286,25 +326,113 @@ function MachineCard({ machine, onCommand, sending, onShowDetails }) {
   );
 }
 
-// -- Bar chart --
+// -- Bar chart: stacked by coin type, with a marker for the previous period --
 function BarChart({ data }) {
-  const max = Math.max(...data.map(d => d.value), 1);
+  const max    = Math.max(...data.map(d => Math.max(d.value, d.prev_value || 0)), 1);
+  const colors = { p1: "#9ca3af", p5: "#60a5fa", p10: "#34d399", p20: "#10b981" };
+
+  // too many bars? show only some of the labels so they don't overlap
+  const step       = Math.ceil(data.length / 16);
+  const showValues = data.length <= 8;
+
   return (
-    <div className="bar-chart">
+    <div className="pchart">
       {data.map((d, i) => (
-        <div key={i} className="bar-col">
-          <span className="bar-value-label">{d.value > 0 ? `₱${d.value}` : ""}</span>
-          <div className="bar-fill" style={{ height: `${Math.max((d.value / max) * 65, 4)}px` }} />
-          <span className="bar-day-label">{d.label}</span>
+        <div
+          key={i}
+          className="pchart-col"
+          title={`${d.label}: ₱${d.value}${d.prev_value != null ? ` (previous: ₱${d.prev_value})` : ""}`}
+        >
+          <span className="pchart-value">{showValues && d.value > 0 ? `₱${d.value}` : ""}</span>
+
+          <div className="pchart-plot">
+            {/* gray line = what the previous period earned at this position */}
+            {d.prev_value > 0 && (
+              <div className="pchart-ghost" style={{ bottom: `${(d.prev_value / max) * 100}%` }} />
+            )}
+
+            <div
+              className="pchart-stack"
+              style={{ height: `${(d.value / max) * 100}%`, minHeight: d.value > 0 ? 3 : 0 }}
+            >
+              {["p1", "p5", "p10", "p20"].map(key => {
+                const v = d.breakdown?.[key] || 0;
+                if (v <= 0) return null;
+                return (
+                  <div
+                    key={key}
+                    style={{ height: `${(v / d.value) * 100}%`, background: colors[key] }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          <span className="pchart-label">{i % step === 0 ? d.label : ""}</span>
         </div>
       ))}
     </div>
   );
 }
 
+// -- Comparison card: current value vs the previous period --
+function CompareCard({ label, value, prev, fmt }) {
+  const diff  = value - prev;
+  const pct   = prev > 0 ? (diff / prev) * 100 : null;
+  const cls   = diff > 0 ? "up" : diff < 0 ? "down" : "same";
+  const arrow = diff > 0 ? "↑" : diff < 0 ? "↓" : "–";
+
+  return (
+    <div className="compare-card">
+      <div className="compare-label">{label}</div>
+      <div className="compare-value">{fmt(value)}</div>
+      <div className={`compare-delta ${cls}`}>
+        {arrow} {fmt(Math.abs(diff))}
+        {pct !== null
+          ? ` (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%)`
+          : diff > 0 ? " (new)" : ""}
+      </div>
+      <div className="compare-prev">before: {fmt(prev)}</div>
+    </div>
+  );
+}
+
+// -- One row with a label, numbers and a small progress bar --
+function BarRow({ left, middle, right, pct, color = "#10b981" }) {
+  return (
+    <div className="bar-row">
+      <div className="bar-row-top">
+        <span className="bar-row-left">{left}</span>
+        <span className="bar-row-middle">{middle}</span>
+        <span className="bar-row-right">{right}</span>
+      </div>
+      <div className="bar-row-track">
+        <div className="bar-row-fill" style={{ width: `${pct}%`, background: color }} />
+      </div>
+    </div>
+  );
+}
+
+// -- Status badge for the machine utilization table --
+function UsageBadge({ status }) {
+  const labels = { busy: "Busy", normal: "Normal", low: "Low usage", none: "No sessions" };
+  return <span className={`util-badge ${status}`}>{labels[status] ?? status}</span>;
+}
+
+// -- Arrow that shows more / fewer sessions than the previous period --
+function UsageDelta({ cur, prev }) {
+  const diff = cur - prev;
+  if (diff === 0) return <span className="util-delta same">–</span>;
+  return (
+    <span className={`util-delta ${diff > 0 ? "up" : "down"}`}>
+      {diff > 0 ? "↑" : "↓"} {Math.abs(diff)}
+    </span>
+  );
+}
+
 // -- Alert row --
-function AlertRow({ alert, onResolve }) {
-  const icons    = { offline: "⚫", cpu: "🔴", ram: "🟠", idle: "🟡" };
+function AlertRow({ alert, onResolve, onIdleShutdown }) {
+  const icons     = { offline: "⚫", cpu: "🔴", ram: "🟠", idle: "🟡", idle_user: "💤", auto_shutdown: "⏻" };
   const timeLabel = useRelativeTime(alert.created_at);
   return (
     <div className="alert-row">
@@ -313,7 +441,68 @@ function AlertRow({ alert, onResolve }) {
         <div className="alert-message">{alert.message}</div>
         <div className="alert-time">{timeLabel}</div>
       </div>
-      <button className="resolve-btn" onClick={() => onResolve(alert.id)}>Resolve</button>
+
+      {/* Only the 5-minute idle alert asks the admin what to do */}
+      {alert.type === "idle_user" && (
+        <button
+          className="resolve-btn"
+          style={{ color: "#ef4444", borderColor: "#fecaca", marginRight: 6 }}
+          onClick={() => onIdleShutdown(alert)}
+        >
+          Shutdown &amp; Stop Timer
+        </button>
+      )}
+
+      <button className="resolve-btn" onClick={() => onResolve(alert.id)}>
+        {alert.type === "idle_user" ? "Keep Running" : "Resolve"}
+      </button>
+    </div>
+  );
+}
+
+// Which alert types show a popup
+const POPUP_TYPES = ["idle_user", "auto_shutdown", "offline"];
+
+// -- Alert popup (top right corner) --
+function AlertPopup({ alert, onClose, onIdleShutdown, onKeep }) {
+  const icons  = { offline: "⚫", idle_user: "💤", auto_shutdown: "⏻" };
+  const titles = {
+    offline:       "Machine Offline",
+    idle_user:     "No Activity Detected",
+    auto_shutdown: "Auto Shutdown",
+  };
+  const isIdle = alert.type === "idle_user";
+
+  // Info popups close by themselves after 8 seconds.
+  // The idle popup stays until the admin picks a button.
+  useEffect(() => {
+    if (isIdle) return;
+    const timer = setTimeout(onClose, 8000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alert.id, isIdle]);
+
+  return (
+    <div className={`alert-popup ${alert.type}`}>
+      <div className="alert-popup-top">
+        <span className="alert-popup-icon">{icons[alert.type] ?? "⚪"}</span>
+        <div className="alert-popup-body">
+          <div className="alert-popup-title">{titles[alert.type] ?? "Alert"}</div>
+          <div className="alert-popup-message">{alert.message}</div>
+        </div>
+        <button className="alert-popup-close" onClick={onClose} title="Close">×</button>
+      </div>
+
+      {isIdle && (
+        <div className="alert-popup-actions">
+          <button className="alert-popup-btn danger" onClick={() => onIdleShutdown(alert)}>
+            Shutdown &amp; Stop Timer
+          </button>
+          <button className="alert-popup-btn" onClick={() => onKeep(alert.id)}>
+            Keep Running
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -346,12 +535,38 @@ function ActionBadge({ action }) {
   );
 }
 
+// Icons for the health recommendations (used by both table and card view)
+const HEALTH_ICONS = {
+  critical: "🔴",
+  warning:  "🟡",
+  info:     "🔵",
+  good:     "✅",
+};
+
+// Picks the color class for a number in the health table
+function statClass(value, warn, danger) {
+  if (value >= danger) return "danger";
+  if (value >= warn)   return "warn";
+  return "good";
+}
+
 // -- Main dashboard --
 export default function PisonetDashboard({ session, onLogout, onSettings }) {
   const [machines,    setMachines]    = useState([]);
   const [alerts,      setAlerts]      = useState([]);
+  // Popup alerts (only NEW alerts that arrive after the page loads)
+  const [popups, setPopups] = useState([]);
+  const seenAlertIds  = useRef(new Set()); // alert IDs we already saw
+  const firstAlertLoad = useRef(true);     // skip popups for the first load
   const [logs,        setLogs]        = useState([]);
   const [analytics,   setAnalytics]   = useState(null);
+  // Analytics period: day / week / month / custom
+  const [period, setPeriod] = useState({ mode: "day", date: todayStr(), from: "", to: "" });
+  const [customFrom, setCustomFrom] = useState(shiftDate(todayStr(), "day", -6)); // default: last 7 days
+  const [customTo,   setCustomTo]   = useState(todayStr());
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsError,   setAnalyticsError]   = useState("");
+  const analyticsReq = useRef(0); // so an old slow request can't overwrite a newer one
   const [activeTab,   setActiveTab]   = useState("machines");
   const [pollStatus,  setPollStatus]  = useState("connecting");
   const [toast,       setToast]       = useState(null);
@@ -383,6 +598,18 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   // Health state
   const [healthData,    setHealthData]    = useState([]);
   const [healthLoading, setHealthLoading] = useState(false);
+  // Health view: "table" is the default, "cards" is the other option.
+  // We save the choice in localStorage so it stays after refresh.
+  const [healthView, setHealthView] = useState(() => {
+    try { return localStorage.getItem("healthView") || "table"; }
+    catch { return "table"; }
+  });
+  const [expandedHealth, setExpandedHealth] = useState(null); // which table row is open
+
+  const changeHealthView = (view) => {
+    setHealthView(view);
+    try { localStorage.setItem("healthView", view); } catch {}
+  };
   const [syncing,       setSyncing]       = useState(false);
   const [syncResult,    setSyncResult]    = useState(null);
 
@@ -431,7 +658,27 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     const fetchAlerts = async () => {
       try {
         const res = await getAlerts();
-        if (res.data.success) setAlerts(res.data.data.alerts);
+        if (!res.data.success) return;
+        const list = res.data.data.alerts;
+        setAlerts(list);
+
+        // First load: just remember the old alerts, no popups
+        if (firstAlertLoad.current) {
+          list.forEach(a => seenAlertIds.current.add(a.id));
+          firstAlertLoad.current = false;
+          return;
+        }
+
+        // Find alerts we have not seen before
+        const fresh = list.filter(a => !seenAlertIds.current.has(a.id));
+        fresh.forEach(a => seenAlertIds.current.add(a.id));
+        const toShow = fresh.filter(a => POPUP_TYPES.includes(a.type));
+
+        // Keep popups whose alert is still unresolved, then add the new ones
+        setPopups(prev => [
+          ...prev.filter(p => list.some(a => a.id === p.id)),
+          ...toShow,
+        ]);
       } catch {}
     };
     fetchAlerts();
@@ -439,30 +686,76 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch analytics when that tab is opened
+  // Fetch analytics when that tab is opened or the period changes
   useEffect(() => {
     if (activeTab === "analytics") fetchAnalytics();
-  }, [activeTab]);
+  }, [activeTab, period]);
 
   // Fetch logs when that tab is opened
   useEffect(() => {
     if (activeTab === "logs") fetchLogs();
   }, [activeTab]);
 
-  // Fetch health when that tab is opened
-  useEffect(() => {
-    if (activeTab === "health") fetchHealth();
-  }, [activeTab]);
+  // Fetch health when the tab opens or the selected period changes
+useEffect(() => {
+  if (activeTab === "health") fetchHealth();
+}, [
+  activeTab,
+  period.mode,
+  period.date,
+  period.from,
+  period.to
+]);
 
   useEffect(() => {
   if (activeTab === "archived") fetchArchivedMachines();
 }, [activeTab]);
 
   const fetchAnalytics = async () => {
+    const reqId = ++analyticsReq.current;
+    setAnalyticsLoading(true);
     try {
-      const res = await getAnalytics();
-      if (res.data.success) setAnalytics(res.data.data);
-    } catch {}
+      const params = { mode: period.mode };
+      if (period.mode === "custom") {
+        params.from = period.from;
+        params.to   = period.to;
+      } else {
+        params.date = period.date;
+      }
+
+      const res = await getAnalyticsPeriod(params);
+      if (reqId !== analyticsReq.current) return; // a newer request already started
+
+      if (res.data.success) {
+        setAnalytics(res.data.data);
+        setAnalyticsError("");
+      } else {
+        setAnalyticsError(res.data.message);
+      }
+    } catch {
+      if (reqId === analyticsReq.current) setAnalyticsError("Cannot load analytics");
+    } finally {
+      if (reqId === analyticsReq.current) setAnalyticsLoading(false);
+    }
+  };
+
+  // Period selector handlers
+  const changeMode = (mode) => {
+    if (mode === "custom") {
+      setPeriod({ mode, date: todayStr(), from: customFrom, to: customTo });
+    } else {
+      setPeriod({ mode, date: todayStr(), from: "", to: "" });
+    }
+  };
+
+  const movePeriod = (dir) => {
+    setPeriod(p => ({ ...p, date: shiftDate(p.date, p.mode, dir) }));
+  };
+
+  const applyCustomRange = () => {
+    if (!customFrom || !customTo) { showToast("✗ Pick both dates"); return; }
+    if (customTo < customFrom)    { showToast("✗ End date is before start date"); return; }
+    setPeriod({ mode: "custom", date: todayStr(), from: customFrom, to: customTo });
   };
 
   const fetchLogs = async (actor = logFilter, limit = logLimit) => {
@@ -500,9 +793,36 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
       const res = await resolveAlert(id);
       if (res.data.success) {
         setAlerts(prev => prev.filter(a => a.id !== id));
+        setPopups(prev => prev.filter(p => p.id !== id));
         showToast("✓ Alert resolved");
       }
     } catch {}
+  };
+
+    // Admin said yes: stop the timer first, then shutdown the PC
+    const handleIdleShutdown = async (alert) => {
+    const result = await confirmDanger({
+      title: `Shut down ${alert.machine_name}?`,
+      text: "This will stop the timer and shut down the PC. The customer's remaining time will not be refunded.",
+      confirmText: 'Yes, shut it down',
+    });
+    if (!result.isConfirmed) return;
+
+    try {
+      await sendCommand(alert.machine_name, "stop_timer");
+      await sendCommand(alert.machine_name, "shutdown");
+      await resolveAlert(alert.id);
+      setAlerts(prev => prev.filter(a => a.id !== alert.id));
+      setPopups(prev => prev.filter(p => p.id !== alert.id));
+      showToast(`✓ ${alert.machine_name} is shutting down`);
+    } catch {
+      showToast("✗ Failed to send commands");
+    }
+  };
+
+  // Close a popup only (does NOT resolve the alert, it stays in the Alerts tab)
+  const closePopup = (id) => {
+    setPopups(prev => prev.filter(p => p.id !== id));
   };
 
   const handleRestore = async (machineName) => {
@@ -561,14 +881,29 @@ export default function PisonetDashboard({ session, onLogout, onSettings }) {
   };
 
   const fetchHealth = async () => {
-    setHealthLoading(true);
-    try {
-      const res = await getHealth();
-      if (res.data.success) setHealthData(res.data.data.health);
-    } catch { console.error("Failed to fetch health data"); }
-    finally { setHealthLoading(false); }
-  };
+  setHealthLoading(true);
 
+  try {
+    const params = { mode: period.mode };
+
+    if (period.mode === "custom") {
+      params.from = period.from;
+      params.to = period.to;
+    } else {
+      params.date = period.date;
+    }
+
+    const res = await getHealth(params);
+
+    if (res.data.success) {
+      setHealthData(res.data.data.health);
+    }
+  } catch (error) {
+    console.error("Failed to fetch health data", error);
+  } finally {
+    setHealthLoading(false);
+  }
+};
   const handleSync = async () => {
     setSyncing(true);
     setSyncResult(null);
@@ -828,7 +1163,7 @@ const handleRestartApp = async (proc) => {
         {/* Machines tab */}
         {activeTab === "machines" && (
           <>
-          <button
+          {/*<button
   className="troubleshoot-action-btn"
   onClick={async () => {
     const offlineMachines = machines.filter(m => m.status === 'offline').map(m => m.name);
@@ -842,7 +1177,7 @@ const handleRestartApp = async (proc) => {
   style={{ marginBottom: 16 }}
 >
   ⚡ Wake All Offline PCs
-</button>
+</button>*/}
             {machines.length === 0 && !error && (
               <div className="empty-state">
                 {pollStatus === "connecting" ? "Connecting to server…" : "No machines registered yet. Run client.exe on each PC."}
@@ -856,124 +1191,336 @@ const handleRestartApp = async (proc) => {
       onCommand={handleCommand}
       sending={sendingCmd}
       onShowDetails={() => setDetailsMachine(m)}
+      onToast={showToast}
     />
   ))}
 </div>
           </>
         )}
 
-        {/* Analytics tab */}
-        {activeTab === "analytics" && (
-          <div className="analytics-section">
-            {/* PDF Report Generator */}
-            <ReportGenerator />
+{/* Analytics tab */}
+{activeTab === "analytics" && (
+  <div className="analytics-section">
 
-            {!analytics ? (
-              <div className="empty-state">Loading analytics…</div>
+
+    {/* Period selector */}
+    <div className="period-bar">
+      <div className="view-toggle">
+        {[["day", "Day"], ["week", "Week"], ["month", "Month"], ["custom", "Custom"]].map(([m, label]) => (
+          <button
+            key={m}
+            className={`view-toggle-btn ${period.mode === m ? "active" : ""}`}
+            onClick={() => changeMode(m)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {period.mode !== "custom" ? (
+        <div className="period-nav">
+          <button className="period-arrow" onClick={() => movePeriod(-1)} title="Previous">◀</button>
+          <div className="period-label">{analytics?.period?.label ?? "…"}</div>
+          <button
+            className="period-arrow"
+            onClick={() => movePeriod(1)}
+            disabled={!!analytics?.period?.in_progress}
+            title="Next"
+          >
+            ▶
+          </button>
+          <button
+            className="troubleshoot-action-btn"
+            onClick={() => changeMode(period.mode)}
+            disabled={!!analytics?.period?.in_progress}
+          >
+            Current
+          </button>
+        </div>
+      ) : (
+        <div className="period-custom">
+          <input
+            type="date"
+            className="period-date-input"
+            value={customFrom}
+            max={todayStr()}
+            onChange={e => setCustomFrom(e.target.value)}
+          />
+          <span className="period-to">to</span>
+          <input
+            type="date"
+            className="period-date-input"
+            value={customTo}
+            max={todayStr()}
+            onChange={e => setCustomTo(e.target.value)}
+          />
+          <button className="troubleshoot-action-btn" onClick={applyCustomRange}>Apply</button>
+        </div>
+      )}
+
+      <button
+        className="troubleshoot-action-btn"
+        onClick={fetchAnalytics}
+        disabled={analyticsLoading}
+      >
+        {analyticsLoading ? "Loading…" : "↺ Refresh"}
+      </button>
+    </div>
+
+    {analyticsError && <div className="error-banner">⚠ {analyticsError}</div>}
+        {/* PDF report (uses the period selected above) */}
+    <ReportGenerator analytics={analytics} loading={analyticsLoading} />
+
+    {!analytics ? (
+      <div className="empty-state">{analyticsLoading ? "Loading analytics…" : "No data"}</div>
+    ) : (
+      <div className="analytics-body" style={{ opacity: analyticsLoading ? 0.6 : 1 }}>
+
+        {/* What are we comparing with? */}
+        <div className="compare-note">
+          {analytics.period.in_progress ? (
+            <>
+              Comparing with <strong>{analytics.period.prev_label}</strong> up to the same
+              point in time ({analytics.period.compared_until}). Whole previous period:{" "}
+              <strong>{fmtPeso(analytics.previous_full.total)}</strong>.
+            </>
+          ) : (
+            <>Comparing with <strong>{analytics.period.prev_label}</strong>.</>
+          )}
+        </div>
+
+        {/* Comparison cards */}
+        <div className="compare-row">
+          <CompareCard
+            label="Income"
+            value={analytics.current.total}
+            prev={analytics.previous.total}
+            fmt={fmtPeso}
+          />
+          <CompareCard
+            label="Coins inserted"
+            value={analytics.current.coins}
+            prev={analytics.previous.coins}
+            fmt={n => Number(n).toLocaleString()}
+          />
+          <CompareCard
+            label="Sessions"
+            value={analytics.current.sessions}
+            prev={analytics.previous.sessions}
+            fmt={n => Number(n).toLocaleString()}
+          />
+          <CompareCard
+            label="Avg session length"
+            value={analytics.current.avg_duration}
+            prev={analytics.previous.avg_duration}
+            fmt={n => `${Number(n).toFixed(1)} min`}
+          />
+        </div>
+
+        {/* Chart */}
+        <div className="chart-card">
+          <div className="chart-title">
+            Income — {analytics.period.label}
+            <span className="chart-sub">
+              {period.mode === "day" ? "per hour" : "per day"}
+            </span>
+          </div>
+
+          <BarChart data={analytics.chart} />
+
+          <div className="chart-legend">
+            {[
+              { label: "₱1",  color: "#9ca3af" },
+              { label: "₱5",  color: "#60a5fa" },
+              { label: "₱10", color: "#34d399" },
+              { label: "₱20", color: "#10b981" },
+            ].map(l => (
+              <div key={l.label} className="chart-legend-item">
+                <span className="chart-legend-box" style={{ background: l.color }} />
+                {l.label}
+              </div>
+            ))}
+            <div className="chart-legend-item">
+              <span className="chart-legend-line" />
+              Previous period
+            </div>
+          </div>
+        </div>
+
+        {/* Details + top machines */}
+        <div className="stats-grid">
+          <div className="stats-card">
+            <div className="stats-title">Details</div>
+            {[
+              { label: "Avg coins per session", value: `${analytics.current.avg_coins_per_session}×` },
+              { label: "Avg coin value",        value: fmtPeso(analytics.current.avg_coin_value) },
+              { label: "Online now",            value: `${counts.online} PC${counts.online !== 1 ? "s" : ""}` },
+              { label: "Currently occupied",    value: counts.total > 0 ? `${Math.round((counts.online / counts.total) * 100)}%` : "—" },
+            ].map(s => (
+              <div key={s.label} className="stats-row">
+                <span className="stats-row-label">{s.label}</span>
+                <span className="stats-row-value">{s.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="stats-card">
+            <div className="stats-title">Top Machines</div>
+            {analytics.top_machines.length === 0 ? (
+              <div className="no-data-small">No sessions in this period</div>
             ) : (
-              <>
-                <div className="income-row">
-                  {[
-                    { label: "Today",      data: analytics.income.today  },
-                    { label: "This Week",  data: analytics.income.week   },
-                    { label: "This Month", data: analytics.income.month  },
-                  ].map(({ label, data }) => (
-                    <div key={label} className="income-card">
-                      <div className="income-label">{label}</div>
-                      <div className="income-amount">₱{data.total.toLocaleString()}</div>
-                      <div className="income-sessions">{data.count} session{data.count !== 1 ? "s" : ""}</div>
-                    </div>
-                  ))}
+              analytics.top_machines.map((m, i) => (
+                <div key={m.machine_name} className="top-machine-row">
+                  <span className="top-machine-rank">#{i + 1}</span>
+                  <span className="top-machine-name">{m.machine_name}</span>
+                  <span className="top-machine-sessions">{m.sessions} sessions</span>
+                  <span className="top-machine-income">₱{(+m.income).toLocaleString()}</span>
                 </div>
-
-                <div className="chart-card">
-                  <div className="chart-title">Income Last 7 Days (₱)</div>
-                  <BarChart data={analytics.chart} />
-                </div>
-
-                <div className="stats-grid">
-                  <div className="stats-card">
-                    <div className="stats-title">Session Stats</div>
-                    {[
-                      { label: "Online now",         value: `${counts.online} PC${counts.online !== 1 ? "s" : ""}` },
-                      { label: "Avg session length", value: `${analytics.stats.avg_duration} min` },
-                      { label: "Avg income/session", value: `₱${analytics.stats.avg_income}` },
-                      { label: "Sessions today",     value: analytics.income.today.count },
-                      { label: "Utilization",        value: counts.total > 0 ? `${Math.round((counts.online / counts.total) * 100)}%` : "—" },
-                    ].map(s => (
-                      <div key={s.label} className="stats-row">
-                        <span className="stats-row-label">{s.label}</span>
-                        <span className="stats-row-value">{s.value}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="stats-card">
-                    <div className="stats-title">Top Machines Today</div>
-                    {analytics.top_machines.length === 0 ? (
-                      <div className="no-data-small">No sessions recorded today</div>
-                    ) : (
-                      analytics.top_machines.map((m, i) => (
-                        <div key={m.machine_name} className="top-machine-row">
-                          <span className="top-machine-rank">#{i + 1}</span>
-                          <span className="top-machine-name">{m.machine_name}</span>
-                          <span className="top-machine-sessions">{m.sessions} sessions</span>
-                          <span className="top-machine-income">₱{(+m.income).toLocaleString()}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-                {/* Peak Hours */}
-                {analytics.peak_hours && analytics.peak_hours.length > 0 && (
-                  <div className="stats-card" style={{ gridColumn: "1 / -1" }}>
-                    <div className="stats-title">Peak Hours Today</div>
-                    {analytics.peak_hours.map((row, i) => {
-                      const max = analytics.peak_hours[0].sessions;
-                      const pct = max > 0 ? (row.sessions / max) * 100 : 0;
-                      return (
-                        <div key={row.hour} style={{ padding: "8px 0", borderBottom: "1px solid #f3f4f6" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 13 }}>
-                            <span style={{ fontWeight: 600, color: "#111827", width: 60 }}>{row.hour_label}</span>
-                            <span style={{ color: "#6b7280" }}>{row.sessions} session{row.sessions !== 1 ? "s" : ""}</span>
-                            <span style={{ fontWeight: 700, color: "#10b981" }}>₱{(+row.income).toLocaleString()}</span>
-                          </div>
-                          {/* activity bar */}
-                          <div style={{ background: "#e5e7eb", borderRadius: 3, height: 6 }}>
-                            <div style={{
-                              width: `${pct}%`,
-                              height: "100%",
-                              background: i === 0 ? "#10b981" : "#6ee7b7",
-                              borderRadius: 3,
-                              transition: "width 0.6s ease",
-                            }} />
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {analytics.peak_hours.length === 0 && (
-                      <div className="no-data-small">No sessions recorded today</div>
-                    )}
-                  </div>
-                )}
-              </>
+              ))
             )}
           </div>
-        )}
+        </div>
 
-        {/* Alerts tab */}
-        {activeTab === "alerts" && (
-          <div className="alerts-card">
-            <div className="alerts-title">
-              Active Alerts
-              {alerts.length > 0 && <span className="alerts-count">{alerts.length} unresolved</span>}
+        {/* Coin breakdown + peak hours */}
+        <div className="stats-grid">
+          <div className="stats-card">
+            <div className="stats-title">
+              Coin Breakdown
+              <span className="chart-sub">
+                {analytics.current.coins} coins · {fmtPeso(analytics.current.total)}
+              </span>
             </div>
-            {alerts.length === 0
-              ? <div className="no-alerts">🎉 No active alerts</div>
-              : alerts.map(a => <AlertRow key={a.id} alert={a} onResolve={handleResolveAlert} />)
-            }
+            {analytics.coin_breakdown.map(c => (
+              <BarRow
+                key={c.denomination}
+                left={`₱${c.denomination}`}
+                middle={`${c.count}×`}
+                right={fmtPeso(c.total)}
+                pct={(c.count / Math.max(...analytics.coin_breakdown.map(x => x.count), 1)) * 100}
+              />
+            ))}
+          </div>
+
+          <div className="stats-card">
+            <div className="stats-title">Peak Hours</div>
+            {analytics.peak_hours.length === 0 ? (
+              <div className="no-data-small">No coins in this period</div>
+            ) : (
+              analytics.peak_hours.map((row, i) => (
+                <BarRow
+                  key={row.hour}
+                  left={row.hour_label}
+                  middle={`${row.transactions} coin${row.transactions !== 1 ? "s" : ""}`}
+                  right={fmtPeso(row.income)}
+                  pct={(row.transactions / analytics.peak_hours[0].transactions) * 100}
+                  color={i === 0 ? "#10b981" : "#6ee7b7"}
+                />
+              ))
+            )}
+          </div>
+        </div>
+                    {/* Machine utilization */}
+        {analytics.machine_usage && (
+          <div className="stats-card">
+            <div className="stats-title">
+              Machine Utilization
+              <span className="chart-sub">
+                {analytics.period.label} · {analytics.machine_usage.total_sessions} sessions ·
+                avg {analytics.machine_usage.avg_sessions} per PC
+              </span>
+            </div>
+
+            {/* Insights */}
+            <div className="util-insights">
+              {analytics.machine_usage.insights.map((ins, i) => (
+                <div key={i} className={`util-insight ${ins.level}`}>
+                  <span>{ins.level === "warning" ? "⚠" : ins.level === "good" ? "✅" : "ℹ"}</span>
+                  <span>{ins.message}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Table */}
+            {analytics.machine_usage.machines.length === 0 ? (
+              <div className="no-data-small">No machines registered</div>
+            ) : (
+              <div className="util-table-wrap">
+                <table className="util-table">
+                  <thead>
+                    <tr>
+                      <th>Machine</th>
+                      <th>Sessions</th>
+                      <th>Share</th>
+                      <th>Earnings</th>
+                      <th>Coins</th>
+                      <th>Avg session</th>
+                      <th>vs previous</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(() => {
+                      const list    = analytics.machine_usage.machines;
+                      const maxSess = Math.max(...list.map(m => m.sessions), 1);
+                      const maxInc  = Math.max(...list.map(m => m.income), 1);
+
+                      return list.map(m => (
+                        <tr key={m.name}>
+                          <td className="util-name">🖥 {m.name}</td>
+                          <td>
+                            <div className="util-cell-bar">
+                              <span className="util-num">{m.sessions}</span>
+                              <div className="util-bar-track">
+                                <div className="util-bar-fill" style={{ width: `${(m.sessions / maxSess) * 100}%` }} />
+                              </div>
+                            </div>
+                          </td>
+                          <td>{m.share_pct}%</td>
+                          <td>
+                            <div className="util-cell-bar">
+                              <span className="util-num">{fmtPeso(m.income)}</span>
+                              <div className="util-bar-track">
+                                <div className="util-bar-fill money" style={{ width: `${(m.income / maxInc) * 100}%` }} />
+                              </div>
+                            </div>
+                          </td>
+                          <td>{m.coins}</td>
+                          <td>{m.avg_duration ? `${m.avg_duration} min` : "—"}</td>
+                          <td><UsageDelta cur={m.sessions} prev={m.prev_sessions} /></td>
+                          <td><UsageBadge status={m.status} /></td>
+                        </tr>
+                      ));
+                    })()}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div className="util-note">
+              "Low usage" means fewer than half the sessions of the other machines' average.
+              "vs previous" compares sessions with the previous period (up to the same point in time if the period is not finished).
+            </div>
           </div>
         )}
+      </div>
+    )}
+  </div>
+)}
+
+{/* Alerts tab */}
+{activeTab === "alerts" && (
+  <div className="alerts-card">
+    <div className="alerts-title">
+      Active Alerts
+      {alerts.length > 0 && <span className="alerts-count">{alerts.length} unresolved</span>}
+    </div>
+    {alerts.length === 0
+      ? <div className="no-alerts">🎉 No active alerts</div>
+      : alerts.map(a => <AlertRow key={a.id} alert={a} onResolve={handleResolveAlert} onIdleShutdown={handleIdleShutdown} />)
+    }
+  </div>
+)}
+
 
         {/* Logs tab */}
         {activeTab === "logs" && (
@@ -1058,7 +1605,7 @@ const handleRestartApp = async (proc) => {
               >
                 <option value="">— Select a machine —</option>
                 {machines
-                  .filter(m => m.status === "online")
+                  .filter(m => m.status === "online" || m.status === "idle")
                   .map(m => (
                     <option key={m.name} value={m.name}>{m.name}</option>
                   ))}
@@ -1081,109 +1628,265 @@ const handleRestartApp = async (proc) => {
             ) : (
               <>
                 {/* Process List */}
-                <div className="troubleshoot-card">
-                  <div className="troubleshoot-card-header">
-                    <span className="troubleshoot-card-title">
-                      🔧 Running Processes — {selectedMachine}
-                    </span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      {processTime && (
-                        <span className="troubleshoot-card-meta">
-                          Updated {fmtRelative(processTime)}
-                        </span>
-                      )}
-                      <button
-                        className="troubleshoot-action-btn"
-                        onClick={() => fetchProcesses(selectedMachine)}
-                        disabled={processLoading}
-                        style={{ padding: "4px 10px", fontSize: 11 }}
-                      >
-                        {processLoading ? "Loading…" : "↺ Refresh"}
-                      </button>
-                    </div>
-                  </div>
+<div className="troubleshoot-card">
+  <div className="troubleshoot-card-header">
+    <span className="troubleshoot-card-title">
+      🔧 Running Processes — {selectedMachine}
+    </span>
 
-                  {processLoading ? (
-                    <div className="troubleshoot-loading">Loading processes…</div>
-                  ) : processes.length === 0 ? (
-                    <div className="troubleshoot-empty">No process data yet — wait a few seconds</div>
-                  ) : (
-                    <div style={{ maxHeight: 400, overflowY: "auto" }}>
-                      <table className="process-table">
-                        <thead>
-                          <tr>
-                            <th>Process Name</th>
-                            <th>PID</th>
-                            <th>CPU %</th>
-                            <th>RAM %</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {processes.map(proc => (
-                            <tr key={proc.pid}>
-                              <td className="process-name" title={proc.name}>{proc.name}</td>
-                              <td className="process-pid">{proc.pid}</td>
-                              <td className={
-                                proc.cpu >= 50 ? "process-cpu-high" :
-                                proc.cpu >= 20 ? "process-cpu-med"  : "process-cpu-low"
-                              }>
-                                {proc.cpu.toFixed(1)}%
-                              </td>
-                              <td className="process-cpu-low">{proc.ram.toFixed(1)}%</td>
-                              <td>
-  <div style={{ display: "flex", gap: 4 }}>
-    <button
-      className="troubleshoot-action-btn danger"
-      style={{ padding: "3px 10px", fontSize: 11 }}
-      onClick={() => handleKillProcess(proc)}
-    >
-      Kill
-    </button>
-    {proc.exe && (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      {processTime && (
+        <span className="troubleshoot-card-meta">
+          Updated {fmtRelative(processTime)}
+        </span>
+      )}
+
       <button
         className="troubleshoot-action-btn"
-        style={{ padding: "3px 10px", fontSize: 11 }}
-        onClick={() => handleRestartApp(proc)}
+        onClick={() => fetchProcesses(selectedMachine)}
+        disabled={processLoading}
+        style={{ padding: "4px 10px", fontSize: 11 }}
       >
-        ↺ Restart
+        {processLoading ? "Loading…" : "↺ Refresh"}
       </button>
-    )}
-  </div>
-</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-
-                {processes.length > 0 && (() => {
-  const topProcess = processes[0]; // already sorted by CPU descending
-  const machine = machines.find(m => m.name === selectedMachine);
-  
-  if (!machine || (machine.cpu < 70 && machine.ram < 75)) return null;
-
-  return (
-    <div style={{
-      background: "#fffbeb", border: "1px solid #fcd34d", borderRadius: 10,
-      padding: "12px 16px", marginBottom: 12, fontSize: 13,
-    }}>
-      <div style={{ fontWeight: 700, color: "#92400e", marginBottom: 4 }}>
-        💡 Suggested Diagnosis
-      </div>
-      <div style={{ color: "#78350f" }}>
-        {machine.cpu >= 70 && (
-          <div>
-            High CPU ({machine.cpu.toFixed(0)}%) is likely caused by <strong>{topProcess.name}</strong> (using {topProcess.cpu.toFixed(1)}% CPU).
-            {' '}Consider restarting this application or closing it if unresponsive.
-          </div>
-        )}
-      </div>
     </div>
-  );
-})()}
+  </div>
+
+  {processLoading ? (
+    <div className="troubleshoot-loading">
+      Loading processes…
+    </div>
+  ) : processes.length === 0 ? (
+    <div className="troubleshoot-empty">
+      No process data yet — wait a few seconds
+    </div>
+  ) : (
+    (() => {
+      // Classify each process as "App" or "Background"
+      // based on its executable path.
+      const isSystemProcess = (exe) => {
+        if (!exe) return true;
+
+        const lower = exe.toLowerCase();
+
+        return (
+          lower.includes("\\windows\\system32\\") ||
+          lower.includes("\\windows\\syswow64\\") ||
+          (lower.includes("\\windows\\") &&
+            !lower.includes("\\appdata\\"))
+        );
+      };
+
+      const apps = processes.filter(
+        (p) => !isSystemProcess(p.exe)
+      );
+
+      const background = processes.filter(
+        (p) => isSystemProcess(p.exe)
+      );
+
+      // Reusable process row
+      const renderRow = (proc) => (
+        <tr key={proc.pid}>
+          <td
+            className="process-name"
+            title={proc.name}
+          >
+            {proc.name}
+          </td>
+
+          <td className="process-pid">
+            {proc.pid}
+          </td>
+
+          <td
+            className={
+              proc.cpu >= 50
+                ? "process-cpu-high"
+                : proc.cpu >= 20
+                ? "process-cpu-med"
+                : "process-cpu-low"
+            }
+          >
+            {proc.cpu.toFixed(1)}%
+          </td>
+
+          <td className="process-cpu-low">
+            {proc.ram.toFixed(1)}%
+          </td>
+
+          <td>
+            <div
+              style={{
+                display: "flex",
+                gap: 4,
+              }}
+            >
+              <button
+                className="troubleshoot-action-btn danger"
+                style={{
+                  padding: "3px 10px",
+                  fontSize: 11,
+                }}
+                onClick={() =>
+                  handleKillProcess(proc)
+                }
+              >
+                Kill
+              </button>
+
+              {proc.exe && (
+                <button
+                  className="troubleshoot-action-btn"
+                  style={{
+                    padding: "3px 10px",
+                    fontSize: 11,
+                  }}
+                  onClick={() =>
+                    handleRestartApp(proc)
+                  }
+                >
+                  ↺ Restart
+                </button>
+              )}
+            </div>
+          </td>
+        </tr>
+      );
+
+      return (
+        <div
+          style={{
+            maxHeight: 400,
+            overflowY: "auto",
+          }}
+        >
+          {/* APPS */}
+          {apps.length > 0 && (
+            <>
+              <div
+                style={{
+                  padding: "8px 16px",
+                  background: "#f0fdf4",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: "#166534",
+                  letterSpacing: 0.5,
+                }}
+              >
+                APPS ({apps.length})
+              </div>
+
+              <table className="process-table">
+                <thead>
+                  <tr>
+                    <th>Process Name</th>
+                    <th>PID</th>
+                    <th>CPU %</th>
+                    <th>RAM %</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {apps.map(renderRow)}
+                </tbody>
+              </table>
+            </>
+          )}
+
+          {/* BACKGROUND PROCESSES */}
+          {background.length > 0 && (
+            <details style={{ marginTop: 8 }}>
+              <summary
+                style={{
+                  padding: "8px 16px",
+                  background: "#f9fafb",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: "#6b7280",
+                  letterSpacing: 0.5,
+                  cursor: "pointer",
+                }}
+              >
+                BACKGROUND PROCESSES ({background.length}) —
+                click to expand
+              </summary>
+
+              <table className="process-table">
+                <thead>
+                  <tr>
+                    <th>Process Name</th>
+                    <th>PID</th>
+                    <th>CPU %</th>
+                    <th>RAM %</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {background.map(renderRow)}
+                </tbody>
+              </table>
+            </details>
+          )}
+        </div>
+      );
+    })()
+  )}
+</div>
+
+{processes.length > 0 &&
+  (() => {
+    const topProcess = processes[0];
+    const machine = machines.find(
+      (m) => m.name === selectedMachine
+    );
+
+    if (
+      !machine ||
+      (machine.cpu < 70 && machine.ram < 75)
+    ) {
+      return null;
+    }
+
+    return (
+      <div
+        style={{
+          background: "#fffbeb",
+          border: "1px solid #fcd34d",
+          borderRadius: 10,
+          padding: "12px 16px",
+          marginBottom: 12,
+          fontSize: 13,
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 700,
+            color: "#92400e",
+            marginBottom: 4,
+          }}
+        >
+          💡 Suggested Diagnosis
+        </div>
+
+        <div style={{ color: "#78350f" }}>
+          {machine.cpu >= 70 && (
+            <div>
+              High CPU (
+              {machine.cpu.toFixed(0)}%) is likely caused by{" "}
+              <strong>{topProcess.name}</strong> (using{" "}
+              {topProcess.cpu.toFixed(1)}% CPU).
+              {" "}
+              Consider restarting this application or
+              closing it if unresponsive.
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  })()}
 
                 {/* Screenshot */}
                 <div className="troubleshoot-card">
@@ -1293,7 +1996,7 @@ const handleRestartApp = async (proc) => {
         {activeTab === "health" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
 
-            {/* Header */}
+            {/* Header + view toggle */}
             <div className="health-header-row">
               <div>
                 <div className="health-header-title">Hardware Health Monitor</div>
@@ -1301,20 +2004,55 @@ const handleRestartApp = async (proc) => {
                   Based on 7-day average metrics — helps identify PCs that need maintenance or hardware upgrades
                 </div>
               </div>
-              <button
-                className="troubleshoot-action-btn"
-                onClick={fetchHealth}
-                disabled={healthLoading}
-              >
-                {healthLoading ? "Analyzing…" : "↺ Refresh"}
-              </button>
+
+              <div className="health-header-actions">
+                <div className="view-toggle">
+                  <button
+                    className={`view-toggle-btn ${healthView === "table" ? "active" : ""}`}
+                    onClick={() => changeHealthView("table")}
+                  >
+                    ☰ Table
+                  </button>
+                  <button
+                    className={`view-toggle-btn ${healthView === "cards" ? "active" : ""}`}
+                    onClick={() => changeHealthView("cards")}
+                  >
+                    ▦ Cards
+                  </button>
+                </div>
+
+                <button
+                  className="troubleshoot-action-btn"
+                  onClick={fetchHealth}
+                  disabled={healthLoading}
+                >
+                  {healthLoading ? "Analyzing…" : "↺ Refresh"}
+                </button>
+              </div>
+            </div>
+
+            {/* Legend: explains what the score and colors mean */}
+            <div className="health-legend">
+              <span className="health-legend-item">
+                <i className="health-legend-dot healthy" /> 80–100 Healthy
+              </span>
+              <span className="health-legend-item">
+                <i className="health-legend-dot attention" /> 50–79 Needs Attention
+              </span>
+              <span className="health-legend-item">
+                <i className="health-legend-dot critical" /> Below 50 Critical
+              </span>
+              <span className="health-legend-note">
+                Every PC starts at 100. Points are deducted for high CPU, RAM or disk usage,
+                long uptime, and frequent downtime.
+              </span>
             </div>
 
             {/* Summary */}
             {healthData.length > 0 && (
               <div className="health-summary-row">
                 {[
-                  { label: "Healthy",        color: "#10b981", status: "healthy"   },
+                  { label: "Healthy",         color: "#10b981", status: "healthy"   },
                   { label: "Needs Attention", color: "#f59e0b", status: "attention" },
                   { label: "Critical",        color: "#ef4444", status: "critical"  },
                 ].map(s => (
@@ -1334,17 +2072,94 @@ const handleRestartApp = async (proc) => {
               <div className="troubleshoot-empty">
                 No health data yet — machines need at least a few hours of metric history
               </div>
+            ) : healthView === "table" ? (
+
+              /* ---------- TABLE VIEW ---------- */
+              <div className="health-table-wrap">
+                <table className="health-table">
+                  <thead>
+                    <tr>
+                      <th>Machine</th>
+                      <th>Score</th>
+                      <th>Status</th>
+                      <th>Avg CPU</th>
+                      <th>Avg RAM</th>
+                      <th>Avg Disk</th>
+                      <th>Uptime</th>
+                      <th>Downtime</th>
+                      <th>Issues</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* lowest score first so the PCs with problems are on top */}
+                    {[...healthData].sort((a, b) => a.score - b.score).map(h => {
+                      const isOpen = expandedHealth === h.machine_name;
+                      const issueCount = h.recommendations.filter(
+                        r => r.level === "critical" || r.level === "warning"
+                      ).length;
+
+                      return (
+                        <Fragment key={h.machine_name}>
+                          <tr
+                            className={`health-row ${isOpen ? "open" : ""}`}
+                            onClick={() => setExpandedHealth(isOpen ? null : h.machine_name)}
+                          >
+                            <td className="health-td-name">🖥 {h.machine_name}</td>
+                            <td>
+                              <span className={`health-score-pill ${h.status}`}>{h.score}</span>
+                            </td>
+                            <td>
+                              <span className={`health-status-badge ${h.status}`}>{h.status_label}</span>
+                            </td>
+                            <td className={`health-td-num ${statClass(h.avg_cpu, 60, 80)}`}>{h.avg_cpu}%</td>
+                            <td className={`health-td-num ${statClass(h.avg_ram, 70, 85)}`}>{h.avg_ram}%</td>
+                            <td className={`health-td-num ${statClass(h.avg_disk, 75, 90)}`}>{h.avg_disk}%</td>
+                            <td className={`health-td-num ${statClass(h.uptime_days, 7, 14)}`}>{h.uptime_days}d</td>
+                            <td className={`health-td-num ${statClass(h.offline_count, 2, 5)}`}>{h.offline_count}x</td>
+                            <td className="health-td-issues">
+                              {issueCount === 0
+                                ? "None"
+                                : `${issueCount} issue${issueCount !== 1 ? "s" : ""}`}
+                              <span className="health-caret">{isOpen ? "▲" : "▼"}</span>
+                            </td>
+                          </tr>
+
+                          {/* Expanded row: full recommendations */}
+                          {isOpen && (
+                            <tr className="health-detail-row">
+                              <td colSpan={9}>
+                                <div className="health-recommendations">
+                                  {h.recommendations.map((rec, i) => (
+                                    <div key={i} className="health-rec-item">
+                                      <span className="health-rec-icon">{HEALTH_ICONS[rec.level] ?? "⚪"}</span>
+                                      <div className="health-rec-content">
+                                        <div className="health-rec-component">{rec.component}</div>
+                                        <div className="health-rec-message">{rec.message}</div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <div className="health-table-hint">Click a row to see the recommendations.</div>
+              </div>
+
             ) : (
+
+              /* ---------- CARD VIEW (same as before) ---------- */
               <div className="health-grid">
                 {healthData.map(h => (
                   <div key={h.machine_name} className={`health-card ${h.status}`}>
 
-                    {/* Header */}
                     <div className="health-card-header">
                       <div>
-                        <div className="health-machine-name">
-                          🖥 {h.machine_name}
-                        </div>
+                        <div className="health-machine-name">🖥 {h.machine_name}</div>
                         <span className={`health-status-badge ${h.status}`} style={{ marginTop: 4, display: "inline-block" }}>
                           {h.status_label}
                         </span>
@@ -1355,14 +2170,13 @@ const handleRestartApp = async (proc) => {
                       </div>
                     </div>
 
-                    {/* Stats */}
                     <div className="health-stats">
                       {[
-                        { label: "Avg CPU",   value: `${h.avg_cpu}%`,      warn: h.avg_cpu >= 60,  danger: h.avg_cpu >= 80  },
-                        { label: "Avg RAM",   value: `${h.avg_ram}%`,      warn: h.avg_ram >= 70,  danger: h.avg_ram >= 85  },
-                        { label: "Avg Disk",  value: `${h.avg_disk}%`,     warn: h.avg_disk >= 75, danger: h.avg_disk >= 90 },
-                        { label: "Uptime",    value: `${h.uptime_days}d`,  warn: h.uptime_days >= 7, danger: h.uptime_days >= 14 },
-                        { label: "Downtime",  value: `${h.offline_count}x`, warn: h.offline_count >= 2, danger: h.offline_count >= 5 },
+                        { label: "Avg CPU",  value: `${h.avg_cpu}%`,       warn: h.avg_cpu >= 60,      danger: h.avg_cpu >= 80 },
+                        { label: "Avg RAM",  value: `${h.avg_ram}%`,       warn: h.avg_ram >= 70,      danger: h.avg_ram >= 85 },
+                        { label: "Avg Disk", value: `${h.avg_disk}%`,      warn: h.avg_disk >= 75,     danger: h.avg_disk >= 90 },
+                        { label: "Uptime",   value: `${h.uptime_days}d`,   warn: h.uptime_days >= 7,   danger: h.uptime_days >= 14 },
+                        { label: "Downtime", value: `${h.offline_count}x`, warn: h.offline_count >= 2, danger: h.offline_count >= 5 },
                       ].map(s => (
                         <div key={s.label} className="health-stat">
                           <div className="health-stat-label">{s.label}</div>
@@ -1373,25 +2187,16 @@ const handleRestartApp = async (proc) => {
                       ))}
                     </div>
 
-                    {/* Recommendations */}
                     <div className="health-recommendations">
-                      {h.recommendations.map((rec, i) => {
-                        const icons = {
-                          critical: "🔴",
-                          warning:  "🟡",
-                          info:     "🔵",
-                          good:     "✅",
-                        };
-                        return (
-                          <div key={i} className="health-rec-item">
-                            <span className="health-rec-icon">{icons[rec.level] ?? "⚪"}</span>
-                            <div className="health-rec-content">
-                              <div className="health-rec-component">{rec.component}</div>
-                              <div className="health-rec-message">{rec.message}</div>
-                            </div>
+                      {h.recommendations.map((rec, i) => (
+                        <div key={i} className="health-rec-item">
+                          <span className="health-rec-icon">{HEALTH_ICONS[rec.level] ?? "⚪"}</span>
+                          <div className="health-rec-content">
+                            <div className="health-rec-component">{rec.component}</div>
+                            <div className="health-rec-message">{rec.message}</div>
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </div>
 
                   </div>
@@ -1428,6 +2233,20 @@ const handleRestartApp = async (proc) => {
           onClose={() => setDetailsMachine(null)}
           onArchived={() => setDetailsMachine(null)}
         />
+      )}
+      {/* Alert popups */}
+      {popups.length > 0 && (
+        <div className="alert-popup-stack">
+          {popups.map(p => (
+            <AlertPopup
+              key={p.id}
+              alert={p}
+              onClose={() => closePopup(p.id)}
+              onIdleShutdown={handleIdleShutdown}
+              onKeep={handleResolveAlert}
+            />
+          ))}
+        </div>
       )}
 
       {toast && <div className="toast">{toast}</div>}

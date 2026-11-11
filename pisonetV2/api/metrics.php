@@ -77,45 +77,56 @@ foreach ($online_machines as $machine) {
     );
     if (!empty($active_session)) continue;
 
-    // Skip if machine has never had a session
-    $has_sessions = db_select(
-        $conn,
-        'SELECT id FROM sessions WHERE machine_name = ? LIMIT 1',
-        's',
-        [$machine['name']]
-    );
-    if (empty($has_sessions)) continue;
 
-    // Check how long ago the last session ended
-    $last_activity = db_select(
-        $conn,
-        'SELECT MAX(ended_at) AS last_active
-         FROM sessions
-         WHERE machine_name = ? AND ended_at IS NOT NULL',
-        's',
-        [$machine['name']]
-    );
+    // Check how long the machine has been without a session.
+// If it has never had a session, use its last heartbeat instead.
+$last_activity = db_select(
+    $conn,
+    'SELECT MAX(ended_at) AS last_active
+     FROM sessions
+     WHERE machine_name = ? AND ended_at IS NOT NULL',
+    's',
+    [$machine['name']]
+);
 
-    $last_active = $last_activity[0]['last_active'] ?? null;
-    if (!$last_active) continue;
+$last_active = $last_activity[0]['last_active'] ?? null;
 
+if ($last_active) {
     $idle_minutes = (int) db_select(
         $conn,
         'SELECT TIMESTAMPDIFF(MINUTE, ?, NOW()) AS mins',
         's',
         [$last_active]
     )[0]['mins'];
+} else {
+    // Never had a session: count idle time from the latest heartbeat.
+    $idle_minutes = (int) db_select(
+        $conn,
+        'SELECT TIMESTAMPDIFF(MINUTE, last_seen, NOW()) AS mins
+         FROM machines
+         WHERE name = ?',
+        's',
+        [$machine['name']]
+    )[0]['mins'];
+}
 
-    if ($idle_minutes >= 10) {
-        $existing = db_select(
-            $conn,
-            'SELECT id FROM alerts
-             WHERE machine_name = ? AND type = "idle" AND resolved = 0
-             AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
-             LIMIT 1',
-            's',
-            [$machine['name']]
-        );
+    if ($idle_minutes >= 5) {
+        db_execute(
+        $conn,
+        'UPDATE machines SET status = "idle" WHERE name = ?',
+        's',
+        [$machine['name']]
+    );
+
+    $existing = db_select(
+        $conn,
+        'SELECT id FROM alerts
+         WHERE machine_name = ? AND type = "idle" AND resolved = 0
+         AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
+         LIMIT 1',
+        's',
+        [$machine['name']]
+    );
 
         if (empty($existing)) {
             $msg = "{$machine['name']} has been idle for {$idle_minutes} minutes";

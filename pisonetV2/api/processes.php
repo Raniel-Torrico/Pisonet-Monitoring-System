@@ -52,18 +52,11 @@ if ($action === 'update') {
     if (empty($machine_name)) respond(false, null, 'machine_name is required', 422);
     if (!is_array($processes)) respond(false, null, 'processes must be an array', 422);
 
-    // Keep only the latest snapshot per machine
-    // Delete old ones first to avoid the table growing too large
     db_execute(
         $conn,
-        'DELETE FROM process_snapshots WHERE machine_name = ?',
-        's',
-        [$machine_name]
-    );
-
-    db_execute(
-        $conn,
-        'INSERT INTO process_snapshots (machine_name, processes) VALUES (?, ?)',
+        'INSERT INTO process_snapshots (machine_name, processes, recorded_at)
+         VALUES (?, ?, NOW())
+         ON DUPLICATE KEY UPDATE processes = VALUES(processes), recorded_at = NOW()',
         'ss',
         [$machine_name, json_encode($processes)]
     );

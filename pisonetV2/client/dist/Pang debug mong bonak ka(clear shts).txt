@@ -1,0 +1,44 @@
+-- Clear sessions (resets income, avg duration, peak hours, top machines)
+TRUNCATE TABLE sessions;
+
+-- Clear coin transaction logs (resets denomination breakdown, stacked chart)
+TRUNCATE TABLE coin_transactions;
+
+-- Reset machine status back to a clean idle/offline state
+-- (optional, remove this block if you want machines to keep their live status)
+UPDATE machines SET
+    status = 'offline',
+    cpu = 0,
+    ram = 0,
+    disk = 0,
+    last_seen = NULL;
+
+
+
+--Pag gusto mo lahat
+TRUNCATE TABLE sessions;
+TRUNCATE TABLE coin_transactions;
+TRUNCATE TABLE alerts;
+TRUNCATE TABLE logs;
+
+UPDATE machines SET
+    status = 'offline',
+    cpu = 0,
+    ram = 0,
+    disk = 0,
+    last_seen = NULL;
+
+
+--incase as in lahat
+TRUNCATE TABLE machines;
+TRUNCATE TABLE sessions;
+TRUNCATE TABLE coin_transactions;
+TRUNCATE TABLE alerts;
+TRUNCATE TABLE logs;
+
+UPDATE machines SET
+    status = 'offline',
+    cpu = 0,
+    ram = 0,
+    disk = 0,
+    last_seen = NULL;

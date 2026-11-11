@@ -67,6 +67,37 @@ if ($action === 'start') {
     respond(true, ['session_id' => (int) $session_id], 'Session started');
 }
 
+// -- Force stop an active session (admin manually ends it early) --
+if ($action === 'force_stop') {
+    $machine_name = trim($body['machine_name'] ?? '');
+    if (empty($machine_name)) respond(false, null, 'machine_name is required', 422);
+
+    $rows = db_select(
+        $conn,
+        'SELECT id FROM sessions WHERE machine_name = ? AND ended_at IS NULL
+         ORDER BY started_at DESC LIMIT 1',
+        's',
+        [$machine_name]
+    );
+
+    if (empty($rows)) respond(false, null, 'No active session found', 404);
+
+    $session_id = (int) $rows[0]['id'];
+
+    db_execute(
+        $conn,
+        'UPDATE sessions SET ended_at = NOW(),
+         duration_min = TIMESTAMPDIFF(MINUTE, started_at, NOW())
+         WHERE id = ?',
+        'i',
+        [$session_id]
+    );
+
+    db_execute($conn, 'UPDATE machines SET status = "idle" WHERE name = ?', 's', [$machine_name]);
+
+    respond(true, ['session_id' => $session_id], 'Session force-stopped');
+}
+
 // -- Add time to an active session (stacking coins) --
 if ($action === 'add_time') {
     $machine_name = trim($body['machine_name'] ?? '');

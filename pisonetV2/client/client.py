@@ -36,11 +36,14 @@ import subprocess
 import ctypes
 import logging
 import tkinter as tk
+import serial.tools.list_ports
 
 import requests
 import psutil
 import base64
 import io
+import re
+import serial
 
 # Screenshot library — install with: pip install pillow
 try:
@@ -67,6 +70,11 @@ PROCESS_SEND_INTERVAL  = 10   # seconds between each process list update
 SCREENSHOT_ON_REQUEST  = True # take screenshot when dashboard requests it
 EVENTLOG_SEND_INTERVAL = 60   # seconds between each event log update
 CLIENT_VERSION = '1.0.0'
+COIN_SERIAL_BAUD = 115200      # ← IMPORTANT: matches Serial.begin(115200) in your ESP32 code, not 9600
+COIN_VALIDATED_PATTERN = re.compile(r'Coin Validated:\s*P(\d+(?:\.\d+)?)')
+VALID_COINS = (1.0, 5.0, 10.0, 20.0)
+IDLE_WARN_SECONDS = 5 * 60   # 5 mins no keyboard/mouse = warn the admin
+IDLE_AUTO_SECONDS = 10 * 60   # 10 mins no keyboard/mouse = auto stop timer + shutdown
 
 
 # ── DISKLESS MODE ──────────────────────────────────────────────────────────────
@@ -110,6 +118,7 @@ session_lock      = threading.Lock()
 session_active    = False
 session_remaining = 0
 session_pesos     = 0.0
+session_deadline  = None
 
 
 # ── Server URLs ────────────────────────────────────────────────────────────────
@@ -416,6 +425,7 @@ def heartbeat_loop(server_url, machine_name):
     local_url = get_local_url()
 
     while True:
+        started = time.monotonic()  # to count how long this round takes
         metrics = get_metrics()
         metrics['machine_name'] = machine_name
 
@@ -439,13 +449,16 @@ def heartbeat_loop(server_url, machine_name):
         if not sent:
             log.warning('Heartbeat failed on all servers')
 
-        time.sleep(HEARTBEAT_INTERVAL)
+        # subtract the time already used so the real interval is 3 seconds
+        elapsed = time.monotonic() - started
+        time.sleep(max(0.5, HEARTBEAT_INTERVAL - elapsed))
 
 
 # ── Session timer thread ───────────────────────────────────────────────────────
 def session_timer_loop(server_url, machine_name):
     global session_active, session_remaining, session_deadline
-
+    last_logged_tick = None
+    
     while True:
         time.sleep(0.5)  
 
@@ -476,7 +489,125 @@ def session_timer_loop(server_url, machine_name):
                 daemon=True
             ).start()
 
-            
+def find_coin_port():
+    ports = serial.tools.list_ports.comports()
+
+    for port in ports:
+        print(f"Detected device: {port.device} - {port.description}")
+
+        description = port.description.upper()
+
+        if 'CP210' in description or 'CH340' in description:
+            print(f"ESP32 detected on {port.device}")
+            return port.device
+
+    return None
+
+def coin_pulse_listener(server_url, machine_name):
+    """
+    Listens to the ESP32 over USB serial. The ESP32 handles pulse counting,
+    debouncing, range-based denomination validation, and sends a
+    "Coin Validated: P<amount>.00 | Total Balance: P<total>" line
+    whenever a real coin is detected and accepted.
+    """
+    ser = None
+    while ser is None:
+        try:
+            coin_port = find_coin_port()
+
+            if coin_port is None:
+                print("DEBUG: ESP32 not detected", flush=True)
+                time.sleep(10)
+                continue
+
+            print(f"DEBUG: Attempting to open {coin_port}", flush=True)
+
+            ser = serial.Serial(coin_port, COIN_SERIAL_BAUD, timeout=1)
+
+            print(f"DEBUG: Successfully opened {coin_port}", flush=True)
+
+        except Exception as e:
+            print(f"DEBUG: INITIAL CONNECTION FAILED: {repr(e)}", flush=True)
+            ser = None
+            time.sleep(5)
+
+    while True:
+        try:
+            line = ser.readline().decode(errors='ignore').strip()
+            if line:
+                print(f"ESP32 RAW: {line}", flush=True)
+            if not line:
+                continue
+
+            # Log ESP32 boot/status messages
+            if line in ('READY', '================================'):
+                client_log(server_url, 'INFO', f'ESP32: {line}')
+                continue
+
+            match = COIN_VALIDATED_PATTERN.search(line)
+
+            if match:
+                pesos = float(match.group(1))
+
+                if pesos in VALID_COINS:
+                    client_log(server_url, 'INFO', f'Real coin detected: P{pesos}')
+
+                    post(server_url, 'coin_log.php', {
+                        'machine_name': machine_name,
+                        'denomination': pesos,
+                    })
+
+                    with session_lock:
+                        is_active = session_active
+
+                    if is_active:
+                        add_time(server_url, machine_name, pesos)
+                    else:
+                        start_session(server_url, machine_name, pesos)
+
+                else:
+                    client_log(server_url, 'WARNING', f'Ignored unknown coin value: {pesos}')
+
+            elif line.startswith('INVALID:'):
+                client_log(server_url, 'WARNING', f'Coin rejected by ESP32: {line}')
+
+            elif 'DISABLED' in line:
+                client_log(server_url, 'INFO', 'Coin acceptor disabled (GPIO 22 LOW)')
+
+            elif 'ENABLED' in line:
+                client_log(server_url, 'INFO', 'Coin acceptor enabled (GPIO 22 HIGH)')
+
+        except serial.SerialException as e:
+            client_log(server_url, 'ERROR', f'Coin acceptor serial connection lost: {e} — attempting reconnect')
+
+            try:
+                ser.close()
+            except Exception:
+                pass
+
+            ser = None
+            time.sleep(5)
+
+            while ser is None:
+                try:
+                    coin_port = find_coin_port()
+
+                    if coin_port is None:
+                        client_log(server_url, 'WARNING', 'ESP32 not detected — retrying in 10s')
+                        time.sleep(10)
+                        continue
+
+                    ser = serial.Serial(coin_port, COIN_SERIAL_BAUD, timeout=1)
+                    client_log(server_url, 'INFO', f'Coin acceptor reconnected on {coin_port}')
+
+                except Exception as reconnect_error:
+                    client_log(server_url, 'WARNING', f'Reconnect failed: {reconnect_error}')
+                    time.sleep(5)
+
+        except Exception as e:
+            client_log(server_url, 'WARNING', f'Coin listener error: {e}')
+            time.sleep(2)
+      
             
 
 
@@ -528,85 +659,6 @@ def end_session(server_url, machine_name):
         client_log(server_url, 'INFO', 'Session ended')
     else:
         client_log(server_url, 'WARNING', 'Failed to notify server of session end')
-
-# ── Customer Countdown Overlay ─────────────────────────────────────────────────
-# Small always-on-top window showing the customer their remaining time.
-# Runs on the main thread since tkinter requires it.
-
-overlay_root  = None
-overlay_label = None
-
-def create_overlay():
-    """
-    Builds the borderless, always-on-top overlay window.
-    Starts hidden — only appears when a session is active.
-    """
-    global overlay_root, overlay_label
-
-    overlay_root = tk.Tk()
-    overlay_root.overrideredirect(True)   # no title bar / borders
-    overlay_root.attributes('-topmost', True)
-    overlay_root.attributes('-alpha', 0.75)  # more see-through
-    overlay_root.configure(bg='#0f172a')
-
-    width, height = 190, 60
-    screen_w = overlay_root.winfo_screenwidth()
-    screen_h = overlay_root.winfo_screenheight()
-    x = screen_w - width - 20
-    y = screen_h - height - 60  # sits above the taskbar
-    overlay_root.geometry(f'{width}x{height}+{x}+{y}')
-
-    overlay_label = tk.Label(
-        overlay_root,
-        text='',
-        font=('Segoe UI', 14, 'bold'),
-        bg='#0f172a',
-        fg='#10b981',
-        justify='center',
-    )
-    overlay_label.pack(expand=True, fill='both')
-    overlay_label.bind('<ButtonPress-1>', start_drag)
-    overlay_label.bind('<B1-Motion>', do_drag)
-    overlay_root.withdraw()  # start hidden until a session begins
-    poll_overlay()
-
-
-def poll_overlay():
-    """
-    Reads the current session state every 500ms and updates the overlay.
-    Hides the window when there's no active session.
-    """
-    global overlay_root, overlay_label
-
-    with session_lock:
-        is_active = session_active
-        remaining = session_remaining
-        pesos     = session_pesos
-
-    if is_active and remaining > 0:
-        mins = remaining // 60
-        secs = remaining % 60
-        overlay_label.config(
-            text=f'⏱ {mins:02d}:{secs:02d}\n₱{pesos:g} remaining',
-            fg='#ef4444' if remaining < 300 else '#10b981',  # red under 5 min
-        )
-        overlay_root.deiconify()  # show
-    else:
-        overlay_root.withdraw()  # hide
-
-    overlay_root.after(500, poll_overlay)
-
-def start_drag(event):
-    """Records the mouse position when the user starts dragging."""
-    overlay_root._drag_start_x = event.x
-    overlay_root._drag_start_y = event.y
-
-
-def do_drag(event):
-    """Moves the overlay window as the mouse moves while dragging."""
-    x = overlay_root.winfo_pointerx() - overlay_root._drag_start_x
-    y = overlay_root.winfo_pointery() - overlay_root._drag_start_y
-    overlay_root.geometry(f'+{x}+{y}')
 
 def add_time(server_url, machine_name, pesos):
     global session_active, session_remaining, session_deadline
@@ -666,19 +718,24 @@ def cmd_insert_coin(pesos_str, server_url, machine_name):
     """
     try:
         pesos = float(pesos_str)
-        if pesos > 0:
-            MAX_HOURS     = 15
-            total_minutes = pesos * PESOS_PER_MINUTE
-            if total_minutes > (MAX_HOURS * 60):
-                client_log(server_url, 'WARNING', f'P{pesos} exceeds 15hr limit, ignoring')
+        if pesos <= 0:
+            client_log(server_url, 'WARNING', f'Invalid coin amount from server: {pesos_str}')
+            return
+
+        # check muna kung lalampas sa 15 hours
+        MAX_HOURS     = 15
+        total_minutes = pesos * PESOS_PER_MINUTE
+        if total_minutes > (MAX_HOURS * 60):
+            client_log(server_url, 'WARNING', f'P{pesos} exceeds 15hr limit, ignoring')
+            return
+
+        client_log(server_url, 'INFO', f'Server coin trigger: P{pesos}')
+        with session_lock:
+            is_active = session_active
+        if is_active:
+            add_time(server_url, machine_name, pesos)
         else:
-            client_log(server_url, 'INFO', f'Server coin trigger: P{pesos}')
-            with session_lock:
-                is_active = session_active
-            if is_active:
-                add_time(server_url, machine_name, pesos)
-            else:
-                start_session(server_url, machine_name, pesos)
+            start_session(server_url, machine_name, pesos)
     except ValueError:
         client_log(server_url, 'WARNING', f'Invalid coin amount from server: {pesos_str}')
 
@@ -697,6 +754,7 @@ def command_poll_loop(server_url, machine_name):
     Cloud first = instant commands when internet is up.
     Local fallback = still works when internet is down.
     """
+    global session_active, session_remaining, session_deadline
     local_url = get_local_url()
 
     while True:
@@ -756,6 +814,35 @@ def command_poll_loop(server_url, machine_name):
                 exe_path = command.split('restart_app:')[1]
                 success = restart_application(exe_path)
                 client_log(current_server, 'INFO', f'Restart app {exe_path}: {"success" if success else "failed"}')
+
+            elif command == 'stop_timer':
+                with session_lock:
+                    was_active = session_active
+                    session_active = False
+                    session_remaining = 0
+                    session_deadline = None
+
+                if was_active:
+                    threading.Thread(
+                        target=end_session,
+                        args=(current_server, machine_name),
+                        daemon=True
+                    ).start()
+
+                    cmd_lock()
+
+                    client_log(
+                        current_server,
+                        'INFO',
+                        'Session force-stopped by admin'
+                    )
+                else:
+                    client_log(
+                        current_server,
+                        'INFO',
+                        'Stop timer requested, but no active session'
+                    )
+
 
             elif command == 'screenshot':
                 threading.Thread(
@@ -819,6 +906,10 @@ def file_coin_watcher(server_url, machine_name):
                         client_log(server_url, 'WARNING', f'P{pesos} exceeds 15hr limit, ignoring')
                     else:
                         client_log(server_url, 'INFO', f'File coin trigger: P{pesos}')
+                        post(server_url, 'coin_log.php', {
+                            'machine_name': machine_name,
+                            'denomination': pesos,
+                        })
                         with session_lock:
                             is_active = session_active
                         if is_active:
@@ -843,9 +934,10 @@ def file_coin_watcher(server_url, machine_name):
 def get_process_list():
     """
     Returns a list of all running processes with name, PID, CPU, RAM usage,
-    and the full executable path (needed for the Restart Application feature).
-    Excludes this client's own process to prevent accidental self-restart.
+    and the full executable path. CPU% is normalized against core count
+    so it never exceeds 100%, matching how Task Manager displays it.
     """
+    cpu_cores = psutil.cpu_count(logical=True) or 1
     own_pid = os.getpid()
     processes = []
     for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'exe']):
@@ -854,25 +946,40 @@ def get_process_list():
             pid = info.get('pid')
 
             if pid == own_pid:
-                continue  # never list ourselves as a restartable process
+                continue
+
+            # Skip pseudo-processes that aren't real, killable programs
+            name = (info.get('name') or '').strip()
+            if name in ('System Idle Process', 'System', 'Registry', 'Memory Compression'):
+                continue
 
             exe_path = info.get('exe') or ''
-            # only keep exe paths that are actual files, not folders
             if exe_path and not (exe_path.endswith('.exe') and os.path.isfile(exe_path)):
                 exe_path = ''
 
+            # Normalize CPU% against core count so it never exceeds 100%
+            raw_cpu = info.get('cpu_percent') or 0
+            normalized_cpu = round(raw_cpu / cpu_cores, 1)
+
             processes.append({
                 'pid':    pid,
-                'name':   info.get('name') or 'Unknown',
-                'cpu':    round(info.get('cpu_percent') or 0, 1),
+                'name':   name or 'Unknown',
+                'cpu':    normalized_cpu,
                 'ram':    round(info.get('memory_percent') or 0, 1),
                 'exe':    exe_path,
             })
         except (psutil.NoSuchProcess, psutil.AccessDenied, KeyError):
             continue
-
+            
     processes.sort(key=lambda p: p['cpu'], reverse=True)
+
+    # Keep executable paths only for the top 20 CPU processes.
+    for i, p in enumerate(processes):
+        if i >= 20:
+            p['exe'] = ''
+
     return processes[:50]
+
 
 
 def process_send_loop(server_url, machine_name):
@@ -888,7 +995,7 @@ def process_send_loop(server_url, machine_name):
                 'action':       'update',
                 'machine_name': machine_name,
                 'processes':    processes,
-            })
+            }, timeout=10)
         except Exception as e:
             client_log(server_url, 'WARNING', f'Process send failed: {e}')
         time.sleep(PROCESS_SEND_INTERVAL)
@@ -976,7 +1083,7 @@ def take_screenshot(server_url, machine_name):
         post(server_url, 'screenshot.php', {
             'machine_name': machine_name,
             'image':        image_base64,
-        })
+        }, timeout=20)
         client_log(server_url, 'INFO', 'Screenshot sent to server')
 
     except Exception as e:
@@ -1035,11 +1142,90 @@ def eventlog_send_loop(server_url, machine_name):
                 post(server_url, 'eventlogs.php', {
                     'machine_name': machine_name,
                     'logs':         logs,
-                })
+                }, timeout=15)
         except Exception as e:
             client_log(server_url, 'WARNING', f'Event log send failed: {e}')
         time.sleep(EVENTLOG_SEND_INTERVAL)
 
+# ── Idle detection (keyboard + mouse) ───────────────────────────────────────────
+# Windows remembers when the last keyboard/mouse input happened.
+# We ask Windows for that time, so we don't need to track keys ourselves.
+class LASTINPUTINFO(ctypes.Structure):
+    _fields_ = [('cbSize', ctypes.c_uint), ('dwTime', ctypes.c_uint)]
+
+
+def get_idle_seconds():
+    """
+    Returns how many seconds since the last keyboard or mouse input.
+    Returns 0 if not Windows or if the check fails.
+    """
+    if platform.system() != 'Windows':
+        return 0
+    try:
+        info = LASTINPUTINFO()
+        info.cbSize = ctypes.sizeof(LASTINPUTINFO)
+        if not ctypes.windll.user32.GetLastInputInfo(ctypes.byref(info)):
+            return 0
+        now = ctypes.windll.kernel32.GetTickCount() & 0xFFFFFFFF
+        millis = (now - info.dwTime) & 0xFFFFFFFF  # mask so it doesn't break when tick count resets
+        return millis / 1000.0
+    except Exception:
+        return 0
+
+
+def send_idle_alert(server_url, machine_name, alert_type, message):
+    """Sends an idle alert to the server so it shows on the dashboard."""
+    post(server_url, 'idle_alert.php', {
+        'machine_name': machine_name,
+        'type':         alert_type,
+        'message':      message,
+    })
+
+
+def idle_watcher_loop(server_url, machine_name):
+    """
+    Runs forever. Only checks while a session is active.
+      - 5 mins idle  -> alert on dashboard (admin decides)
+      - 10 mins idle -> stop timer + shutdown + notify the dashboard
+    """
+    warned    = False
+    shut_down = False
+
+    while True:
+        time.sleep(5)
+
+        # no session = PC is already locked, nothing to check
+        with session_lock:
+            is_active = session_active
+        if not is_active:
+            warned    = False
+            shut_down = False
+            continue
+
+        idle = get_idle_seconds()
+
+        # somebody moved the mouse / pressed a key, so reset everything
+        if idle < IDLE_WARN_SECONDS:
+            warned    = False
+            shut_down = False
+            continue
+
+        # 5 mins: warn the admin once
+        if idle >= IDLE_WARN_SECONDS and not warned:
+            warned = True
+            mins = int(idle // 60)
+            send_idle_alert(server_url, machine_name, 'idle_user',
+                f'{machine_name} has no keyboard/mouse activity for {mins} minutes during an active session')
+            client_log(server_url, 'INFO', f'Idle warning sent ({mins} min)')
+
+        # 10 mins: stop the timer and shutdown
+        if idle >= IDLE_AUTO_SECONDS and not shut_down:
+            shut_down = True
+            client_log(server_url, 'INFO', 'Idle 10 mins — stopping timer and shutting down')
+            send_idle_alert(server_url, machine_name, 'auto_shutdown',
+                f'{machine_name} was shut down automatically after 10 minutes of no activity')
+            end_session(server_url, machine_name)  # stops the timer + tells the server
+            cmd_shutdown()
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
@@ -1061,6 +1247,8 @@ if __name__ == '__main__':
     threading.Thread(target=session_timer_loop, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='timer').start()
     threading.Thread(target=process_send_loop,  args=(SERVER_URL, MACHINE_NAME), daemon=True, name='processes').start()
     threading.Thread(target=eventlog_send_loop, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='eventlogs').start()
+    threading.Thread(target=coin_pulse_listener, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='coin_listener').start()
+    threading.Thread(target=idle_watcher_loop, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='idle').start()
 
     if not COIN_FROM_SERVER:
         threading.Thread(target=file_coin_watcher, args=(SERVER_URL, MACHINE_NAME), daemon=True, name='coin_watcher').start()
@@ -1069,12 +1257,14 @@ if __name__ == '__main__':
 
     # Step 3: Create the countdown overlay and run it on the main thread
     # (tkinter must run on main thread — this replaces the old sleep loop)
+
     try:
-        create_overlay()
-        overlay_root.mainloop()
+        while True:
+            time.sleep(1)
     except KeyboardInterrupt:
         client_log(SERVER_URL, 'INFO', 'Client stopped.')
         print('Pisonet Client stopped.')
+
 
 
 # ── Configuration Summary ──────────────────────────────────────────────────────

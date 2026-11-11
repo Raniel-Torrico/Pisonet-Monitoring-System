@@ -1,0 +1,91 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="ERD" id="0">
+    <mxGraphModel dx="2174" dy="1255" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t_sessions" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="sessions&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;pesos DECIMAL(8,2)&#xa;started_at DATETIME&#xa;ended_at DATETIME&#xa;duration_min INT&#xa;rate_used DECIMAL(6,1)" vertex="1">
+          <mxGeometry height="160" width="220" x="60" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="t_coins" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="coin_transactions&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;denomination DECIMAL(4,2)&#xa;inserted_at DATETIME" vertex="1">
+          <mxGeometry height="120" width="220" x="350" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="t_metrics" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="metrics&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;cpu FLOAT&#xa;ram FLOAT&#xa;disk FLOAT&#xa;uptime INT&#xa;recorded_at DATETIME" vertex="1">
+          <mxGeometry height="150" width="220" x="610" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="t_alerts" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="alerts&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;type VARCHAR(30)&#xa;message VARCHAR(255)&#xa;resolved TINYINT(1)&#xa;created_at DATETIME" vertex="1">
+          <mxGeometry height="150" width="220" x="890" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="t_commands" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="commands&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;command VARCHAR(255)&#xa;status ENUM&#xa;issued_by VARCHAR(50)&#xa;issued_at DATETIME&#xa;executed_at DATETIME" vertex="1">
+          <mxGeometry height="150" width="220" x="1050" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="t_machines" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;fontStyle=1;" value="machines&#xa;----&#xa;id INT PK&#xa;name VARCHAR(50) UNIQUE&#xa;mac VARCHAR(20)&#xa;status ENUM&#xa;cpu FLOAT&#xa;ram FLOAT&#xa;disk FLOAT&#xa;os VARCHAR(50)&#xa;pesos_per_minute DECIMAL(8,2)&#xa;last_seen DATETIME&#xa;ip_address VARCHAR(45)&#xa;cpu_model VARCHAR(150)&#xa;total_ram DECIMAL(6,1)&#xa;total_disk DECIMAL(8,1)&#xa;archived TINYINT(1)&#xa;created_at DATETIME" vertex="1">
+          <mxGeometry height="320" width="260" x="530" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="t_screenshots" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="screenshots&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;image_data LONGTEXT&#xa;recorded_at DATETIME" vertex="1">
+          <mxGeometry height="120" width="220" x="80" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="t_process" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="process_snapshots&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;processes LONGTEXT&#xa;recorded_at DATETIME" vertex="1">
+          <mxGeometry height="120" width="220" x="150" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="t_event_logs" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="event_logs&#xa;----&#xa;id INT PK&#xa;machine_name VARCHAR(50) FK&#xa;logs_data LONGTEXT&#xa;recorded_at DATETIME" vertex="1">
+          <mxGeometry height="120" width="220" x="470" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="t_logs" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="logs&#xa;----&#xa;id INT PK&#xa;actor VARCHAR(50)&#xa;action VARCHAR(255)&#xa;target VARCHAR(100)&#xa;detail VARCHAR(255)&#xa;created_at DATETIME" vertex="1">
+          <mxGeometry height="150" width="220" x="1140" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admins" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="admins&#xa;----&#xa;id INT PK&#xa;username VARCHAR(50)&#xa;password VARCHAR(255)&#xa;role ENUM&#xa;token VARCHAR(64)&#xa;token_expires DATETIME&#xa;created_at DATETIME" vertex="1">
+          <mxGeometry height="150" width="220" x="1130" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="v_today" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="income_today (VIEW)&#xa;----&#xa;total DECIMAL(30,2)&#xa;session_count BIGINT(21)" vertex="1">
+          <mxGeometry height="80" width="220" x="60" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v_week" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;align=left;verticalAlign=top;spacingLeft=6;fontSize=11;" value="income_week (VIEW)&#xa;----&#xa;total DECIMAL(30,2)&#xa;session_count BIGINT(21)" vertex="1">
+          <mxGeometry height="80" width="220" x="340" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_sessions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_coins">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_metrics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_alerts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_commands">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_screenshots">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_process">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="t_machines" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#82b366;strokeWidth=2;" target="t_event_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="t_admins" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#6c8ebf;strokeWidth=2;" target="t_commands">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="t_admins" style="endArrow=ERmany;startArrow=ERone;html=1;strokeColor=#6c8ebf;strokeWidth=2;" target="t_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="t_coins" style="endArrow=classic;html=1;dashed=1;strokeColor=#999999;strokeWidth=1.5;" target="v_today">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="t_coins" style="endArrow=classic;html=1;dashed=1;strokeColor=#999999;strokeWidth=1.5;" target="v_week">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_bg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;" value="" vertex="1">
+          <mxGeometry height="180" width="280" x="20" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_text" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=11;spacingLeft=6;" value="LEGEND&#xa;----&#xa;PK = Primary Key&#xa;FK = Foreign Key&#xa;Crow&#39;s Foot = Many&#xa;Dashed = Derived View&#xa;&#xa;Colors:&#xa;Green = machines&#xa;Yellow = Monitoring tables&#xa;Blue = admins / logs&#xa;Grey = Views" vertex="1">
+          <mxGeometry height="160" width="260" x="30" y="970" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

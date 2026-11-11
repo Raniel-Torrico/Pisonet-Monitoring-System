@@ -42,12 +42,45 @@ if (empty($rows)) {
 }
 
 // Update machine status and metrics
-db_execute(
+// Check whether this machine currently has an active session
+$active_session = db_select(
     $conn,
-    'UPDATE machines SET status = "online", cpu = ?, ram = ?, disk = ?, last_seen = NOW() WHERE name = ?',
-    'ddds',
-    [$cpu, $ram, $disk, $machine_name]
+    'SELECT id FROM sessions
+     WHERE machine_name = ? AND ended_at IS NULL
+     LIMIT 1',
+    's',
+    [$machine_name]
 );
+
+if (!empty($active_session)) {
+    // Active customer session → keep machine online
+    db_execute(
+        $conn,
+        'UPDATE machines
+         SET status = "online",
+             cpu = ?,
+             ram = ?,
+             disk = ?,
+             last_seen = NOW()
+         WHERE name = ?',
+        'ddds',
+        [$cpu, $ram, $disk, $machine_name]
+    );
+} else {
+    // No active session → update heartbeat/metrics only.
+    // Do NOT overwrite idle status with online.
+    db_execute(
+        $conn,
+        'UPDATE machines
+         SET cpu = ?,
+             ram = ?,
+             disk = ?,
+             last_seen = NOW()
+         WHERE name = ?',
+        'ddds',
+        [$cpu, $ram, $disk, $machine_name]
+    );
+}
 
 // Save metrics history
 db_execute(

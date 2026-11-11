@@ -1,90 +1,183 @@
 import { useState } from "react";
-import { getReport } from "./api";
+import { jsPDF } from "jspdf";
 
-// Draws a simple bar chart on a jsPDF canvas
-function drawBarChart(doc, data, x, y, width, height, color = [16, 185, 129]) {
+// jsPDF can't print the peso sign, so we use "P" instead
+function peso(n) {
+  return `P${Number(n || 0).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+}
+
+// Makes the "+P320 (+12.0%)" text and picks a color for it
+function deltaInfo(cur, prev, fmt) {
+  const diff = cur - prev;
+  const pct  = prev > 0 ? (diff / prev) * 100 : null;
+  const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
+
+  let text = `${sign}${fmt(Math.abs(diff))}`;
+  if (pct !== null) text += ` (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%)`;
+
+  const color = diff > 0 ? [16, 185, 129] : diff < 0 ? [239, 68, 68] : [156, 163, 175];
+  return { text, color };
+}
+
+// Draws the income chart (stacked by coin) with a dashed line for the previous period
+function drawBarChart(doc, data, x, y, width, height) {
   if (!data || data.length === 0) return;
 
-  const max   = Math.max(...data.map(d => parseFloat(d.income) || 0), 1);
-  const barW  = (width - 10) / data.length - 4;
-  const chartBottom = y + height;
+  const colors = { p1: [156, 163, 175], p5: [96, 165, 250], p10: [52, 211, 153], p20: [16, 185, 129] };
+  const max    = Math.max(...data.map(d => Math.max(d.value || 0, d.prev_value || 0)), 1);
 
-  // Chart background
+  const plotH  = height - 22;            // space for labels
+  const bottom = y + height - 12;        // where the bars start
+  const gap    = data.length > 20 ? 0.6 : 2;
+  const barW   = (width - 10) / data.length - gap;
+  const step   = Math.ceil(data.length / 16); // show fewer labels if too many bars
+
+  // chart background
   doc.setFillColor(248, 250, 252);
-  doc.roundedRect(x, y, width, height, 3, 3, 'F');
+  doc.roundedRect(x, y, width, height, 3, 3, "F");
 
-  // Draw bars
   data.forEach((d, i) => {
-    const value   = parseFloat(d.income) || 0;
-    const barH    = max > 0 ? (value / max) * (height - 30) : 2;
-    const barX    = x + 5 + i * (barW + 4);
-    const barY    = chartBottom - 20 - barH;
+    const barX = x + 5 + i * (barW + gap);
+    const barH = ((d.value || 0) / max) * plotH;
 
-    // Bar fill
-    doc.setFillColor(...color);
-    doc.roundedRect(barX, barY, barW, barH, 1, 1, 'F');
+    // stacked segments, one color per coin
+    let segY = bottom;
+    ["p1", "p5", "p10", "p20"].forEach(key => {
+      const v = d.breakdown?.[key] || 0;
+      if (v <= 0 || d.value <= 0) return;
+      const segH = (v / d.value) * barH;
+      segY -= segH;
+      doc.setFillColor(...colors[key]);
+      doc.rect(barX, segY, barW, segH, "F");
+    });
 
-    // Value label above bar
-    if (value > 0) {
-      doc.setFontSize(6);
-      doc.setTextColor(16, 185, 129);
-      doc.text(`P${value.toFixed(0)}`, barX + barW / 2, barY - 2, { align: "center" });
+    // dashed line = previous period at the same position
+    if (d.prev_value > 0) {
+      const lineY = bottom - (d.prev_value / max) * plotH;
+      doc.setDrawColor(107, 114, 128);
+      doc.setLineWidth(0.3);
+      doc.setLineDashPattern([0.8, 0.8], 0);
+      doc.line(barX - 0.5, lineY, barX + barW + 0.5, lineY);
+      doc.setLineDashPattern([], 0);
     }
 
-    // Period label below bar
-    doc.setFontSize(6.5);
-    doc.setTextColor(107, 114, 128);
-    const label = d.period_label || String(d.period);
-    // Shorten label if too long
-    const shortLabel = label.length > 6 ? label.substring(0, 6) : label;
-    doc.text(shortLabel, barX + barW / 2, chartBottom - 10, { align: "center" });
+    // value on top (only when there are few bars)
+    if (data.length <= 8 && d.value > 0) {
+      doc.setFontSize(6);
+      doc.setTextColor(16, 185, 129);
+      doc.text(`P${Math.round(d.value)}`, barX + barW / 2, bottom - barH - 1.5, { align: "center" });
+    }
+
+    // label below the bar
+    if (i % step === 0) {
+      doc.setFontSize(6.5);
+      doc.setTextColor(107, 114, 128);
+      doc.text(String(d.label), barX + barW / 2, y + height - 5, { align: "center" });
+    }
   });
 
-  // Reset colors
+  // small legend inside the chart (top right)
+  const lx = x + width - 78;
+  const ly = y + 5;
+  [["P1", colors.p1], ["P5", colors.p5], ["P10", colors.p10], ["P20", colors.p20]].forEach(([name, c], i) => {
+    doc.setFillColor(...c);
+    doc.rect(lx + i * 14, ly - 2.2, 2.5, 2.5, "F");
+    doc.setFontSize(6);
+    doc.setTextColor(107, 114, 128);
+    doc.text(name, lx + i * 14 + 3.5, ly);
+  });
+  doc.setDrawColor(107, 114, 128);
+  doc.setLineWidth(0.3);
+  doc.setLineDashPattern([0.8, 0.8], 0);
+  doc.line(lx + 56, ly - 1, lx + 61, ly - 1);
+  doc.setLineDashPattern([], 0);
+  doc.setFontSize(6);
+  doc.text("Previous", lx + 62.5, ly);
+
   doc.setTextColor(0, 0, 0);
 }
 
-export default function ReportGenerator() {
-  const [reportType, setReportType] = useState("weekly");
-  const [loading,    setLoading]    = useState(false);
-  const [error,      setError]      = useState("");
+// The report always follows the period chosen in the Analytics tab
+export default function ReportGenerator({ analytics, loading: dataLoading }) {
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState("");
 
   const generatePDF = async () => {
+    if (!analytics) return;
     setLoading(true);
     setError("");
 
     try {
-      // Fetch report data from server
-      const res = await getReport(reportType);
-      if (!res.data.success) {
-        setError(res.data.message);
-        return;
-      }
+      const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-      const data = res.data.data;
-
-      // Dynamically load jsPDF from CDN if not already loaded
-      if (!window.jspdf) {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-          script.onload  = resolve;
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-      const pageW  = 210;
-      const margin = 16;
+      const pageW    = 210;
+      const margin   = 16;
       const contentW = pageW - margin * 2;
+      const bottomY  = 280; // do not write below this line
       let y = 0;
 
-      // ── Header bar ──────────────────────────────────────────────────────────
+      const label       = analytics.period.label.replace(/–/g, "-");
+      const prevLabel   = analytics.period.prev_label.replace(/–/g, "-");
+      const generatedAt = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
+      const modeName    = { day: "Daily", week: "Weekly", month: "Monthly", custom: "Custom" }[analytics.period.mode];
+
+      // If the next block does not fit, start a new page
+      const ensure = (h) => {
+        if (y + h > bottomY) {
+          doc.addPage();
+          y = 20;
+        }
+      };
+
+      // Section title
+      const sectionTitle = (text) => {
+        ensure(16);
+        doc.setTextColor(17, 24, 39);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text(text, margin, y);
+        y += 6;
+      };
+
+      // Simple table. offsets = x position of each column (from the left margin)
+      // pcts = optional list of 0-1 values that draw a small bar on the right
+      const drawTable = (headers, offsets, rows, pcts) => {
+        ensure(8 + 7 * Math.min(rows.length, 2));
+
+        doc.setFillColor(15, 23, 42);
+        doc.rect(margin, y, contentW, 8, "F");
+        doc.setFontSize(7.5);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(255, 255, 255);
+        headers.forEach((h, i) => doc.text(h, margin + offsets[i], y + 5.5));
+        y += 8;
+
+        rows.forEach((row, idx) => {
+          ensure(7);
+          doc.setFillColor(...(idx % 2 === 0 ? [255, 255, 255] : [248, 250, 252]));
+          doc.rect(margin, y, contentW, 7, "F");
+
+          doc.setFontSize(8);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(55, 65, 81);
+          row.forEach((val, i) => doc.text(String(val), margin + offsets[i], y + 5));
+
+          if (pcts) {
+            doc.setFillColor(16, 185, 129);
+            doc.rect(margin + contentW - 36, y + 2, (pcts[idx] || 0) * 34, 3, "F");
+          }
+          y += 7;
+        });
+
+        doc.setDrawColor(229, 231, 235);
+        doc.setLineWidth(0.3);
+        doc.line(margin, y, margin + contentW, y);
+        y += 8;
+      };
+
+      // ── Header bar (first page only) ──────────────────────────────────────
       doc.setFillColor(15, 23, 42);
-      doc.rect(0, 0, pageW, 28, 'F');
+      doc.rect(0, 0, pageW, 28, "F");
 
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(16);
@@ -99,304 +192,206 @@ export default function ReportGenerator() {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
-      doc.text(data.label, pageW - margin, 12, { align: "right" });
+      doc.text(`${modeName} Report`, pageW - margin, 12, { align: "right" });
 
       doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100, 116, 139);
-      doc.text(`Generated: ${data.generated_at}`, pageW - margin, 19, { align: "right" });
+      doc.text(`Generated: ${generatedAt}`, pageW - margin, 19, { align: "right" });
 
-      y = 36;
+      y = 38;
 
-      // ── Summary cards ────────────────────────────────────────────────────────
+      // ── Period and what we compare with ───────────────────────────────────
       doc.setTextColor(17, 24, 39);
-      doc.setFontSize(11);
+      doc.setFontSize(13);
       doc.setFont("helvetica", "bold");
-      doc.text("Income Summary", margin, y);
+      doc.text(label, margin, y);
       y += 6;
 
+      const note = analytics.period.in_progress
+        ? `Compared with ${prevLabel} up to the same point in time (${analytics.period.compared_until}). ` +
+          `Whole previous period: ${peso(analytics.previous_full.total)}.`
+        : `Compared with ${prevLabel}.`;
+
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(107, 114, 128);
+      const noteLines = doc.splitTextToSize(note, contentW);
+      doc.text(noteLines, margin, y);
+      y += noteLines.length * 4 + 4;
+
+      // ── Summary cards with comparison ─────────────────────────────────────
+      sectionTitle("Summary");
+
+      const cur  = analytics.current;
+      const prev = analytics.previous;
+      const num  = (n) => Number(n).toLocaleString("en-US");
+
       const cards = [
-        { label: "Total Income",    value: `P${data.summary.total_income.toLocaleString()}`,   color: [16, 185, 129] },
-        { label: "Total Sessions",  value: String(data.summary.total_sessions),                color: [59, 130, 246] },
-        { label: "Avg per Session", value: `P${data.summary.avg_income.toFixed(2)}`,           color: [139, 92, 246] },
-        { label: "Avg Duration",    value: `${data.summary.avg_duration.toFixed(1)} min`,      color: [245, 158, 11] },
+        { label: "Income",         value: peso(cur.total),               delta: deltaInfo(cur.total, prev.total, peso),                         color: [16, 185, 129] },
+        { label: "Coins inserted", value: num(cur.coins),                delta: deltaInfo(cur.coins, prev.coins, num),                         color: [59, 130, 246] },
+        { label: "Sessions",       value: num(cur.sessions),             delta: deltaInfo(cur.sessions, prev.sessions, num),                   color: [139, 92, 246] },
+        { label: "Avg session",    value: `${cur.avg_duration.toFixed(1)} min`,
+          delta: deltaInfo(cur.avg_duration, prev.avg_duration, (n) => `${n.toFixed(1)} min`),                                                   color: [245, 158, 11] },
       ];
 
       const cardW = (contentW - 9) / 4;
+      ensure(30);
       cards.forEach((card, i) => {
         const cx = margin + i * (cardW + 3);
         doc.setFillColor(248, 250, 252);
-        doc.roundedRect(cx, y, cardW, 22, 2, 2, 'F');
+        doc.roundedRect(cx, y, cardW, 26, 2, 2, "F");
         doc.setDrawColor(...card.color);
         doc.setLineWidth(0.5);
-        doc.roundedRect(cx, y, cardW, 22, 2, 2, 'S');
+        doc.roundedRect(cx, y, cardW, 26, 2, 2, "S");
 
         doc.setFontSize(7);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(107, 114, 128);
-        doc.text(card.label, cx + cardW / 2, y + 7, { align: "center" });
+        doc.text(card.label, cx + cardW / 2, y + 6.5, { align: "center" });
 
         doc.setFontSize(11);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(...card.color);
-        doc.text(card.value, cx + cardW / 2, y + 16, { align: "center" });
+        doc.text(card.value, cx + cardW / 2, y + 14.5, { align: "center" });
+
+        doc.setFontSize(6.5);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(...card.delta.color);
+        doc.text(card.delta.text, cx + cardW / 2, y + 21.5, { align: "center" });
       });
+      y += 32;
 
-      y += 28;
-
-      // ── Bar chart ─────────────────────────────────────────────────────────────
-      doc.setTextColor(17, 24, 39);
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "bold");
-      doc.text("Income Chart (₱)", margin, y);
-      y += 5;
-
-      if (data.chart && data.chart.length > 0) {
-        drawBarChart(doc, data.chart, margin, y, contentW, 55);
-        y += 62;
+      // ── Chart ─────────────────────────────────────────────────────────────
+      sectionTitle(`Income Chart (${analytics.period.mode === "day" ? "per hour" : "per day"})`);
+      ensure(60);
+      if (analytics.chart && analytics.chart.some(d => d.value > 0 || d.prev_value > 0)) {
+        drawBarChart(doc, analytics.chart, margin, y, contentW, 58);
+        y += 66;
       } else {
         doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
         doc.setTextColor(156, 163, 175);
-        doc.text("No session data for this period", margin, y + 10);
-        y += 20;
+        doc.text("No coin data for this period", margin, y + 6);
+        y += 16;
       }
 
-      // ── Per machine breakdown ─────────────────────────────────────────────────
-      doc.setTextColor(17, 24, 39);
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "bold");
-      doc.text("Per Machine Breakdown", margin, y);
-      y += 6;
+      // ── Coin breakdown ────────────────────────────────────────────────────
+      sectionTitle("Coin Breakdown");
+      const maxCoins = Math.max(...analytics.coin_breakdown.map(c => c.count), 1);
+      drawTable(
+        ["Coin", "Count", "Total"],
+        [2, 50, 100],
+        analytics.coin_breakdown.map(c => [`P${c.denomination}`, `${c.count}x`, peso(c.total)]),
+        analytics.coin_breakdown.map(c => c.count / maxCoins)
+      );
 
-      if (data.machines && data.machines.length > 0) {
-        // Table header
-        const cols = [60, 35, 35, 40, 8]; // widths
-        const headers = ["Machine", "Sessions", "Income (₱)", "Avg Duration", ""];
+      // ── Peak hours ────────────────────────────────────────────────────────
+      sectionTitle("Peak Hours");
+      if (analytics.peak_hours.length > 0) {
+        const maxTx = analytics.peak_hours[0].transactions || 1;
+        drawTable(
+          ["Hour", "Coins", "Income"],
+          [2, 50, 100],
+          analytics.peak_hours.map(r => [r.hour_label, String(r.transactions), peso(r.income)]),
+          analytics.peak_hours.map(r => r.transactions / maxTx)
+        );
+      } else {
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(156, 163, 175);
+        doc.text("No coins in this period", margin, y + 2);
+        y += 12;
+      }
 
-        doc.setFillColor(15, 23, 42);
-        doc.rect(margin, y, contentW, 8, 'F');
+            // ── Machine utilization ───────────────────────────────────────────────
+      sectionTitle("Machine Utilization");
+      const mu = analytics.machine_usage;
 
-        let cx = margin;
-        headers.forEach((h, i) => {
-          doc.setFontSize(7.5);
-          doc.setFont("helvetica", "bold");
-          doc.setTextColor(255, 255, 255);
-          doc.text(h, cx + 2, y + 5.5);
-          cx += cols[i];
+      if (mu && mu.machines.length > 0) {
+        // insights first (plain sentences)
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        mu.insights.forEach(ins => {
+          const prefix = ins.level === "warning" ? "[!] " : ins.level === "good" ? "[OK] " : "[i] ";
+          const lines  = doc.splitTextToSize(prefix + ins.message, contentW);
+          ensure(lines.length * 4 + 3);
+          doc.setTextColor(...(ins.level === "warning" ? [146, 64, 14] : [75, 85, 99]));
+          doc.text(lines, margin, y);
+          y += lines.length * 4 + 2;
         });
-        y += 8;
+        y += 3;
 
-        // Table rows
-        data.machines.forEach((m, idx) => {
-          const rowColor = idx % 2 === 0 ? [255, 255, 255] : [248, 250, 252];
-          doc.setFillColor(...rowColor);
-          doc.rect(margin, y, contentW, 7, 'F');
+        const statusName = { busy: "Busy", normal: "Normal", low: "Low usage", none: "No sessions" };
+        const maxSess    = Math.max(...mu.machines.map(m => m.sessions), 1);
 
-          const row = [
-            m.machine_name,
+        drawTable(
+          ["Machine", "Sessions", "Share", "Earnings", "Coins", "Status"],
+          [2, 42, 66, 88, 118, 138],
+          mu.machines.map(m => [
+            m.name,
             String(m.sessions),
-            `P${parseFloat(m.income).toFixed(2)}`,
-            `${parseFloat(m.avg_duration).toFixed(1)} min`,
-          ];
+            `${m.share_pct}%`,
+            peso(m.income),
+            String(m.coins),
+            statusName[m.status] ?? m.status,
+          ]),
+          mu.machines.map(m => m.sessions / maxSess)
+        );
+      } else {
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(156, 163, 175);
+        doc.text("No machine data for this period", margin, y + 2);
+        y += 12;
+      }
 
-          cx = margin;
-          row.forEach((val, i) => {
-            doc.setFontSize(8);
-            doc.setFont("helvetica", "normal");
-            doc.setTextColor(55, 65, 81);
-            doc.text(val, cx + 2, y + 5);
-            cx += cols[i];
-          });
-
-          // Income bar indicator
-          const maxIncome = Math.max(...data.machines.map(m => parseFloat(m.income)));
-          const barPct    = maxIncome > 0 ? parseFloat(m.income) / maxIncome : 0;
-          doc.setFillColor(16, 185, 129);
-          doc.rect(margin + contentW - 20, y + 2, barPct * 18, 3, 'F');
-
-          y += 7;
-        });
-
-        // Bottom border
+      // ── Footer on every page ──────────────────────────────────────────────
+      const totalPages = doc.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
         doc.setDrawColor(229, 231, 235);
         doc.setLineWidth(0.3);
-        doc.line(margin, y, margin + contentW, y);
-        y += 8;
-      } else {
-        doc.setFontSize(9);
-        doc.setTextColor(156, 163, 175);
-        doc.text("No machine data for this period", margin, y + 5);
-        y += 15;
-      }
-
-      // ── Top session ───────────────────────────────────────────────────────────
-      if (data.top_session) {
-        doc.setTextColor(17, 24, 39);
-        doc.setFontSize(11);
-        doc.setFont("helvetica", "bold");
-        doc.text("Top Session", margin, y);
-        y += 6;
-
-        doc.setFillColor(240, 253, 244);
-        doc.roundedRect(margin, y, contentW, 16, 2, 2, 'F');
-        doc.setDrawColor(110, 231, 183);
-        doc.setLineWidth(0.5);
-        doc.roundedRect(margin, y, contentW, 16, 2, 2, 'S');
-
-        doc.setFontSize(9);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(6, 95, 70);
-        doc.text(`${data.top_session.machine_name}`, margin + 4, y + 7);
-
+        doc.line(margin, 283, pageW - margin, 283);
+        doc.setFontSize(8);
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(55, 65, 81);
+        doc.setTextColor(156, 163, 175);
         doc.text(
-          `P${data.top_session.pesos} — ${data.top_session.duration_min ?? 0} minutes — ${data.top_session.started_at}`,
-          margin + 4, y + 13
+          `PisoNet Computer Shop Management System  |  Page ${i} of ${totalPages}  |  ${generatedAt}`,
+          pageW / 2, 287, { align: "center" }
         );
-        y += 22;
       }
-      
-      // ── Peak Hours ────────────────────────────────────────────────────────────────
-if (data.peak_hours && data.peak_hours.length > 0) {
-  doc.setTextColor(17, 24, 39);
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "bold");
-  doc.text("Peak Hours", margin, y);
-  y += 6;
 
-  // Table header
-  doc.setFillColor(15, 23, 42);
-  doc.rect(margin, y, contentW, 8, 'F');
-
-  doc.setFontSize(7.5);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(255, 255, 255);
-  doc.text("Hour",     margin + 2,              y + 5.5);
-  doc.text("Sessions", margin + 50,             y + 5.5);
-  doc.text("Income",   margin + 100,            y + 5.5);
-  doc.text("Activity", margin + contentW - 40,  y + 5.5);
-  y += 8;
-
-  const maxSessions = Math.max(...data.peak_hours.map(r => r.sessions));
-
-  data.peak_hours.forEach((row, idx) => {
-    const rowColor = idx % 2 === 0 ? [255, 255, 255] : [248, 250, 252];
-    doc.setFillColor(...rowColor);
-    doc.rect(margin, y, contentW, 7, 'F');
-
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(55, 65, 81);
-    doc.text(row.hour_label,            margin + 2,   y + 5);
-    doc.text(String(row.sessions),      margin + 50,  y + 5);
-    doc.text(`P${parseFloat(row.income).toFixed(2)}`, margin + 100, y + 5);
-
-    // Activity bar
-    const barPct = maxSessions > 0 ? row.sessions / maxSessions : 0;
-    doc.setFillColor(16, 185, 129);
-    doc.rect(margin + contentW - 40, y + 2, barPct * 38, 3, 'F');
-
-    y += 7;
-  });
-
-  doc.setDrawColor(229, 231, 235);
-  doc.setLineWidth(0.3);
-  doc.line(margin, y, margin + contentW, y);
-  y += 8;
-}
-
-      // ── Footer ────────────────────────────────────────────────────────────────
-      doc.setFontSize(8);
-      doc.setTextColor(156, 163, 175);
-      doc.text(
-        `PisoNet Computer Shop Management System  |  Page 1 of 1  |  ${data.generated_at}`,
-        pageW / 2, 287, { align: "center" }
-      );
-      doc.setDrawColor(229, 231, 235);
-      doc.setLineWidth(0.3);
-      doc.line(margin, 283, pageW - margin, 283);
-
-      // ── Save ─────────────────────────────────────────────────────────────────
-      const filename = `pisonet_report_${reportType}_${data.generated_at.replace(/[: ]/g, '-')}.pdf`;
-      doc.save(filename);
+      // ── Save ──────────────────────────────────────────────────────────────
+      const safeLabel = label.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "");
+      doc.save(`pisonet_report_${analytics.period.mode}_${safeLabel}.pdf`);
 
     } catch (err) {
       console.error("PDF generation error:", err);
-      setError("Failed to generate PDF — check console for details");
+      setError("Failed to generate PDF. Check your internet (jsPDF loads from a CDN) and the console.");
     } finally {
       setLoading(false);
     }
   };
 
+  const notReady = !analytics || dataLoading;
+
   return (
-    <div style={{
-      background: "white", borderRadius: 12, padding: 20,
-      border: "1px solid #e5e7eb", marginBottom: 16,
-    }}>
-      <div style={{ fontWeight: 700, fontSize: 14, color: "#374151", marginBottom: 4 }}>
-        Generate Report
-      </div>
-      <div style={{ fontSize: 12, color: "#9ca3af", marginBottom: 16 }}>
-        Download a PDF analytics report with income summary, charts, and per-machine breakdown
-      </div>
-
-      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-        {/* Report type selector */}
-        {["daily", "weekly", "monthly"].map(type => (
-          <button
-            key={type}
-            onClick={() => setReportType(type)}
-            style={{
-              padding: "7px 16px",
-              borderRadius: 8,
-              border: reportType === type ? "1.5px solid #10b981" : "1.5px solid #e5e7eb",
-              background: reportType === type ? "#f0fdf4" : "white",
-              color: reportType === type ? "#065f46" : "#374151",
-              fontWeight: reportType === type ? 700 : 400,
-              fontSize: 13,
-              cursor: "pointer",
-              textTransform: "capitalize",
-              fontFamily: "'DM Sans', system-ui, sans-serif",
-              transition: "all 0.15s",
-            }}
-          >
-            {type}
-          </button>
-        ))}
-
-        {/* Download button */}
-        <button
-          onClick={generatePDF}
-          disabled={loading}
-          style={{
-            padding: "7px 20px",
-            borderRadius: 8,
-            border: "none",
-            background: loading ? "#e5e7eb" : "linear-gradient(135deg, #10b981, #059669)",
-            color: loading ? "#9ca3af" : "white",
-            fontWeight: 700,
-            fontSize: 13,
-            cursor: loading ? "not-allowed" : "pointer",
-            fontFamily: "'DM Sans', system-ui, sans-serif",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            transition: "opacity 0.15s",
-          }}
-        >
-          {loading ? "Generating…" : "⬇ Download PDF"}
-        </button>
-      </div>
-
-      {error && (
-        <div style={{
-          marginTop: 10, background: "#fef2f2", border: "1px solid #fecaca",
-          borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#991b1b",
-        }}>
-          ⚠ {error}
+    <div className="report-card">
+      <div>
+        <div className="report-title">Download Report</div>
+        <div className="report-sub">
+          {analytics
+            ? <>PDF for the selected period: <strong>{analytics.period.label}</strong></>
+            : "Waiting for analytics data…"}
         </div>
-      )}
+      </div>
+
+      <button className="report-btn" onClick={generatePDF} disabled={loading || notReady}>
+        {loading ? "Generating…" : "⬇ Download PDF"}
+      </button>
+
+      {error && <div className="report-error">⚠ {error}</div>}
     </div>
   );
 }

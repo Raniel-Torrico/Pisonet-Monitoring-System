@@ -1,0 +1,154 @@
+<mxfile host="app.diagrams.net" agent="drawio">
+  <diagram id="incremental" name="Figure 7 - Incremental Development Model">
+    <mxGraphModel dx="1500" dy="866" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="650" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="planning" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontSize=12;fontColor=#000000;" value="Planning: requirements and scope" vertex="1">
+          <mxGeometry height="70" width="140" x="215" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="inc1" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=14;fontColor=#000000;fontStyle=1;verticalAlign=top;" value="Increment 1" vertex="1">
+          <mxGeometry height="270" width="190" x="190" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="inc1_title" parent="inc1" style="text;html=1;fontSize=12;fontColor=#000000;fontStyle=1;align=center;verticalAlign=middle;" value="Core Monitoring" vertex="1">
+          <mxGeometry height="20" width="180" x="5" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="inc1_design" parent="inc1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Design" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="inc1_construct" parent="inc1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Construction" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="inc1_test" parent="inc1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Testing" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="inc1_e1" edge="1" parent="inc1" source="inc1_design" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc1_construct">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc1_e2" edge="1" parent="inc1" source="inc1_construct" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc1_test">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" parent="inc1" style="text;html=1;whiteSpace=wrap;fontSize=12;fontColor=#000000;align=left;verticalAlign=top;fillColor=#FFF2CC;strokeColor=#D6B656;" value="Python client; heartbeat and metrics; automatic registration; PHP API + MySQL; machine view" vertex="1">
+          <mxGeometry height="70" width="180" x="5" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="inc2" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=14;fontColor=#000000;fontStyle=1;verticalAlign=top;" value="Increment 2" vertex="1">
+          <mxGeometry height="280" width="190" x="400" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="inc2_title" parent="inc2" style="text;html=1;fontSize=12;fontColor=#000000;fontStyle=1;align=center;verticalAlign=middle;" value="Sessions and Remote Control" vertex="1">
+          <mxGeometry height="30" width="180" x="5" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="inc2_design" parent="inc2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Design" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="inc2_construct" parent="inc2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Construction" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="117" as="geometry" />
+        </mxCell>
+        <mxCell id="inc2_test" parent="inc2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Testing" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="inc2_e1" edge="1" parent="inc2" source="inc2_design" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc2_construct">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc2_e2" edge="1" parent="inc2" source="inc2_construct" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc2_test">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" parent="inc2" style="text;html=1;whiteSpace=wrap;fontSize=12;fontColor=#000000;align=left;verticalAlign=top;fillColor=#FFF2CC;strokeColor=#D6B656;" value="session timer and overlay; session recording; restart, shutdown, lock; token authentication; role-based access; audit logging" vertex="1">
+          <mxGeometry height="80" width="180" x="5" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="inc3" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=14;fontColor=#000000;fontStyle=1;verticalAlign=top;" value="Increment 3" vertex="1">
+          <mxGeometry height="260" width="190" x="610" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="inc3_title" parent="inc3" style="text;html=1;fontSize=12;fontColor=#000000;fontStyle=1;align=center;verticalAlign=middle;" value="Analytics, Alerts and Health" vertex="1">
+          <mxGeometry height="20" width="180" x="5" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="inc3_design" parent="inc3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Design" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="inc3_construct" parent="inc3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Construction" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="97" as="geometry" />
+        </mxCell>
+        <mxCell id="inc3_test" parent="inc3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Testing" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="inc3_e1" edge="1" parent="inc3" source="inc3_design" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc3_construct">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc3_e2" edge="1" parent="inc3" source="inc3_construct" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc3_test">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" parent="inc3" style="text;html=1;whiteSpace=wrap;fontSize=12;fontColor=#000000;align=left;verticalAlign=top;fillColor=#FFF2CC;strokeColor=#D6B656;" value="income analytics; alerts; hardware health" vertex="1">
+          <mxGeometry height="50" width="180" x="5" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="inc4" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=14;fontColor=#000000;fontStyle=1;verticalAlign=top;" value="Increment 4" vertex="1">
+          <mxGeometry height="280" width="190" x="820" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="inc4_title" parent="inc4" style="text;html=1;fontSize=12;fontColor=#000000;fontStyle=1;align=center;verticalAlign=middle;" value="Coin Hardware and Hosting" vertex="1">
+          <mxGeometry height="20" width="180" x="5" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="inc4_design" parent="inc4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Design" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="inc4_construct" parent="inc4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Construction" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="93" as="geometry" />
+        </mxCell>
+        <mxCell id="inc4_test" parent="inc4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Testing" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="inc4_e1" edge="1" parent="inc4" source="inc4_design" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc4_construct">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc4_e2" edge="1" parent="inc4" source="inc4_construct" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc4_test">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" parent="inc4" style="text;html=1;whiteSpace=wrap;fontSize=12;fontColor=#000000;align=left;verticalAlign=top;fillColor=#FFF2CC;strokeColor=#D6B656;" value="ESP32 coin reader; coin logging; rate, stacking, 15-hour limit; Stop Timer; specs, processes, archive; cloud hosting + local fallback" vertex="1">
+          <mxGeometry height="80" width="180" x="5" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="inc5" parent="1" style="swimlane;html=1;startSize=28;horizontal=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=14;fontColor=#000000;fontStyle=1;verticalAlign=top;" value="Increment 5" vertex="1">
+          <mxGeometry height="300" width="190" x="1030" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="inc5_title" parent="inc5" style="text;html=1;fontSize=12;fontColor=#000000;fontStyle=1;align=center;verticalAlign=middle;" value="Refinements" vertex="1">
+          <mxGeometry height="20" width="180" x="5" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="inc5_design" parent="inc5" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Design" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="inc5_construct" parent="inc5" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Construction" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="97" as="geometry" />
+        </mxCell>
+        <mxCell id="inc5_test" parent="inc5" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontColor=#000000;" value="Testing" vertex="1">
+          <mxGeometry height="22" width="100" x="45" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="inc5_e1" edge="1" parent="inc5" source="inc5_design" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc5_construct">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc5_e2" edge="1" parent="inc5" source="inc5_construct" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc5_test">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" parent="inc5" style="text;html=1;whiteSpace=wrap;fontSize=12;fontColor=#000000;align=left;verticalAlign=top;fillColor=#FFF2CC;strokeColor=#D6B656;" value="inactivity detection + auto-shutdown; alert pop-ups; health table and cards; period analytics + comparison; PDF report" vertex="1">
+          <mxGeometry height="80" width="180" x="5" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="cutover" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D79B00;fontSize=12;fontColor=#000000;dashed=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;" value="Cutover: installation at Albenj (pending)&lt;br&gt;&lt;br&gt;Phase 1: Demonstration&lt;br&gt;Phase 2: Pilot (2 PCs)&lt;br&gt;Phase 3: Full installation (10 PCs)" vertex="1">
+          <mxGeometry height="110" width="230" x="1240" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="a_plan_inc1" edge="1" parent="1" source="planning" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_inc1_inc2" edge="1" parent="1" source="inc1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_inc2_inc3" edge="1" parent="1" source="inc2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_inc3_inc4" edge="1" parent="1" source="inc3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_inc4_inc5" edge="1" parent="1" source="inc4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="inc5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_inc5_cutover" edge="1" parent="1" source="inc5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;strokeColor=#000000;" target="cutover">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

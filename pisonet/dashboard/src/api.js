@@ -52,12 +52,15 @@ export const getMachines  = ()             => api.get('/metrics.php');
 export const getAlerts    = ()             => api.get('/alerts.php');
 export const getLogs      = (params = {})  => api.get('/logs.php', { params });
 export const getAnalytics = ()             => api.get('/analytics.php');
+export const getAnalyticsPeriod = (params = {}) => api.get('/analytics_period.php', { params });
 
 // -- Commands --
 export const sendCommand  = (machine_name, command) =>
   api.post('/command.php', { action: 'queue', machine_name, command, issued_by: 'admin' });
 export const resolveAlert = (id) =>
   api.post('/alerts.php', { action: 'resolve', id });
+export const stopTimer = (machine_name) =>
+  api.post('/command.php', { action: 'queue', machine_name, command: 'stop_timer', issued_by: 'admin' });
 
 // -- Auth --
 export const login = (username, password) =>
@@ -78,7 +81,7 @@ export const getScreenshot     = (machine_name) => api.get('/screenshot.php', { 
 export const getEventLogs      = (machine_name) => api.get('/eventlogs.php', { params: { machine_name } });
 
 // -- Health --
-export const getHealth = () => api.get('/health.php');
+export const getHealth = (params = {}) => api.get('/health.php', { params });
 
 // -- Reports --
 export const getReport = (type = 'weekly') => api.get('/report.php', { params: { type } });

@@ -49,3 +49,1013 @@
 2026-06-06 03:08:57 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
 2026-06-06 03:08:57 [INFO] File coin watcher started (normal mode)
 2026-06-06 03:08:57 [INFO] All threads started
+2026-11-10 02:57:11 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 02:57:11 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 02:57:12 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 02:57:12 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 02:57:12 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 02:57:14 [INFO] Hardware specs sent
+2026-11-10 02:57:14 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 02:57:14 [WARNING] Cannot open coin acceptor port COM3: could not open port 'COM3': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 02:57:14 [INFO] File coin watcher started (normal mode)
+2026-11-10 02:57:14 [INFO] All threads started
+2026-11-10 02:57:24 [WARNING] Cannot open coin acceptor port COM3: could not open port 'COM3': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 02:57:34 [INFO] Coin acceptor listener started on COM3
+2026-11-10 02:58:08 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 02:58:08 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 02:58:08 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 02:58:08 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 02:58:09 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 02:58:11 [INFO] Hardware specs sent
+2026-11-10 02:58:11 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 02:58:11 [INFO] File coin watcher started (normal mode)
+2026-11-10 02:58:11 [INFO] All threads started
+2026-11-10 02:58:11 [INFO] Coin acceptor listener started on COM3
+2026-11-10 03:49:02 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 03:49:02 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 03:49:02 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 03:49:02 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 03:49:03 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 03:49:05 [INFO] Hardware specs sent
+2026-11-10 03:49:05 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 03:49:05 [INFO] File coin watcher started (normal mode)
+2026-11-10 03:49:05 [INFO] All threads started
+2026-11-10 03:49:05 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:49:15 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:49:25 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:49:35 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:49:45 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:49:55 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:50:05 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:50:15 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:50:25 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:50:35 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:50:45 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:50:55 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:51:05 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:51:15 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:51:25 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:51:35 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:51:45 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:51:55 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:52:06 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:52:16 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:52:56 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 03:52:56 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 03:52:56 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 03:52:56 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 03:52:56 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 03:52:58 [INFO] Hardware specs sent
+2026-11-10 03:52:58 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 03:52:58 [INFO] File coin watcher started (normal mode)
+2026-11-10 03:52:58 [INFO] All threads started
+2026-11-10 03:52:58 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:53:08 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:53:18 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:53:28 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:53:38 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:56:06 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 03:56:06 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 03:56:06 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 03:56:06 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 03:56:07 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 03:56:09 [INFO] Hardware specs sent
+2026-11-10 03:56:09 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 03:56:09 [INFO] File coin watcher started (normal mode)
+2026-11-10 03:56:09 [INFO] All threads started
+2026-11-10 03:56:09 [INFO] Coin acceptor listener started on COM9
+2026-11-10 03:56:09 [INFO] ESP32: ================================
+2026-11-10 03:56:09 [INFO] ESP32: ================================
+2026-11-10 03:56:14 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 03:56:20 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 03:56:41 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 03:56:45 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 03:59:03 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 03:59:03 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 03:59:03 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 03:59:03 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 03:59:04 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 03:59:06 [INFO] Hardware specs sent
+2026-11-10 03:59:06 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 03:59:06 [INFO] File coin watcher started (normal mode)
+2026-11-10 03:59:06 [INFO] All threads started
+2026-11-10 03:59:06 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:59:12 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 03:59:16 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:59:17 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 03:59:22 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 03:59:24 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 03:59:26 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:59:36 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:59:46 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 03:59:56 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 04:00:06 [WARNING] Cannot open coin acceptor port: could not open port 'COM9': PermissionError(13, 'Access is denied.', None, 5) — retrying in 10s
+2026-11-10 04:01:19 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:01:19 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:01:20 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:01:20 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:01:20 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:01:22 [INFO] Hardware specs sent
+2026-11-10 04:01:22 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:01:22 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:01:22 [INFO] All threads started
+2026-11-10 04:01:22 [INFO] Coin acceptor listener started on COM9
+2026-11-10 04:01:22 [INFO] ESP32: ================================
+2026-11-10 04:01:22 [INFO] ESP32: ================================
+2026-11-10 04:01:29 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:01:34 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:01:40 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:01:43 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:01:45 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:01:47 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:03:46 [INFO] Client stopped.
+2026-11-10 04:09:27 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:09:27 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:09:27 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:09:27 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:09:28 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:09:30 [INFO] Hardware specs sent
+2026-11-10 04:09:30 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:09:30 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:09:30 [INFO] All threads started
+2026-11-10 04:09:30 [INFO] Coin acceptor listener started on COM9
+2026-11-10 04:09:30 [INFO] ESP32: ================================
+2026-11-10 04:09:30 [INFO] ESP32: ================================
+2026-11-10 04:09:39 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:09:46 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:09:54 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:10:17 [INFO] Real coin detected: P1.0
+2026-11-10 04:10:18 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:10:18 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:10:27 [INFO] Timer tick: 290s left
+2026-11-10 04:10:28 [INFO] Timer tick: 290s left
+2026-11-10 04:10:28 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:10:36 [INFO] Client stopped.
+2026-11-10 04:15:08 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:15:08 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:15:09 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:15:09 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:15:09 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:15:11 [INFO] Hardware specs sent
+2026-11-10 04:15:11 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:15:11 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:15:11 [INFO] All threads started
+2026-11-10 04:15:11 [INFO] ESP32: ================================
+2026-11-10 04:15:11 [INFO] ESP32: ================================
+2026-11-10 04:15:21 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:15:24 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:15:47 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:15:51 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:15:54 [INFO] Client stopped.
+2026-11-10 04:15:57 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:15:57 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:15:57 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:15:57 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:15:58 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:16:00 [INFO] Hardware specs sent
+2026-11-10 04:16:00 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:16:00 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:16:00 [INFO] All threads started
+2026-11-10 04:16:00 [INFO] ESP32: ================================
+2026-11-10 04:16:00 [INFO] ESP32: ================================
+2026-11-10 04:16:15 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:16:21 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:16:23 [INFO] Client stopped.
+2026-11-10 04:18:11 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:18:11 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:18:11 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:18:11 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:18:12 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:18:14 [INFO] Hardware specs sent
+2026-11-10 04:18:14 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:18:14 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:18:14 [INFO] All threads started
+2026-11-10 04:18:14 [INFO] ESP32: ================================
+2026-11-10 04:18:14 [INFO] ESP32: ================================
+2026-11-10 04:18:28 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:18:32 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:18:38 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:18:40 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:18:50 [INFO] Client stopped.
+2026-11-10 04:19:33 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:19:33 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:19:33 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:19:33 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:19:34 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:19:36 [INFO] Hardware specs sent
+2026-11-10 04:19:36 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:19:36 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:19:36 [INFO] All threads started
+2026-11-10 04:19:36 [INFO] ESP32: ================================
+2026-11-10 04:19:36 [INFO] ESP32: ================================
+2026-11-10 04:19:44 [INFO] Client stopped.
+2026-11-10 04:19:48 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:19:48 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:19:48 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:19:48 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:19:48 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:19:50 [INFO] Hardware specs sent
+2026-11-10 04:19:50 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:19:50 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:19:50 [INFO] All threads started
+2026-11-10 04:19:51 [INFO] ESP32: ================================
+2026-11-10 04:19:51 [INFO] ESP32: ================================
+2026-11-10 04:20:00 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:20:08 [INFO] Real coin detected: P1.0
+2026-11-10 04:20:10 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:20:10 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:20:19 [INFO] Timer tick: 290s left
+2026-11-10 04:20:19 [INFO] Timer tick: 290s left
+2026-11-10 04:20:21 [INFO] Real coin detected: P1.0
+2026-11-10 04:20:22 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 04:20:22 [INFO] Real coin detected: P5.0
+2026-11-10 04:20:24 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:20:29 [INFO] Timer tick: 2080s left
+2026-11-10 04:20:29 [INFO] Timer tick: 2080s left
+2026-11-10 04:20:39 [INFO] Timer tick: 2070s left
+2026-11-10 04:20:39 [INFO] Timer tick: 2070s left
+2026-11-10 04:20:49 [INFO] Timer tick: 2060s left
+2026-11-10 04:20:49 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:20:49 [INFO] Timer tick: 2060s left
+2026-11-10 04:20:51 [INFO] Client stopped.
+2026-11-10 04:20:54 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:20:54 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:20:55 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:20:55 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:20:55 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:20:58 [INFO] Hardware specs sent
+2026-11-10 04:20:58 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:20:58 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:20:58 [INFO] All threads started
+2026-11-10 04:20:58 [INFO] ESP32: ================================
+2026-11-10 04:20:58 [INFO] ESP32: ================================
+2026-11-10 04:21:05 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:21:23 [INFO] Real coin detected: P1.0
+2026-11-10 04:21:24 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:21:24 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:21:33 [INFO] Timer tick: 290s left
+2026-11-10 04:21:34 [INFO] Timer tick: 290s left
+2026-11-10 04:21:43 [INFO] Real coin detected: P5.0
+2026-11-10 04:21:43 [INFO] Timer tick: 280s left
+2026-11-10 04:21:44 [INFO] Timer tick: 280s left
+2026-11-10 04:21:44 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:21:53 [INFO] Timer tick: 1770s left
+2026-11-10 04:21:54 [INFO] Timer tick: 1770s left
+2026-11-10 04:22:00 [INFO] Real coin detected: P1.0
+2026-11-10 04:22:02 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 04:22:03 [INFO] Real coin detected: P10.0
+2026-11-10 04:22:03 [INFO] Timer tick: 2060s left
+2026-11-10 04:22:04 [INFO] Timer tick: 2060s left
+2026-11-10 04:22:04 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 04:22:13 [INFO] Timer tick: 5050s left
+2026-11-10 04:22:14 [INFO] Timer tick: 5050s left
+2026-11-10 04:22:16 [INFO] Real coin detected: P20.0
+2026-11-10 04:22:18 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 04:22:23 [INFO] Timer tick: 11040s left
+2026-11-10 04:22:23 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:22:24 [INFO] Timer tick: 11040s left
+2026-11-10 04:22:25 [INFO] Client stopped.
+2026-11-10 04:26:34 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:26:34 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:26:35 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:26:35 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:26:35 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:26:37 [INFO] Hardware specs sent
+2026-11-10 04:26:37 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:26:37 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:26:37 [INFO] All threads started
+2026-11-10 04:26:37 [INFO] ESP32: ================================
+2026-11-10 04:26:37 [INFO] ESP32: ================================
+2026-11-10 04:26:38 [INFO] Stop timer requested, but no active session
+2026-11-10 04:26:44 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:26:57 [INFO] Real coin detected: P1.0
+2026-11-10 04:26:58 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:26:58 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:27:07 [INFO] Timer tick: 290s left
+2026-11-10 04:27:08 [INFO] Timer tick: 290s left
+2026-11-10 04:27:12 [INFO] Real coin detected: P1.0
+2026-11-10 04:27:13 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 04:27:13 [INFO] Real coin detected: P5.0
+2026-11-10 04:27:14 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:27:17 [INFO] Timer tick: 2080s left
+2026-11-10 04:27:18 [INFO] Timer tick: 2080s left
+2026-11-10 04:27:27 [INFO] Timer tick: 2070s left
+2026-11-10 04:27:28 [INFO] Timer tick: 2070s left
+2026-11-10 04:27:37 [INFO] Timer tick: 2060s left
+2026-11-10 04:27:38 [INFO] Real coin detected: P10.0
+2026-11-10 04:27:38 [INFO] Timer tick: 2060s left
+2026-11-10 04:27:39 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 04:27:47 [INFO] Timer tick: 5050s left
+2026-11-10 04:27:48 [INFO] Timer tick: 5050s left
+2026-11-10 04:27:53 [INFO] Real coin detected: P20.0
+2026-11-10 04:27:54 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 04:27:57 [INFO] Timer tick: 11040s left
+2026-11-10 04:27:58 [INFO] Timer tick: 11040s left
+2026-11-10 04:28:07 [INFO] Timer tick: 11030s left
+2026-11-10 04:28:08 [INFO] Timer tick: 11030s left
+2026-11-10 04:28:14 [INFO] Client stopped.
+2026-11-10 04:31:42 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:31:42 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:31:42 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:31:42 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:31:43 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:31:45 [INFO] Hardware specs sent
+2026-11-10 04:31:45 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:31:45 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:31:45 [INFO] All threads started
+2026-11-10 04:31:46 [INFO] ESP32: ================================
+2026-11-10 04:31:46 [INFO] ESP32: ================================
+2026-11-10 04:31:46 [INFO] Stop timer requested, but no active session
+2026-11-10 04:31:48 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:31:57 [INFO] Stop timer requested, but no active session
+2026-11-10 04:32:25 [INFO] Running: lock
+2026-11-10 04:32:25 [INFO] Command executed: lock
+2026-11-10 04:33:12 [INFO] Stop timer requested, but no active session
+2026-11-10 04:33:13 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:33:20 [INFO] Stop timer requested, but no active session
+2026-11-10 04:33:27 [INFO] Client stopped.
+2026-11-10 04:37:27 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:37:27 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:37:27 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:37:27 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:37:28 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:37:30 [INFO] Hardware specs sent
+2026-11-10 04:37:30 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:37:30 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:37:30 [INFO] All threads started
+2026-11-10 04:37:30 [INFO] ESP32: ================================
+2026-11-10 04:37:30 [INFO] ESP32: ================================
+2026-11-10 04:37:32 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:37:41 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:37:44 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:37:51 [INFO] Real coin detected: P1.0
+2026-11-10 04:37:52 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:37:52 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:37:59 [INFO] Real coin detected: P5.0
+2026-11-10 04:38:00 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:38:01 [INFO] Timer tick: 1790s left
+2026-11-10 04:38:01 [INFO] Timer tick: 1790s left
+2026-11-10 04:38:08 [INFO] Real coin detected: P5.0
+2026-11-10 04:38:09 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:38:09 [WARNING] Coin rejected by ESP32: INVALID: 4 pulses
+2026-11-10 04:38:11 [INFO] Timer tick: 3280s left
+2026-11-10 04:38:11 [INFO] Timer tick: 3280s left
+2026-11-10 04:38:17 [INFO] Real coin detected: P20.0
+2026-11-10 04:38:18 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 04:38:21 [INFO] Timer tick: 9270s left
+2026-11-10 04:38:21 [INFO] Timer tick: 9270s left
+2026-11-10 04:38:31 [INFO] Timer tick: 9260s left
+2026-11-10 04:38:31 [INFO] Timer tick: 9260s left
+2026-11-10 04:38:41 [INFO] Timer tick: 9250s left
+2026-11-10 04:38:41 [INFO] Timer tick: 9250s left
+2026-11-10 04:38:51 [INFO] Timer tick: 9240s left
+2026-11-10 04:38:51 [INFO] Timer tick: 9240s left
+2026-11-10 04:39:01 [INFO] Timer tick: 9230s left
+2026-11-10 04:39:01 [INFO] Timer tick: 9230s left
+2026-11-10 04:39:11 [INFO] Timer tick: 9220s left
+2026-11-10 04:39:11 [INFO] Timer tick: 9220s left
+2026-11-10 04:39:21 [INFO] Timer tick: 9210s left
+2026-11-10 04:39:21 [INFO] Timer tick: 9210s left
+2026-11-10 04:39:28 [INFO] Running: lock
+2026-11-10 04:39:28 [INFO] Session force-stopped by admin
+2026-11-10 04:39:29 [INFO] Session ended
+2026-11-10 04:39:36 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:39:41 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:40:09 [INFO] Client stopped.
+2026-11-10 04:40:13 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:40:13 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:40:13 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:40:13 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:40:14 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:40:16 [INFO] Hardware specs sent
+2026-11-10 04:40:16 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:40:16 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:40:16 [INFO] All threads started
+2026-11-10 04:40:16 [INFO] ESP32: ================================
+2026-11-10 04:40:16 [INFO] ESP32: ================================
+2026-11-10 04:40:18 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:40:30 [INFO] Real coin detected: P1.0
+2026-11-10 04:40:31 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:40:31 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:40:38 [INFO] Real coin detected: P1.0
+2026-11-10 04:40:39 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 04:40:40 [INFO] Timer tick: 590s left
+2026-11-10 04:40:41 [INFO] Timer tick: 590s left
+2026-11-10 04:40:41 [INFO] Real coin detected: P5.0
+2026-11-10 04:40:42 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:40:47 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:40:50 [INFO] Timer tick: 2080s left
+2026-11-10 04:40:51 [INFO] Timer tick: 2080s left
+2026-11-10 04:40:52 [INFO] Client stopped.
+2026-11-10 04:41:06 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:41:06 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:41:06 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:41:06 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:41:07 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:41:09 [INFO] Hardware specs sent
+2026-11-10 04:41:09 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:41:09 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:41:09 [INFO] All threads started
+2026-11-10 04:41:09 [INFO] ESP32: ================================
+2026-11-10 04:41:09 [INFO] ESP32: ================================
+2026-11-10 04:41:17 [INFO] Stop timer requested, but no active session
+2026-11-10 04:41:35 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:41:44 [INFO] Real coin detected: P1.0
+2026-11-10 04:41:45 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:41:45 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:41:47 [INFO] Real coin detected: P1.0
+2026-11-10 04:41:48 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 04:41:52 [INFO] Real coin detected: P5.0
+2026-11-10 04:41:53 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:41:55 [INFO] Timer tick: 2090s left
+2026-11-10 04:41:55 [INFO] Timer tick: 2090s left
+2026-11-10 04:41:55 [INFO] Real coin detected: P10.0
+2026-11-10 04:41:56 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 04:41:59 [WARNING] Coin rejected by ESP32: INVALID: 22 pulses
+2026-11-10 04:42:05 [INFO] Timer tick: 5080s left
+2026-11-10 04:42:05 [INFO] Timer tick: 5080s left
+2026-11-10 04:42:15 [INFO] Timer tick: 5070s left
+2026-11-10 04:42:15 [INFO] Timer tick: 5070s left
+2026-11-10 04:42:25 [INFO] Timer tick: 5060s left
+2026-11-10 04:42:25 [INFO] Timer tick: 5060s left
+2026-11-10 04:42:35 [INFO] Timer tick: 5050s left
+2026-11-10 04:42:35 [INFO] Timer tick: 5050s left
+2026-11-10 04:42:45 [INFO] Timer tick: 5040s left
+2026-11-10 04:42:45 [INFO] Timer tick: 5040s left
+2026-11-10 04:42:50 [INFO] Running: lock
+2026-11-10 04:42:50 [INFO] Session force-stopped by admin
+2026-11-10 04:42:50 [INFO] Session ended
+2026-11-10 04:42:56 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:43:01 [INFO] Client stopped.
+2026-11-10 04:43:04 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:43:04 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:43:04 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:43:04 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:43:04 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:43:06 [INFO] Hardware specs sent
+2026-11-10 04:43:06 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:43:06 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:43:06 [INFO] All threads started
+2026-11-10 04:43:06 [INFO] ESP32: ================================
+2026-11-10 04:43:06 [INFO] ESP32: ================================
+2026-11-10 04:43:25 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:43:33 [INFO] Real coin detected: P1.0
+2026-11-10 04:43:34 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:43:34 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:43:38 [INFO] Real coin detected: P10.0
+2026-11-10 04:43:39 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 04:43:40 [INFO] Real coin detected: P5.0
+2026-11-10 04:43:41 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:43:43 [INFO] Real coin detected: P1.0
+2026-11-10 04:43:44 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 04:43:44 [INFO] Timer tick: 5090s left
+2026-11-10 04:43:44 [INFO] Timer tick: 5090s left
+2026-11-10 04:43:47 [INFO] Real coin detected: P20.0
+2026-11-10 04:43:48 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 04:43:54 [INFO] Timer tick: 11080s left
+2026-11-10 04:43:54 [INFO] Timer tick: 11080s left
+2026-11-10 04:44:04 [INFO] Timer tick: 11070s left
+2026-11-10 04:44:04 [INFO] Timer tick: 11070s left
+2026-11-10 04:44:14 [INFO] Timer tick: 11060s left
+2026-11-10 04:44:14 [INFO] Timer tick: 11060s left
+2026-11-10 04:44:23 [INFO] Timer tick: 11050s left
+2026-11-10 04:44:24 [INFO] Timer tick: 11050s left
+2026-11-10 04:44:34 [INFO] Timer tick: 11040s left
+2026-11-10 04:44:34 [INFO] Timer tick: 11040s left
+2026-11-10 04:44:44 [INFO] Timer tick: 11030s left
+2026-11-10 04:44:44 [INFO] Timer tick: 11030s left
+2026-11-10 04:44:54 [INFO] Timer tick: 11020s left
+2026-11-10 04:44:54 [INFO] Timer tick: 11020s left
+2026-11-10 04:45:04 [INFO] Timer tick: 11010s left
+2026-11-10 04:45:04 [INFO] Timer tick: 11010s left
+2026-11-10 04:45:08 [INFO] Running: lock
+2026-11-10 04:45:08 [INFO] Session force-stopped by admin
+2026-11-10 04:45:08 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:45:08 [INFO] Session ended
+2026-11-10 04:50:35 [WARNING] Heartbeat failed on all servers
+2026-11-10 04:50:42 [ERROR] POST processes.php \u2192 error: HTTPSConnectionPool(host='monitonet.com', port=443): Read timed out. (read timeout=10)
+2026-11-10 04:50:46 [WARNING] Heartbeat failed on all servers
+2026-11-10 04:50:57 [WARNING] Heartbeat failed on all servers
+2026-11-10 04:54:34 [INFO] Client stopped.
+2026-11-10 04:54:36 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:54:36 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:54:36 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:54:36 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:54:37 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:54:39 [INFO] Hardware specs sent
+2026-11-10 04:54:39 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:54:39 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:54:39 [INFO] All threads started
+2026-11-10 04:54:39 [INFO] ESP32: ================================
+2026-11-10 04:54:39 [INFO] ESP32: ================================
+2026-11-10 04:56:25 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:56:34 [INFO] Real coin detected: P1.0
+2026-11-10 04:56:36 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:56:36 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:56:41 [INFO] Real coin detected: P5.0
+2026-11-10 04:56:42 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 04:56:45 [INFO] Timer tick: 1790s left
+2026-11-10 04:56:45 [INFO] Timer tick: 1790s left
+2026-11-10 04:56:47 [INFO] Real coin detected: P10.0
+2026-11-10 04:56:48 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 04:56:55 [INFO] Real coin detected: P20.0
+2026-11-10 04:56:55 [INFO] Timer tick: 4780s left
+2026-11-10 04:56:55 [INFO] Timer tick: 4780s left
+2026-11-10 04:56:56 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 04:56:56 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 04:57:05 [INFO] Timer tick: 10770s left
+2026-11-10 04:57:05 [INFO] Timer tick: 10770s left
+2026-11-10 04:57:15 [INFO] Timer tick: 10760s left
+2026-11-10 04:57:15 [INFO] Timer tick: 10760s left
+2026-11-10 04:57:25 [INFO] Timer tick: 10750s left
+2026-11-10 04:57:25 [INFO] Timer tick: 10750s left
+2026-11-10 04:57:35 [INFO] Timer tick: 10740s left
+2026-11-10 04:57:35 [INFO] Timer tick: 10740s left
+2026-11-10 04:57:45 [INFO] Timer tick: 10730s left
+2026-11-10 04:57:45 [INFO] Timer tick: 10730s left
+2026-11-10 04:57:55 [INFO] Timer tick: 10720s left
+2026-11-10 04:57:55 [INFO] Timer tick: 10720s left
+2026-11-10 04:58:05 [INFO] Timer tick: 10710s left
+2026-11-10 04:58:05 [INFO] Timer tick: 10710s left
+2026-11-10 04:58:15 [INFO] Timer tick: 10700s left
+2026-11-10 04:58:15 [INFO] Timer tick: 10700s left
+2026-11-10 04:58:25 [INFO] Timer tick: 10690s left
+2026-11-10 04:58:25 [INFO] Timer tick: 10690s left
+2026-11-10 04:58:35 [INFO] Timer tick: 10680s left
+2026-11-10 04:58:35 [INFO] Timer tick: 10680s left
+2026-11-10 04:58:45 [INFO] Timer tick: 10670s left
+2026-11-10 04:58:45 [INFO] Timer tick: 10670s left
+2026-11-10 04:58:55 [INFO] Timer tick: 10660s left
+2026-11-10 04:58:55 [INFO] Timer tick: 10660s left
+2026-11-10 04:59:05 [INFO] Timer tick: 10650s left
+2026-11-10 04:59:05 [INFO] Timer tick: 10650s left
+2026-11-10 04:59:15 [INFO] Timer tick: 10640s left
+2026-11-10 04:59:15 [INFO] Timer tick: 10640s left
+2026-11-10 04:59:25 [INFO] Timer tick: 10630s left
+2026-11-10 04:59:25 [INFO] Timer tick: 10630s left
+2026-11-10 04:59:35 [INFO] Timer tick: 10620s left
+2026-11-10 04:59:35 [INFO] Timer tick: 10620s left
+2026-11-10 04:59:45 [INFO] Timer tick: 10610s left
+2026-11-10 04:59:45 [INFO] Timer tick: 10610s left
+2026-11-10 04:59:55 [INFO] Timer tick: 10600s left
+2026-11-10 04:59:55 [INFO] Timer tick: 10600s left
+2026-11-10 05:00:05 [INFO] Timer tick: 10590s left
+2026-11-10 05:00:05 [INFO] Timer tick: 10590s left
+2026-11-10 05:00:15 [INFO] Timer tick: 10580s left
+2026-11-10 05:00:15 [INFO] Timer tick: 10580s left
+2026-11-10 05:00:25 [INFO] Timer tick: 10570s left
+2026-11-10 05:00:25 [INFO] Timer tick: 10570s left
+2026-11-10 05:00:35 [INFO] Timer tick: 10560s left
+2026-11-10 05:00:35 [INFO] Timer tick: 10560s left
+2026-11-10 05:00:45 [INFO] Timer tick: 10550s left
+2026-11-10 05:00:45 [INFO] Timer tick: 10550s left
+2026-11-10 05:00:55 [INFO] Timer tick: 10540s left
+2026-11-10 05:00:55 [INFO] Timer tick: 10540s left
+2026-11-10 05:01:05 [INFO] Timer tick: 10530s left
+2026-11-10 05:01:05 [INFO] Timer tick: 10530s left
+2026-11-10 05:01:15 [INFO] Timer tick: 10520s left
+2026-11-10 05:01:15 [INFO] Timer tick: 10520s left
+2026-11-10 05:01:25 [INFO] Timer tick: 10510s left
+2026-11-10 05:01:25 [INFO] Timer tick: 10510s left
+2026-11-10 05:01:35 [INFO] Timer tick: 10500s left
+2026-11-10 05:01:35 [INFO] Timer tick: 10500s left
+2026-11-10 05:01:45 [INFO] Timer tick: 10490s left
+2026-11-10 05:01:45 [INFO] Timer tick: 10490s left
+2026-11-10 05:01:55 [INFO] Timer tick: 10480s left
+2026-11-10 05:01:55 [INFO] Timer tick: 10480s left
+2026-11-10 05:02:05 [INFO] Timer tick: 10470s left
+2026-11-10 05:02:05 [INFO] Timer tick: 10470s left
+2026-11-10 05:02:15 [INFO] Timer tick: 10460s left
+2026-11-10 05:02:15 [INFO] Timer tick: 10460s left
+2026-11-10 05:02:25 [INFO] Timer tick: 10450s left
+2026-11-10 05:02:25 [INFO] Timer tick: 10450s left
+2026-11-10 05:02:35 [INFO] Timer tick: 10440s left
+2026-11-10 05:02:35 [INFO] Timer tick: 10440s left
+2026-11-10 05:02:45 [INFO] Timer tick: 10430s left
+2026-11-10 05:02:45 [INFO] Timer tick: 10430s left
+2026-11-10 05:02:55 [INFO] Timer tick: 10420s left
+2026-11-10 05:02:55 [INFO] Timer tick: 10420s left
+2026-11-10 05:03:05 [INFO] Timer tick: 10410s left
+2026-11-10 05:03:05 [INFO] Timer tick: 10410s left
+2026-11-10 05:03:15 [INFO] Timer tick: 10400s left
+2026-11-10 05:03:15 [INFO] Timer tick: 10400s left
+2026-11-10 05:03:25 [INFO] Timer tick: 10390s left
+2026-11-10 05:03:25 [INFO] Timer tick: 10390s left
+2026-11-10 05:03:30 [INFO] Idle warning sent (5 min)
+2026-11-10 05:03:35 [INFO] Timer tick: 10380s left
+2026-11-10 05:03:35 [INFO] Timer tick: 10380s left
+2026-11-10 05:03:45 [INFO] Timer tick: 10370s left
+2026-11-10 05:03:45 [INFO] Timer tick: 10370s left
+2026-11-10 05:03:55 [INFO] Timer tick: 10360s left
+2026-11-10 05:03:55 [INFO] Timer tick: 10360s left
+2026-11-10 05:04:05 [INFO] Timer tick: 10350s left
+2026-11-10 05:04:05 [INFO] Timer tick: 10350s left
+2026-11-10 05:04:15 [INFO] Timer tick: 10340s left
+2026-11-10 05:04:15 [INFO] Timer tick: 10340s left
+2026-11-10 05:04:25 [INFO] Timer tick: 10330s left
+2026-11-10 05:04:25 [INFO] Timer tick: 10330s left
+2026-11-10 05:04:35 [INFO] Timer tick: 10320s left
+2026-11-10 05:04:35 [INFO] Timer tick: 10320s left
+2026-11-10 05:04:45 [INFO] Timer tick: 10310s left
+2026-11-10 05:04:45 [INFO] Timer tick: 10310s left
+2026-11-10 05:04:55 [INFO] Timer tick: 10300s left
+2026-11-10 05:04:55 [INFO] Timer tick: 10300s left
+2026-11-10 05:05:05 [INFO] Timer tick: 10290s left
+2026-11-10 05:05:05 [INFO] Timer tick: 10290s left
+2026-11-10 05:05:15 [INFO] Timer tick: 10280s left
+2026-11-10 05:05:15 [INFO] Timer tick: 10280s left
+2026-11-10 05:05:25 [INFO] Timer tick: 10270s left
+2026-11-10 05:05:25 [INFO] Timer tick: 10270s left
+2026-11-10 05:05:35 [INFO] Timer tick: 10260s left
+2026-11-10 05:05:35 [INFO] Timer tick: 10260s left
+2026-11-10 05:05:45 [INFO] Timer tick: 10250s left
+2026-11-10 05:05:45 [INFO] Timer tick: 10250s left
+2026-11-10 05:05:55 [INFO] Timer tick: 10240s left
+2026-11-10 05:05:55 [INFO] Timer tick: 10240s left
+2026-11-10 05:06:05 [INFO] Timer tick: 10230s left
+2026-11-10 05:06:05 [INFO] Timer tick: 10230s left
+2026-11-10 05:06:15 [INFO] Timer tick: 10220s left
+2026-11-10 05:06:15 [INFO] Timer tick: 10220s left
+2026-11-10 05:06:25 [INFO] Timer tick: 10210s left
+2026-11-10 05:06:25 [INFO] Timer tick: 10210s left
+2026-11-10 05:06:35 [INFO] Timer tick: 10200s left
+2026-11-10 05:06:35 [INFO] Running: lock
+2026-11-10 05:06:35 [INFO] Session force-stopped by admin
+2026-11-10 05:06:36 [INFO] Session ended
+2026-11-10 05:07:13 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 05:07:18 [INFO] Real coin detected: P1.0
+2026-11-10 05:07:19 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 05:07:19 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 05:07:25 [INFO] Real coin detected: P5.0
+2026-11-10 05:07:26 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 05:07:29 [INFO] Timer tick: 1790s left
+2026-11-10 05:07:29 [INFO] Timer tick: 1790s left
+2026-11-10 05:07:34 [INFO] Real coin detected: P10.0
+2026-11-10 05:07:36 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 05:07:36 [INFO] Real coin detected: P1.0
+2026-11-10 05:07:37 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:07:39 [INFO] Timer tick: 5080s left
+2026-11-10 05:07:39 [INFO] Timer tick: 5080s left
+2026-11-10 05:07:40 [INFO] Real coin detected: P20.0
+2026-11-10 05:07:41 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 05:07:41 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:07:49 [INFO] Timer tick: 11070s left
+2026-11-10 05:07:49 [INFO] Timer tick: 11070s left
+2026-11-10 05:07:59 [INFO] Timer tick: 11060s left
+2026-11-10 05:07:59 [INFO] Timer tick: 11060s left
+2026-11-10 05:08:09 [INFO] Timer tick: 11050s left
+2026-11-10 05:08:09 [INFO] Timer tick: 11050s left
+2026-11-10 05:08:18 [INFO] Running: lock
+2026-11-10 05:08:18 [INFO] Session force-stopped by admin
+2026-11-10 05:08:18 [INFO] Session ended
+2026-11-10 05:08:29 [INFO] Client stopped.
+2026-11-10 05:08:31 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 05:08:31 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 05:08:32 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 05:08:32 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 05:08:32 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 05:08:34 [INFO] Hardware specs sent
+2026-11-10 05:08:34 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 05:08:34 [INFO] File coin watcher started (normal mode)
+2026-11-10 05:08:34 [INFO] All threads started
+2026-11-10 05:08:34 [INFO] ESP32: ================================
+2026-11-10 05:08:34 [INFO] ESP32: ================================
+2026-11-10 05:09:00 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 05:09:05 [INFO] Real coin detected: P1.0
+2026-11-10 05:09:06 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 05:09:06 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 05:09:10 [INFO] Real coin detected: P5.0
+2026-11-10 05:09:11 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 05:09:15 [INFO] Real coin detected: P10.0
+2026-11-10 05:09:15 [INFO] Timer tick: 1790s left
+2026-11-10 05:09:16 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 05:09:16 [INFO] Timer tick: 4790s left
+2026-11-10 05:09:20 [INFO] Real coin detected: P20.0
+2026-11-10 05:09:21 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 05:09:21 [INFO] Real coin detected: P1.0
+2026-11-10 05:09:22 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:09:23 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:09:25 [INFO] Timer tick: 11080s left
+2026-11-10 05:09:35 [INFO] Timer tick: 11070s left
+2026-11-10 05:09:35 [INFO] Timer tick: 11070s left
+2026-11-10 05:09:45 [INFO] Timer tick: 11060s left
+2026-11-10 05:09:45 [INFO] Timer tick: 11060s left
+2026-11-10 05:09:55 [INFO] Timer tick: 11050s left
+2026-11-10 05:09:55 [INFO] Timer tick: 11050s left
+2026-11-10 05:10:05 [INFO] Timer tick: 11040s left
+2026-11-10 05:10:05 [INFO] Timer tick: 11040s left
+2026-11-10 05:10:15 [INFO] Timer tick: 11030s left
+2026-11-10 05:10:15 [INFO] Timer tick: 11030s left
+2026-11-10 05:10:25 [INFO] Timer tick: 11020s left
+2026-11-10 05:10:25 [INFO] Timer tick: 11020s left
+2026-11-10 05:10:35 [INFO] Timer tick: 11010s left
+2026-11-10 05:10:35 [INFO] Timer tick: 11010s left
+2026-11-10 05:10:45 [INFO] Timer tick: 11000s left
+2026-11-10 05:10:46 [INFO] Timer tick: 11000s left
+2026-11-10 05:10:55 [INFO] Timer tick: 10990s left
+2026-11-10 05:10:56 [INFO] Timer tick: 10990s left
+2026-11-10 05:11:00 [INFO] Running: lock
+2026-11-10 05:11:00 [INFO] Command executed: lock
+2026-11-10 05:11:05 [INFO] Timer tick: 10980s left
+2026-11-10 05:11:06 [INFO] Timer tick: 10980s left
+2026-11-10 05:11:15 [INFO] Timer tick: 10970s left
+2026-11-10 05:11:16 [INFO] Timer tick: 10970s left
+2026-11-10 05:11:25 [INFO] Timer tick: 10960s left
+2026-11-10 05:11:26 [INFO] Timer tick: 10960s left
+2026-11-10 05:11:31 [INFO] Real coin detected: P1.0
+2026-11-10 05:11:32 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:11:35 [INFO] Timer tick: 11250s left
+2026-11-10 05:11:36 [INFO] Timer tick: 11250s left
+2026-11-10 05:11:45 [INFO] Timer tick: 11240s left
+2026-11-10 05:11:46 [INFO] Timer tick: 11240s left
+2026-11-10 05:11:55 [INFO] Timer tick: 11230s left
+2026-11-10 05:11:56 [INFO] Timer tick: 11230s left
+2026-11-10 05:12:05 [INFO] Timer tick: 11220s left
+2026-11-10 05:12:06 [INFO] Timer tick: 11220s left
+2026-11-10 05:12:07 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:12:13 [INFO] Running: lock
+2026-11-10 05:12:13 [INFO] Session force-stopped by admin
+2026-11-10 05:12:14 [INFO] Session ended
+2026-11-10 05:12:21 [INFO] Client stopped.
+2026-11-10 05:12:26 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 05:12:26 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 05:12:27 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 05:12:27 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 05:12:27 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 05:12:29 [INFO] Hardware specs sent
+2026-11-10 05:12:29 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 05:12:29 [INFO] File coin watcher started (normal mode)
+2026-11-10 05:12:29 [INFO] All threads started
+2026-11-10 05:12:29 [INFO] ESP32: ================================
+2026-11-10 05:12:29 [INFO] ESP32: ================================
+2026-11-10 05:12:56 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 05:13:05 [INFO] Real coin detected: P1.0
+2026-11-10 05:13:06 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 05:13:06 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 05:13:13 [INFO] Real coin detected: P5.0
+2026-11-10 05:13:14 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 05:13:15 [INFO] Timer tick: 1790s left
+2026-11-10 05:13:16 [INFO] Timer tick: 1790s left
+2026-11-10 05:13:24 [INFO] Real coin detected: P10.0
+2026-11-10 05:13:25 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 05:13:25 [INFO] Timer tick: 4780s left
+2026-11-10 05:13:26 [INFO] Timer tick: 4780s left
+2026-11-10 05:13:30 [INFO] Real coin detected: P1.0
+2026-11-10 05:13:31 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:13:34 [INFO] Real coin detected: P20.0
+2026-11-10 05:13:35 [INFO] Timer tick: 5070s left
+2026-11-10 05:13:35 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 05:13:36 [INFO] Timer tick: 11070s left
+2026-11-10 05:13:38 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:13:45 [INFO] Timer tick: 11060s left
+2026-11-10 05:13:46 [INFO] Timer tick: 11060s left
+2026-11-10 05:13:55 [INFO] Timer tick: 11050s left
+2026-11-10 05:13:56 [INFO] Timer tick: 11050s left
+2026-11-10 05:14:04 [INFO] Running: lock
+2026-11-10 05:14:04 [INFO] Session force-stopped by admin
+2026-11-10 05:14:05 [INFO] Session ended
+2026-11-10 05:14:10 [INFO] Client stopped.
+2026-11-10 05:14:12 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 05:14:12 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 05:14:12 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 05:14:12 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 05:14:13 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 05:14:14 [INFO] Hardware specs sent
+2026-11-10 05:14:14 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 05:14:14 [INFO] File coin watcher started (normal mode)
+2026-11-10 05:14:14 [INFO] All threads started
+2026-11-10 05:14:15 [INFO] ESP32: ================================
+2026-11-10 05:14:15 [INFO] ESP32: ================================
+2026-11-10 05:14:38 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 05:14:48 [INFO] Real coin detected: P1.0
+2026-11-10 05:14:49 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 05:14:49 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 05:14:58 [INFO] Real coin detected: P5.0
+2026-11-10 05:14:59 [INFO] Timer tick: 290s left
+2026-11-10 05:14:59 [INFO] Timer tick: 290s left
+2026-11-10 05:14:59 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 05:15:09 [INFO] Timer tick: 1780s left
+2026-11-10 05:15:09 [INFO] Timer tick: 1780s left
+2026-11-10 05:15:09 [INFO] Real coin detected: P1.0
+2026-11-10 05:15:10 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:15:11 [INFO] Real coin detected: P10.0
+2026-11-10 05:15:12 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 05:15:19 [INFO] Timer tick: 5070s left
+2026-11-10 05:15:19 [INFO] Timer tick: 5070s left
+2026-11-10 05:15:29 [INFO] Timer tick: 5060s left
+2026-11-10 05:15:29 [INFO] Timer tick: 5060s left
+2026-11-10 05:15:29 [INFO] Real coin detected: P1.0
+2026-11-10 05:15:30 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:15:39 [INFO] Timer tick: 5350s left
+2026-11-10 05:15:39 [INFO] Timer tick: 5350s left
+2026-11-10 05:15:41 [INFO] Real coin detected: P1.0
+2026-11-10 05:15:42 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:15:44 [WARNING] Coin rejected by ESP32: INVALID: 18 pulses
+2026-11-10 05:15:49 [INFO] Timer tick: 5640s left
+2026-11-10 05:15:49 [INFO] Timer tick: 5640s left
+2026-11-10 05:15:53 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:15:59 [INFO] Timer tick: 5630s left
+2026-11-10 05:15:59 [INFO] Timer tick: 5630s left
+2026-11-10 05:16:05 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 05:16:09 [INFO] Timer tick: 5620s left
+2026-11-10 05:16:18 [INFO] Timer tick: 5610s left
+2026-11-10 05:16:19 [INFO] Timer tick: 5610s left
+2026-11-10 05:16:26 [INFO] Real coin detected: P1.0
+2026-11-10 05:16:27 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:16:28 [INFO] Timer tick: 5900s left
+2026-11-10 05:16:29 [INFO] Timer tick: 5900s left
+2026-11-10 05:16:30 [INFO] Real coin detected: P10.0
+2026-11-10 05:16:31 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 05:16:38 [INFO] Timer tick: 8890s left
+2026-11-10 05:16:39 [INFO] Timer tick: 8890s left
+2026-11-10 05:16:47 [INFO] Real coin detected: P1.0
+2026-11-10 05:16:48 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:16:48 [INFO] Timer tick: 9180s left
+2026-11-10 05:16:49 [INFO] Timer tick: 9180s left
+2026-11-10 05:16:51 [INFO] Real coin detected: P1.0
+2026-11-10 05:16:52 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:16:58 [INFO] Timer tick: 9470s left
+2026-11-10 05:16:59 [INFO] Timer tick: 9470s left
+2026-11-10 05:17:00 [INFO] Real coin detected: P10.0
+2026-11-10 05:17:01 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 05:17:02 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:17:08 [INFO] Timer tick: 12460s left
+2026-11-10 05:17:09 [INFO] Timer tick: 12460s left
+2026-11-10 05:17:15 [INFO] Running: lock
+2026-11-10 05:17:15 [INFO] Session force-stopped by admin
+2026-11-10 05:17:16 [INFO] Session ended
+2026-11-10 05:17:21 [INFO] Client stopped.
+2026-11-10 05:17:23 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 05:17:23 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 05:17:23 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 05:17:23 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 05:17:24 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 05:17:26 [INFO] Hardware specs sent
+2026-11-10 05:17:26 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 05:17:26 [INFO] File coin watcher started (normal mode)
+2026-11-10 05:17:26 [INFO] All threads started
+2026-11-10 05:17:26 [INFO] ESP32: ================================
+2026-11-10 05:17:26 [INFO] ESP32: ================================
+2026-11-10 05:20:10 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 05:20:17 [INFO] Real coin detected: P1.0
+2026-11-10 05:20:18 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 05:20:18 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 05:20:25 [INFO] Real coin detected: P5.0
+2026-11-10 05:20:26 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 05:20:27 [INFO] Timer tick: 1790s left
+2026-11-10 05:20:28 [INFO] Timer tick: 1790s left
+2026-11-10 05:20:30 [INFO] Real coin detected: P1.0
+2026-11-10 05:20:31 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 05:20:31 [WARNING] Coin rejected by ESP32: INVALID: 8 pulses
+2026-11-10 05:20:37 [INFO] Timer tick: 2080s left
+2026-11-10 05:20:38 [INFO] Timer tick: 2080s left
+2026-11-10 05:20:47 [INFO] Timer tick: 2070s left
+2026-11-10 05:20:48 [INFO] Timer tick: 2070s left
+2026-11-10 05:20:53 [INFO] Real coin detected: P20.0
+2026-11-10 05:20:54 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 05:20:56 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:20:57 [INFO] Timer tick: 8060s left
+2026-11-10 05:20:58 [INFO] Timer tick: 8060s left
+2026-11-10 05:21:07 [INFO] Timer tick: 8050s left
+2026-11-10 05:21:08 [INFO] Timer tick: 8050s left
+2026-11-10 05:21:18 [INFO] Timer tick: 8040s left
+2026-11-10 05:21:18 [INFO] Timer tick: 8040s left
+2026-11-10 05:21:28 [INFO] Timer tick: 8030s left
+2026-11-10 05:21:28 [INFO] Timer tick: 8030s left
+2026-11-10 05:21:34 [INFO] Running: lock
+2026-11-10 05:21:34 [INFO] Command executed: lock
+2026-11-10 05:21:38 [INFO] Timer tick: 8020s left
+2026-11-10 05:21:38 [INFO] Timer tick: 8020s left
+2026-11-10 05:21:48 [INFO] Timer tick: 8010s left
+2026-11-10 05:21:48 [INFO] Timer tick: 8010s left
+2026-11-10 05:21:58 [INFO] Timer tick: 8000s left
+2026-11-10 05:21:58 [INFO] Timer tick: 8000s left
+2026-11-10 05:22:06 [INFO] Running: lock
+2026-11-10 05:22:06 [INFO] Session force-stopped by admin
+2026-11-10 05:22:07 [INFO] Session ended
+2026-11-10 05:25:51 [INFO] Client stopped.
+2026-11-10 05:25:53 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 05:25:53 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 05:25:53 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 05:25:53 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 05:25:54 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 05:25:56 [INFO] Hardware specs sent
+2026-11-10 05:25:56 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 05:25:56 [INFO] File coin watcher started (normal mode)
+2026-11-10 05:25:56 [INFO] All threads started
+2026-11-10 05:25:56 [INFO] ESP32: ================================
+2026-11-10 05:25:56 [INFO] ESP32: ================================
+2026-11-10 05:31:08 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 05:31:12 [INFO] Real coin detected: P1.0
+2026-11-10 05:31:13 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 05:31:13 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 05:31:19 [INFO] Real coin detected: P5.0
+2026-11-10 05:31:20 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 05:31:23 [INFO] Timer tick: 1790s left
+2026-11-10 05:31:23 [INFO] Timer tick: 1790s left
+2026-11-10 05:31:25 [INFO] Real coin detected: P10.0
+2026-11-10 05:31:26 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 05:31:32 [INFO] Real coin detected: P20.0
+2026-11-10 05:31:33 [INFO] Timer tick: 4780s left
+2026-11-10 05:31:33 [INFO] Timer tick: 4780s left
+2026-11-10 05:31:33 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 05:31:37 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:31:43 [INFO] Timer tick: 10770s left
+2026-11-10 05:31:43 [INFO] Timer tick: 10770s left
+2026-11-10 05:31:53 [INFO] Timer tick: 10760s left
+2026-11-10 05:31:53 [INFO] Timer tick: 10760s left
+2026-11-10 05:32:03 [INFO] Timer tick: 10750s left
+2026-11-10 05:32:03 [INFO] Timer tick: 10750s left
+2026-11-10 05:32:13 [INFO] Timer tick: 10740s left
+2026-11-10 05:32:13 [INFO] Timer tick: 10740s left
+2026-11-10 05:32:23 [INFO] Timer tick: 10730s left
+2026-11-10 05:32:23 [INFO] Timer tick: 10730s left
+2026-11-10 05:32:33 [INFO] Timer tick: 10720s left
+2026-11-10 05:32:33 [INFO] Timer tick: 10720s left
+2026-11-10 05:32:43 [INFO] Timer tick: 10710s left
+2026-11-10 05:32:43 [INFO] Timer tick: 10710s left
+2026-11-10 05:32:53 [INFO] Timer tick: 10700s left
+2026-11-10 05:32:53 [INFO] Timer tick: 10700s left
+2026-11-10 05:33:03 [INFO] Timer tick: 10690s left
+2026-11-10 05:33:03 [INFO] Timer tick: 10690s left
+2026-11-10 05:33:13 [INFO] Timer tick: 10680s left
+2026-11-10 05:33:13 [INFO] Timer tick: 10680s left
+2026-11-10 05:33:23 [INFO] Timer tick: 10670s left
+2026-11-10 05:33:23 [INFO] Timer tick: 10670s left
+2026-11-10 05:33:33 [INFO] Timer tick: 10660s left
+2026-11-10 05:33:33 [INFO] Timer tick: 10660s left
+2026-11-10 05:33:43 [INFO] Timer tick: 10650s left
+2026-11-10 05:33:43 [INFO] Timer tick: 10650s left
+2026-11-10 05:33:52 [INFO] Timer tick: 10640s left
+2026-11-10 05:33:53 [INFO] Timer tick: 10640s left
+2026-11-10 05:34:02 [INFO] Timer tick: 10630s left
+2026-11-10 05:34:03 [INFO] Timer tick: 10630s left
+2026-11-10 05:34:13 [INFO] Timer tick: 10620s left
+2026-11-10 05:34:13 [INFO] Timer tick: 10620s left
+2026-11-10 05:34:23 [INFO] Timer tick: 10610s left
+2026-11-10 05:34:23 [INFO] Timer tick: 10610s left
+2026-11-10 05:34:33 [INFO] Timer tick: 10600s left
+2026-11-10 05:34:33 [INFO] Timer tick: 10600s left
+2026-11-10 05:34:43 [INFO] Timer tick: 10590s left
+2026-11-10 05:34:43 [INFO] Timer tick: 10590s left
+2026-11-10 05:34:53 [INFO] Timer tick: 10580s left
+2026-11-10 05:34:53 [INFO] Timer tick: 10580s left
+2026-11-10 05:35:03 [INFO] Timer tick: 10570s left
+2026-11-10 05:35:03 [INFO] Timer tick: 10570s left
+2026-11-10 05:35:13 [INFO] Timer tick: 10560s left
+2026-11-10 05:35:13 [INFO] Timer tick: 10560s left
+2026-11-10 05:35:23 [INFO] Timer tick: 10550s left
+2026-11-10 05:35:23 [INFO] Timer tick: 10550s left
+2026-11-10 05:35:33 [INFO] Timer tick: 10540s left
+2026-11-10 05:35:33 [INFO] Timer tick: 10540s left
+2026-11-10 05:35:43 [INFO] Timer tick: 10530s left
+2026-11-10 05:35:43 [INFO] Timer tick: 10530s left
+2026-11-10 05:35:53 [INFO] Timer tick: 10520s left
+2026-11-10 05:35:53 [INFO] Timer tick: 10520s left
+2026-11-10 05:36:02 [INFO] Timer tick: 10510s left
+2026-11-10 05:36:03 [INFO] Timer tick: 10510s left
+2026-11-10 05:36:12 [INFO] Timer tick: 10500s left
+2026-11-10 05:36:13 [INFO] Timer tick: 10500s left
+2026-11-10 05:36:23 [INFO] Timer tick: 10490s left
+2026-11-10 05:36:23 [INFO] Timer tick: 10490s left
+2026-11-10 05:36:33 [INFO] Timer tick: 10480s left
+2026-11-10 05:36:33 [INFO] Timer tick: 10480s left
+2026-11-10 05:36:43 [INFO] Timer tick: 10470s left
+2026-11-10 05:36:43 [INFO] Timer tick: 10470s left
+2026-11-10 05:36:53 [INFO] Timer tick: 10460s left
+2026-11-10 05:36:53 [INFO] Timer tick: 10460s left
+2026-11-10 05:37:03 [INFO] Timer tick: 10450s left
+2026-11-10 05:37:03 [INFO] Timer tick: 10450s left
+2026-11-10 05:37:13 [INFO] Timer tick: 10440s left
+2026-11-10 05:37:13 [INFO] Timer tick: 10440s left
+2026-11-10 05:37:23 [INFO] Timer tick: 10430s left
+2026-11-10 05:37:23 [INFO] Timer tick: 10430s left
+2026-11-10 05:37:33 [INFO] Timer tick: 10420s left
+2026-11-10 05:37:33 [INFO] Timer tick: 10420s left
+2026-11-10 05:37:42 [INFO] Timer tick: 10410s left
+2026-11-10 05:37:43 [INFO] Timer tick: 10410s left
+2026-11-10 05:37:52 [INFO] Timer tick: 10400s left
+2026-11-10 05:37:53 [INFO] Timer tick: 10400s left
+2026-11-10 05:38:02 [INFO] Timer tick: 10390s left
+2026-11-10 05:38:03 [INFO] Timer tick: 10390s left
+2026-11-10 05:38:13 [INFO] Timer tick: 10380s left
+2026-11-10 05:38:13 [INFO] Timer tick: 10380s left
+2026-11-10 05:38:23 [INFO] Timer tick: 10370s left
+2026-11-10 05:38:23 [INFO] Timer tick: 10370s left
+2026-11-10 05:38:33 [INFO] Timer tick: 10360s left
+2026-11-10 05:38:33 [INFO] Timer tick: 10360s left
+2026-11-10 05:38:43 [INFO] Timer tick: 10350s left
+2026-11-10 05:38:43 [INFO] Timer tick: 10350s left
+2026-11-10 05:38:53 [INFO] Timer tick: 10340s left
+2026-11-10 05:38:53 [INFO] Timer tick: 10340s left
+2026-11-10 05:39:03 [INFO] Timer tick: 10330s left
+2026-11-10 05:39:03 [INFO] Timer tick: 10330s left
+2026-11-10 05:39:13 [INFO] Timer tick: 10320s left
+2026-11-10 05:39:13 [INFO] Timer tick: 10320s left
+2026-11-10 05:39:23 [INFO] Timer tick: 10310s left
+2026-11-10 05:39:23 [INFO] Timer tick: 10310s left
+2026-11-10 05:39:33 [INFO] Timer tick: 10300s left
+2026-11-10 05:39:33 [INFO] Timer tick: 10300s left
+2026-11-10 05:39:43 [INFO] Timer tick: 10290s left
+2026-11-10 05:39:43 [INFO] Timer tick: 10290s left
+2026-11-10 05:39:44 [INFO] Client stopped.

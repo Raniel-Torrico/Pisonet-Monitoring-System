@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="ipo-model" name="Conceptual Framework">
+    <mxGraphModel dx="1500" dy="866" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="input_box" parent="1" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=16;verticalAlign=middle;" value="INPUT" vertex="1">
+          <mxGeometry height="600" width="300" x="50" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="k_title" parent="input_box" style="text;html=1;align=left;verticalAlign=top;fontStyle=4;fontSize=12;" value="Knowledge Requirements" vertex="1">
+          <mxGeometry height="20" width="260" x="20" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="k_items" parent="input_box" style="text;html=1;align=left;verticalAlign=top;fontSize=11;" value="• Web development technologies&#xa;  (HTML, CSS, JavaScript, PHP, MySQL)&#xa;• Networking concepts &amp; client-server&#xa;• Database management&#xa;• Cybersecurity (Auth, encryption)&#xa;• Python programming&#xa;• Embedded programming (C++/Arduino)" vertex="1">
+          <mxGeometry height="100" width="260" x="20" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s_title" parent="input_box" style="text;html=1;align=left;verticalAlign=top;fontStyle=4;fontSize=12;" value="Software Requirements" vertex="1">
+          <mxGeometry height="20" width="260" x="20" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="s_items" parent="input_box" style="text;html=1;align=left;verticalAlign=top;fontSize=11;" value="• XAMPP (Apache, PHP, MySQL)&#xa;• Visual Studio Code&#xa;• Web browsers&#xa;• Arduino IDE for ESP32&#xa;• Hostinger (Web Hosting)&#xa;• Windows 10 or higher" vertex="1">
+          <mxGeometry height="100" width="260" x="20" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="h_title" parent="input_box" style="text;html=1;align=left;verticalAlign=top;fontStyle=4;fontSize=12;" value="Hardware Requirements" vertex="1">
+          <mxGeometry height="20" width="260" x="20" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="h_items" parent="input_box" style="text;html=1;align=left;verticalAlign=top;fontSize=11;" value="• Laptop or PC (Intel i5, 8GB RAM)&#xa;• LAN-connected Pisonet PC units&#xa;• Local Area Network (LAN)&#xa;• ESP32, Allan coin acceptor, PC817&#xa;• Internet connection" vertex="1">
+          <mxGeometry height="100" width="260" x="20" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="process_box" parent="1" style="swimlane;startSize=40;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=16;verticalAlign=middle;" value="PROCESS&#xa;(Incremental Development Model)" vertex="1">
+          <mxGeometry height="400" width="300" x="450" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" parent="process_box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;fontStyle=1;" value="1. Planning Phase&#xa;(Requirements)" vertex="1">
+          <mxGeometry height="60" width="200" x="50" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" parent="process_box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;fontStyle=1;" value="2. Design Phase&#xa;(Architecture &amp; DB)" vertex="1">
+          <mxGeometry height="60" width="200" x="50" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" parent="process_box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;fontStyle=1;" value="3. Construction Phase&#xa;(Development &amp; Integration)" vertex="1">
+          <mxGeometry height="60" width="200" x="50" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" parent="process_box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;fontStyle=1;" value="4. Cutover Phase&#xa;(Testing &amp; Deployment)" vertex="1">
+          <mxGeometry height="60" width="200" x="50" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="p_arrow1" edge="1" parent="process_box" source="p1" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;" target="p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_arrow2" edge="1" parent="process_box" source="p2" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_arrow3" edge="1" parent="process_box" source="p3" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;" target="p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="output_box" parent="1" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=16;verticalAlign=middle;" value="OUTPUT" vertex="1">
+          <mxGeometry height="600" width="310" x="820" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o_items" parent="output_box" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;" value="• Fully functional MonitoNet System&#xa;&#xa;• Real-time machine monitoring&#xa;&#xa;• Automated session management&#xa;&#xa;• Analytics &amp; income reporting&#xa;&#xa;• Audit logging &amp; security enforcement&#xa;&#xa;• Hardware health monitoring&#xa;&#xa;• Remote management &amp; troubleshooting&#xa;&#xa;• Coin-detection hardware integration&#xa;&#xa;• Improved efficiency &amp; reduced manual workload" vertex="1">
+          <mxGeometry height="500" width="260" x="20" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="main_arrow1" edge="1" parent="1" source="input_box" style="edgeStyle=none;endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="process_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="main_arrow2" edge="1" parent="1" source="process_box" style="edgeStyle=none;endArrow=block;endFill=1;html=1;strokeColor=#333333;strokeWidth=4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="output_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,369 +1,880 @@
-2026-08-26 10:20:11 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
-2026-08-26 10:20:11 [INFO] Mode: Normal logging, File coin trigger
-2026-08-26 10:20:12 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
-2026-08-26 10:20:12 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
-2026-08-26 10:20:22 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
-2026-08-26 10:20:35 [INFO] Hardware specs sent
-2026-08-26 10:20:35 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
-2026-08-26 10:20:35 [INFO] File coin watcher started (normal mode)
-2026-08-26 10:20:35 [INFO] All threads started
-2026-08-26 10:21:14 [INFO] File coin trigger: P1.0
-2026-08-26 10:21:35 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
-2026-08-26 10:21:35 [INFO] Session started — P1.0 = 300s (5min 0sec)
-2026-08-26 10:21:44 [INFO] Timer tick: 290s left
-2026-08-26 10:21:45 [INFO] Timer tick: 290s left
-2026-08-26 10:21:53 [INFO] File coin trigger: P1.0
-2026-08-26 10:21:54 [INFO] Timer tick: 280s left
-2026-08-26 10:21:55 [INFO] Timer tick: 280s left
-2026-08-26 10:22:04 [INFO] Timer tick: 270s left
-2026-08-26 10:22:05 [INFO] Timer tick: 270s left
-2026-08-26 10:22:05 [WARNING] POST session.php \u2192 action must be: start or end
-2026-08-26 10:22:05 [WARNING] Server rejected add_time: action must be: start or end
-2026-08-26 10:22:14 [INFO] Timer tick: 260s left
-2026-08-26 10:22:15 [INFO] Timer tick: 260s left
-2026-08-26 10:22:24 [INFO] Timer tick: 250s left
-2026-08-26 10:22:25 [INFO] Timer tick: 250s left
-2026-08-26 10:22:34 [INFO] Timer tick: 240s left
-2026-08-26 10:22:35 [INFO] Timer tick: 240s left
-2026-08-26 10:22:44 [INFO] Timer tick: 230s left
-2026-08-26 10:22:45 [INFO] Timer tick: 230s left
-2026-08-26 10:22:54 [INFO] Timer tick: 220s left
-2026-08-26 10:22:54 [INFO] Timer tick: 220s left
-2026-08-26 10:23:04 [INFO] Timer tick: 210s left
-2026-08-26 10:23:04 [INFO] Timer tick: 210s left
-2026-08-26 10:23:14 [INFO] Timer tick: 200s left
-2026-08-26 10:23:14 [INFO] Timer tick: 200s left
-2026-08-26 10:23:24 [INFO] Timer tick: 190s left
-2026-08-26 10:23:24 [INFO] Timer tick: 190s left
-2026-08-26 10:23:34 [INFO] Timer tick: 180s left
-2026-08-26 10:23:34 [INFO] Timer tick: 180s left
-2026-08-26 10:23:44 [INFO] Timer tick: 170s left
-2026-08-26 10:23:44 [INFO] Timer tick: 170s left
-2026-08-26 10:23:54 [INFO] Timer tick: 160s left
-2026-08-26 10:23:55 [INFO] Timer tick: 160s left
-2026-08-26 10:24:04 [INFO] Timer tick: 150s left
-2026-08-26 10:24:05 [INFO] Timer tick: 150s left
-2026-08-26 10:24:14 [INFO] Timer tick: 140s left
-2026-08-26 10:24:15 [INFO] Timer tick: 140s left
-2026-08-26 10:24:24 [INFO] Timer tick: 130s left
-2026-08-26 10:24:25 [INFO] Timer tick: 130s left
-2026-08-26 10:24:34 [INFO] Timer tick: 120s left
-2026-08-26 10:24:34 [INFO] Timer tick: 120s left
-2026-08-26 10:24:44 [INFO] Timer tick: 110s left
-2026-08-26 10:24:44 [INFO] Timer tick: 110s left
-2026-08-26 10:24:54 [INFO] Timer tick: 100s left
-2026-08-26 10:24:54 [INFO] Timer tick: 100s left
-2026-08-26 10:25:04 [INFO] Timer tick: 90s left
-2026-08-26 10:25:04 [INFO] Timer tick: 90s left
-2026-08-26 10:25:14 [INFO] Timer tick: 80s left
-2026-08-26 10:25:14 [INFO] Timer tick: 80s left
-2026-08-26 10:25:24 [INFO] Timer tick: 70s left
-2026-08-26 10:25:24 [INFO] Timer tick: 70s left
-2026-08-26 10:25:34 [INFO] Timer tick: 60s left
-2026-08-26 10:25:34 [INFO] Timer tick: 60s left
-2026-08-26 10:25:44 [INFO] Timer tick: 50s left
-2026-08-26 10:25:44 [INFO] Timer tick: 50s left
-2026-08-26 10:25:54 [INFO] Timer tick: 40s left
-2026-08-26 10:25:55 [INFO] Timer tick: 40s left
-2026-08-26 10:26:04 [INFO] Timer tick: 30s left
-2026-08-26 10:26:05 [INFO] Timer tick: 30s left
-2026-08-26 10:26:14 [INFO] Timer tick: 20s left
-2026-08-26 10:26:15 [INFO] Timer tick: 20s left
-2026-08-26 10:26:24 [INFO] Timer tick: 10s left
-2026-08-26 10:26:25 [INFO] Timer tick: 10s left
-2026-08-26 10:26:34 [INFO] Timer tick: 0s left
-2026-08-26 10:26:35 [INFO] Timer tick: 0s left
-2026-08-26 10:26:35 [INFO] >>> TIMER EXPIRED — calling cmd_lock now
-2026-08-26 10:26:35 [INFO] Running: lock
-2026-08-26 10:26:35 [INFO] >>> cmd_lock() was called
-2026-08-26 10:26:47 [INFO] Session ended
-2026-08-26 10:27:13 [INFO] File coin trigger: P1.0
-2026-08-26 10:27:35 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
-2026-08-26 10:27:35 [INFO] Session started — P1.0 = 300s (5min 0sec)
-2026-08-26 10:27:43 [INFO] File coin trigger: P1.0
-2026-08-26 10:27:44 [INFO] Timer tick: 290s left
-2026-08-26 10:27:44 [INFO] Timer tick: 290s left
-2026-08-26 10:27:54 [INFO] Timer tick: 280s left
-2026-08-26 10:27:54 [INFO] Timer tick: 280s left
-2026-08-26 10:27:55 [INFO] Added P1.0 = 300 more seconds
-2026-08-26 10:28:04 [INFO] Timer tick: 570s left
-2026-08-26 10:28:05 [INFO] Timer tick: 570s left
-2026-08-26 10:28:14 [INFO] Timer tick: 560s left
-2026-08-26 10:28:15 [INFO] Timer tick: 560s left
-2026-08-26 10:28:16 [INFO] File coin trigger: P1.0
-2026-08-26 10:28:24 [INFO] Timer tick: 550s left
-2026-08-26 10:28:25 [INFO] Timer tick: 550s left
-2026-08-26 10:28:28 [INFO] Added P1.0 = 300 more seconds
-2026-08-26 10:28:34 [INFO] Timer tick: 840s left
-2026-08-26 10:28:35 [INFO] Timer tick: 840s left
-2026-08-26 10:28:44 [INFO] Timer tick: 830s left
-2026-08-26 10:28:45 [INFO] Timer tick: 830s left
-2026-08-26 10:28:54 [INFO] Timer tick: 820s left
-2026-08-26 10:28:55 [INFO] Timer tick: 820s left
-2026-08-26 10:29:04 [INFO] Timer tick: 810s left
-2026-08-26 10:29:14 [INFO] Timer tick: 800s left
-2026-08-26 10:29:14 [INFO] Timer tick: 800s left
-2026-08-26 10:29:24 [INFO] Timer tick: 790s left
-2026-08-26 10:29:24 [INFO] Timer tick: 790s left
-2026-08-26 10:29:34 [INFO] Timer tick: 780s left
-2026-08-26 10:29:34 [INFO] Timer tick: 780s left
-2026-08-26 10:29:44 [INFO] Timer tick: 770s left
-2026-08-26 10:29:44 [INFO] Timer tick: 770s left
-2026-08-26 10:29:54 [INFO] Timer tick: 760s left
-2026-08-26 10:29:54 [INFO] Timer tick: 760s left
-2026-08-26 10:30:04 [INFO] Timer tick: 750s left
-2026-08-26 10:30:04 [INFO] Timer tick: 750s left
-2026-08-26 10:30:14 [INFO] Timer tick: 740s left
-2026-08-26 10:30:14 [INFO] Timer tick: 740s left
-2026-08-26 10:30:24 [INFO] Timer tick: 730s left
-2026-08-26 10:30:24 [INFO] Timer tick: 730s left
-2026-08-26 10:30:34 [INFO] Timer tick: 720s left
-2026-08-26 10:30:34 [INFO] Timer tick: 720s left
-2026-08-26 10:30:44 [INFO] Timer tick: 710s left
-2026-08-26 10:30:45 [INFO] Timer tick: 710s left
-2026-08-26 10:30:54 [INFO] Timer tick: 700s left
-2026-08-26 10:30:55 [INFO] Timer tick: 700s left
-2026-08-26 10:31:04 [INFO] Timer tick: 690s left
-2026-08-26 10:31:05 [INFO] Timer tick: 690s left
-2026-08-26 10:31:14 [INFO] Timer tick: 680s left
-2026-08-26 10:31:15 [INFO] Timer tick: 680s left
-2026-08-26 10:31:23 [INFO] File coin trigger: P1.0
-2026-08-26 10:31:24 [INFO] Timer tick: 670s left
-2026-08-26 10:31:25 [INFO] Timer tick: 670s left
-2026-08-26 10:31:34 [INFO] Added P1.0 = 300 more seconds
-2026-08-26 10:31:34 [INFO] Timer tick: 960s left
-2026-08-26 10:31:35 [INFO] Timer tick: 960s left
-2026-08-26 10:31:44 [INFO] Timer tick: 950s left
-2026-08-26 10:31:44 [INFO] Timer tick: 950s left
-2026-08-26 10:31:54 [INFO] Timer tick: 940s left
-2026-08-26 10:31:54 [INFO] Timer tick: 940s left
-2026-08-26 10:32:04 [INFO] Timer tick: 930s left
-2026-08-26 10:32:04 [INFO] Timer tick: 930s left
-2026-08-26 10:32:14 [INFO] Timer tick: 920s left
-2026-08-26 10:32:14 [INFO] Timer tick: 920s left
-2026-08-26 10:32:21 [INFO] Screenshot sent to server
-2026-08-26 10:32:24 [INFO] Timer tick: 910s left
-2026-08-26 10:32:24 [INFO] Timer tick: 910s left
-2026-08-26 10:32:34 [INFO] Timer tick: 900s left
-2026-08-26 10:32:34 [INFO] Timer tick: 900s left
-2026-08-26 10:32:44 [INFO] Timer tick: 890s left
-2026-08-26 10:32:44 [INFO] Timer tick: 890s left
-2026-08-26 10:32:54 [INFO] Timer tick: 880s left
-2026-08-26 10:32:54 [INFO] Timer tick: 880s left
-2026-08-26 10:32:56 [INFO] Screenshot sent to server
-2026-08-26 10:33:04 [INFO] Timer tick: 870s left
-2026-08-26 10:33:04 [INFO] Timer tick: 870s left
-2026-08-26 10:33:11 [INFO] Screenshot sent to server
-2026-08-26 10:33:14 [INFO] Timer tick: 860s left
-2026-08-26 10:33:14 [INFO] Timer tick: 860s left
-2026-08-26 10:33:24 [INFO] Timer tick: 850s left
-2026-08-26 10:33:24 [INFO] Timer tick: 850s left
-2026-08-26 10:33:33 [INFO] Screenshot sent to server
-2026-08-26 10:33:34 [INFO] Timer tick: 840s left
-2026-08-26 10:33:34 [INFO] Timer tick: 840s left
-2026-08-26 10:33:44 [INFO] Timer tick: 830s left
-2026-08-26 10:33:45 [INFO] Timer tick: 830s left
-2026-08-26 10:33:54 [INFO] Timer tick: 820s left
-2026-08-26 10:33:55 [INFO] Timer tick: 820s left
-2026-08-26 10:34:04 [INFO] Timer tick: 810s left
-2026-08-26 10:34:05 [INFO] Timer tick: 810s left
-2026-08-26 10:34:14 [INFO] Timer tick: 800s left
-2026-08-26 10:34:15 [INFO] Timer tick: 800s left
-2026-08-26 10:34:24 [INFO] Timer tick: 790s left
-2026-08-26 10:34:34 [INFO] Timer tick: 780s left
-2026-08-26 10:34:35 [INFO] Timer tick: 780s left
-2026-08-26 10:34:44 [INFO] Timer tick: 770s left
-2026-08-26 10:34:45 [INFO] Timer tick: 770s left
-2026-08-26 10:34:54 [INFO] Timer tick: 760s left
-2026-08-26 10:34:55 [INFO] Timer tick: 760s left
-2026-08-26 10:35:04 [INFO] Timer tick: 750s left
-2026-08-26 10:35:05 [INFO] Timer tick: 750s left
-2026-08-26 10:35:14 [INFO] Timer tick: 740s left
-2026-08-26 10:35:15 [INFO] Timer tick: 740s left
-2026-08-26 10:35:24 [INFO] Timer tick: 730s left
-2026-08-26 10:35:25 [INFO] Timer tick: 730s left
-2026-08-26 10:35:34 [INFO] Timer tick: 720s left
-2026-08-26 10:35:34 [INFO] Timer tick: 720s left
-2026-08-26 10:35:44 [INFO] Timer tick: 710s left
-2026-08-26 10:35:44 [INFO] Timer tick: 710s left
-2026-08-26 10:35:54 [INFO] Timer tick: 700s left
-2026-08-26 10:35:54 [INFO] Timer tick: 700s left
-2026-08-26 10:36:04 [INFO] Timer tick: 690s left
-2026-08-26 10:36:04 [INFO] Timer tick: 690s left
-2026-08-26 10:36:14 [INFO] Timer tick: 680s left
-2026-08-26 10:36:14 [INFO] Timer tick: 680s left
-2026-08-26 10:36:24 [INFO] Timer tick: 670s left
-2026-08-26 10:36:24 [INFO] Timer tick: 670s left
-2026-08-26 10:36:34 [INFO] Timer tick: 660s left
-2026-08-26 10:36:34 [INFO] Timer tick: 660s left
-2026-08-26 10:36:44 [INFO] Timer tick: 650s left
-2026-08-26 10:36:44 [INFO] Timer tick: 650s left
-2026-08-26 10:36:54 [INFO] Timer tick: 640s left
-2026-08-26 10:36:54 [INFO] Timer tick: 640s left
-2026-08-26 10:37:04 [INFO] Timer tick: 630s left
-2026-08-26 10:37:04 [INFO] Timer tick: 630s left
-2026-08-26 10:37:14 [INFO] Timer tick: 620s left
-2026-08-26 10:37:15 [INFO] Timer tick: 620s left
-2026-08-26 10:37:24 [INFO] Timer tick: 610s left
-2026-08-26 10:37:25 [INFO] Timer tick: 610s left
-2026-08-26 10:37:34 [INFO] Timer tick: 600s left
-2026-08-26 10:37:35 [INFO] Timer tick: 600s left
-2026-08-26 10:37:44 [INFO] Timer tick: 590s left
-2026-08-26 10:37:45 [INFO] Timer tick: 590s left
-2026-08-26 10:37:54 [INFO] Timer tick: 580s left
-2026-08-26 10:37:55 [INFO] Timer tick: 580s left
-2026-08-26 10:38:04 [INFO] Timer tick: 570s left
-2026-08-26 10:38:05 [INFO] Timer tick: 570s left
-2026-08-26 10:38:14 [INFO] Timer tick: 560s left
-2026-08-26 10:38:14 [INFO] Timer tick: 560s left
-2026-08-26 10:38:24 [INFO] Timer tick: 550s left
-2026-08-26 10:38:24 [INFO] Timer tick: 550s left
-2026-08-26 10:38:34 [INFO] Timer tick: 540s left
-2026-08-26 10:38:34 [INFO] Timer tick: 540s left
-2026-08-26 10:38:44 [INFO] Timer tick: 530s left
-2026-08-26 10:38:44 [INFO] Timer tick: 530s left
-2026-08-26 10:38:54 [INFO] Timer tick: 520s left
-2026-08-26 10:38:54 [INFO] Timer tick: 520s left
-2026-08-26 10:39:04 [INFO] Timer tick: 510s left
-2026-08-26 10:39:04 [INFO] Timer tick: 510s left
-2026-08-26 10:39:14 [INFO] Timer tick: 500s left
-2026-08-26 10:39:14 [INFO] Timer tick: 500s left
-2026-08-26 10:39:24 [INFO] Timer tick: 490s left
-2026-08-26 10:39:24 [INFO] Timer tick: 490s left
-2026-08-26 10:39:34 [INFO] Timer tick: 480s left
-2026-08-26 10:39:35 [INFO] Timer tick: 480s left
-2026-08-26 10:39:44 [INFO] Timer tick: 470s left
-2026-08-26 10:39:45 [INFO] Timer tick: 470s left
-2026-08-26 10:39:54 [INFO] Timer tick: 460s left
-2026-08-26 10:39:55 [INFO] Timer tick: 460s left
-2026-08-26 10:40:04 [INFO] Timer tick: 450s left
-2026-08-26 10:40:05 [INFO] Timer tick: 450s left
-2026-08-26 10:40:14 [INFO] Timer tick: 440s left
-2026-08-26 10:40:15 [INFO] Timer tick: 440s left
-2026-08-26 10:40:24 [INFO] Timer tick: 430s left
-2026-08-26 10:40:25 [INFO] Timer tick: 430s left
-2026-08-26 10:40:34 [INFO] Timer tick: 420s left
-2026-08-26 10:40:34 [INFO] Timer tick: 420s left
-2026-08-26 10:40:44 [INFO] Timer tick: 410s left
-2026-08-26 10:40:44 [INFO] Timer tick: 410s left
-2026-08-26 10:40:54 [INFO] Timer tick: 400s left
-2026-08-26 10:40:54 [INFO] Timer tick: 400s left
-2026-08-26 10:41:04 [INFO] Timer tick: 390s left
-2026-08-26 10:41:04 [INFO] Timer tick: 390s left
-2026-08-26 10:41:14 [INFO] Timer tick: 380s left
-2026-08-26 10:41:14 [INFO] Timer tick: 380s left
-2026-08-26 10:41:24 [INFO] Timer tick: 370s left
-2026-08-26 10:41:24 [INFO] Timer tick: 370s left
-2026-08-26 10:41:34 [INFO] Timer tick: 360s left
-2026-08-26 10:41:34 [INFO] Timer tick: 360s left
-2026-08-26 10:41:44 [INFO] Timer tick: 350s left
-2026-08-26 10:41:44 [INFO] Timer tick: 350s left
-2026-08-26 10:41:54 [INFO] Timer tick: 340s left
-2026-08-26 10:41:54 [INFO] Timer tick: 340s left
-2026-08-26 10:42:04 [INFO] Timer tick: 330s left
-2026-08-26 10:42:05 [INFO] Timer tick: 330s left
-2026-08-26 10:42:14 [INFO] Timer tick: 320s left
-2026-08-26 10:42:15 [INFO] Timer tick: 320s left
-2026-08-26 10:42:24 [INFO] Timer tick: 310s left
-2026-08-26 10:42:25 [INFO] Timer tick: 310s left
-2026-08-26 10:42:34 [INFO] Timer tick: 300s left
-2026-08-26 10:42:35 [INFO] Timer tick: 300s left
-2026-08-26 10:42:44 [INFO] Timer tick: 290s left
-2026-08-26 10:42:44 [INFO] Timer tick: 290s left
-2026-08-26 10:42:54 [INFO] Timer tick: 280s left
-2026-08-26 10:42:54 [INFO] Timer tick: 280s left
-2026-08-26 10:43:04 [INFO] Timer tick: 270s left
-2026-08-26 10:43:04 [INFO] Timer tick: 270s left
-2026-08-26 10:43:14 [INFO] Timer tick: 260s left
-2026-08-26 10:43:14 [INFO] Timer tick: 260s left
-2026-08-26 10:43:24 [INFO] Timer tick: 250s left
-2026-08-26 10:43:24 [INFO] Timer tick: 250s left
-2026-08-26 10:43:34 [INFO] Timer tick: 240s left
-2026-08-26 10:43:34 [INFO] Timer tick: 240s left
-2026-08-26 10:43:44 [INFO] Timer tick: 230s left
-2026-08-26 10:43:44 [INFO] Timer tick: 230s left
-2026-08-26 10:43:54 [INFO] Timer tick: 220s left
-2026-08-26 10:43:54 [INFO] Timer tick: 220s left
-2026-08-26 10:44:04 [INFO] Timer tick: 210s left
-2026-08-26 10:44:04 [INFO] Timer tick: 210s left
-2026-08-26 10:44:14 [INFO] Timer tick: 200s left
-2026-08-26 10:44:14 [INFO] Timer tick: 200s left
-2026-08-26 10:44:24 [INFO] Timer tick: 190s left
-2026-08-26 10:44:25 [INFO] Timer tick: 190s left
-2026-08-26 10:44:34 [INFO] Timer tick: 180s left
-2026-08-26 10:44:35 [INFO] Timer tick: 180s left
-2026-08-26 10:44:44 [INFO] Timer tick: 170s left
-2026-08-26 10:44:45 [INFO] Timer tick: 170s left
-2026-08-26 10:44:54 [INFO] Timer tick: 160s left
-2026-08-26 10:44:55 [INFO] Timer tick: 160s left
-2026-08-26 10:45:04 [INFO] Timer tick: 150s left
-2026-08-26 10:45:05 [INFO] Timer tick: 150s left
-2026-08-26 10:45:14 [INFO] Timer tick: 140s left
-2026-08-26 10:45:14 [INFO] Timer tick: 140s left
-2026-08-26 10:45:24 [INFO] Timer tick: 130s left
-2026-08-26 10:45:24 [INFO] Timer tick: 130s left
-2026-08-26 10:45:34 [INFO] Timer tick: 120s left
-2026-08-26 10:45:34 [INFO] Timer tick: 120s left
-2026-08-26 10:45:44 [INFO] Timer tick: 110s left
-2026-08-26 10:45:44 [INFO] Timer tick: 110s left
-2026-08-26 10:45:54 [INFO] Timer tick: 100s left
-2026-08-26 10:45:54 [INFO] Timer tick: 100s left
-2026-08-26 10:46:04 [INFO] Timer tick: 90s left
-2026-08-26 10:46:04 [INFO] Timer tick: 90s left
-2026-08-26 10:46:14 [INFO] Timer tick: 80s left
-2026-08-26 10:46:14 [INFO] Timer tick: 80s left
-2026-08-26 10:46:24 [INFO] Timer tick: 70s left
-2026-08-26 10:46:24 [INFO] Timer tick: 70s left
-2026-08-26 10:46:34 [INFO] Timer tick: 60s left
-2026-08-26 10:46:34 [INFO] Timer tick: 60s left
-2026-08-26 10:46:44 [INFO] Timer tick: 50s left
-2026-08-26 10:46:45 [INFO] Timer tick: 50s left
-2026-08-26 10:46:54 [INFO] Timer tick: 40s left
-2026-08-26 10:46:55 [INFO] Timer tick: 40s left
-2026-08-26 10:47:04 [INFO] Timer tick: 30s left
-2026-08-26 10:47:05 [INFO] Timer tick: 30s left
-2026-08-26 10:47:14 [INFO] Timer tick: 20s left
-2026-08-26 10:47:15 [INFO] Timer tick: 20s left
-2026-08-26 10:47:24 [INFO] Timer tick: 10s left
-2026-08-26 10:47:25 [INFO] Timer tick: 10s left
-2026-08-26 10:47:34 [INFO] Timer tick: 0s left
-2026-08-26 10:47:35 [INFO] Timer tick: 0s left
-2026-08-26 10:47:35 [INFO] >>> TIMER EXPIRED — calling cmd_lock now
-2026-08-26 10:47:35 [INFO] Running: lock
-2026-08-26 10:47:35 [INFO] >>> cmd_lock() was called
-2026-08-26 10:47:48 [INFO] Session ended
-2026-08-26 11:15:33 [ERROR] POST processes.php \u2192 error: HTTPSConnectionPool(host='monitonet.com', port=443): Read timed out. (read timeout=5)
-2026-08-26 11:16:00 [ERROR] POST processes.php \u2192 error: HTTPSConnectionPool(host='monitonet.com', port=443): Read timed out. (read timeout=5)
-2026-08-26 11:20:46 [ERROR] Restart app failed: invalid exe path "C:\Users\ranie\AppData\Local\Roblox\Ve"
-2026-08-26 11:20:46 [INFO] Restart app C:\Users\ranie\AppData\Local\Roblox\Ve: failed
-2026-08-26 11:45:26 [INFO] Restart app C:\Users\ranie\AppData\Local\Roblox\Versions\version-ddf602d9cfe44005\RobloxPlayerBeta.exe: success
-2026-08-26 11:46:09 [INFO] Restart app C:\Users\ranie\AppData\Local\Roblox\Versions\version-ddf602d9cfe44005\RobloxPlayerBeta.exe: success
-2026-08-26 11:47:32 [INFO] Restart app C:\Users\ranie\AppData\Local\Programs\Opera GX\opera.exe: success
-2026-08-26 11:52:50 [INFO] Process 10336 terminated
-2026-08-26 11:52:50 [INFO] Kill PID 10336: success
-2026-08-26 11:53:14 [INFO] Restart app C:\Users\ranie\AppData\Local\Programs\Opera GX\opera.exe: success
-2026-08-26 11:53:35 [WARNING] Process 1276 not found
-2026-08-26 11:53:35 [INFO] Kill PID 1276: failed
-2026-08-26 11:53:44 [ERROR] POST processes.php \u2192 error: HTTPSConnectionPool(host='monitonet.com', port=443): Read timed out. (read timeout=5)
-2026-08-26 11:54:50 [INFO] Process 7052 terminated
-2026-08-26 11:54:50 [INFO] Kill PID 7052: success
-2026-08-26 11:55:20 [INFO] Process 18032 terminated
-2026-08-26 11:55:20 [INFO] Kill PID 18032: success
-2026-08-26 11:55:57 [INFO] Process 10872 terminated
-2026-08-26 11:55:57 [INFO] Kill PID 10872: success
-2026-08-26 11:56:19 [INFO] Process 2428 terminated
-2026-08-26 11:56:19 [INFO] Kill PID 2428: success
-2026-08-26 11:56:41 [INFO] Running: shutdown
-2026-08-26 11:56:41 [INFO] Command executed: shutdown
-2026-08-28 22:59:59 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
-2026-08-28 22:59:59 [INFO] Mode: Normal logging, File coin trigger
-2026-08-28 22:59:59 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
-2026-08-28 22:59:59 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
-2026-08-28 23:00:05 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
-2026-08-28 23:00:10 [INFO] Hardware specs sent
-2026-08-28 23:00:10 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
-2026-08-28 23:00:10 [INFO] File coin watcher started (normal mode)
-2026-08-28 23:00:10 [INFO] All threads started
-2026-08-28 23:02:11 [WARNING] POST screenshot.php \u2192 server unreachable
-2026-08-28 23:02:11 [INFO] Screenshot sent to server
-2026-08-28 23:02:12 [INFO] Screenshot sent to server
+2026-11-10 04:33:35 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 04:33:35 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 04:33:35 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 04:33:35 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 04:33:36 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 04:33:38 [INFO] Hardware specs sent
+2026-11-10 04:33:38 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 04:33:38 [INFO] File coin watcher started (normal mode)
+2026-11-10 04:33:38 [INFO] All threads started
+2026-11-10 04:33:38 [INFO] Coin acceptor listener started on COM9
+2026-11-10 04:33:38 [INFO] ESP32: ================================
+2026-11-10 04:33:38 [INFO] ESP32: ================================
+2026-11-10 04:33:44 [INFO] Stop timer requested, but no active session
+2026-11-10 04:34:23 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 04:34:45 [INFO] Real coin detected: P1.0
+2026-11-10 04:34:46 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 04:34:46 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 04:34:55 [INFO] Timer tick: 290s left
+2026-11-10 04:34:56 [INFO] Timer tick: 290s left
+2026-11-10 04:35:02 [INFO] Running: lock
+2026-11-10 04:35:02 [INFO] Session force-stopped by admin
+2026-11-10 04:35:04 [INFO] Session ended
+2026-11-10 05:39:52 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 05:39:52 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 05:39:53 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 05:39:53 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 05:39:54 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 05:39:56 [INFO] Hardware specs sent
+2026-11-10 05:39:56 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 05:39:56 [INFO] File coin watcher started (normal mode)
+2026-11-10 05:39:56 [INFO] All threads started
+2026-11-10 05:39:56 [INFO] Coin acceptor listener started on COM9
+2026-11-10 05:39:57 [INFO] ESP32: ================================
+2026-11-10 05:39:57 [INFO] ESP32: ================================
+2026-11-10 05:40:04 [INFO] Stop timer requested, but no active session
+2026-11-10 05:40:27 [INFO] Real coin detected: P1.0
+2026-11-10 05:40:28 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 05:40:28 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 05:40:31 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 05:40:37 [INFO] Timer tick: 290s left
+2026-11-10 05:40:38 [INFO] Timer tick: 290s left
+2026-11-10 05:40:41 [INFO] Running: lock
+2026-11-10 05:40:41 [INFO] Session force-stopped by admin
+2026-11-10 05:40:42 [INFO] Session ended
+2026-11-10 07:01:30 [ERROR] Coin acceptor serial connection lost: ClearCommError failed (PermissionError(13, 'Access is denied.', None, 5)) — attempting reconnect
+2026-11-10 07:01:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:01:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:01:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:02:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:02:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:02:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:02:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:02:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:02:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:03:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:03:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:03:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:03:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:03:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:03:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:04:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:04:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:04:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:04:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:04:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:04:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:05:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:05:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:05:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:05:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:05:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:05:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:06:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:06:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:06:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:06:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:06:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:06:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:07:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:07:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:07:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:07:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:07:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:07:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:08:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:08:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:08:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:08:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:08:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:08:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:09:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:09:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:09:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:09:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:09:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:09:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:10:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:10:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:10:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:10:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:10:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:10:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:11:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:11:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:11:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:11:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:11:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:11:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:12:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:12:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:12:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:12:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:12:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:12:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:13:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:13:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:13:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:13:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:13:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:13:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:14:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:14:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:14:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:14:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:14:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:14:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:15:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:15:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:15:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:15:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:15:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:15:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:16:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:16:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:16:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:16:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:16:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:16:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:17:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:17:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:17:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:17:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:17:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:17:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:18:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:18:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:18:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:18:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:18:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:18:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:19:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:19:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:19:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:19:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:19:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:19:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:20:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:20:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:20:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:20:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:20:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:20:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:21:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:21:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:21:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:21:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:21:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:21:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:22:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:22:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:22:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:22:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:22:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:22:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:23:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:23:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:23:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:23:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:23:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:23:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:24:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:24:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:24:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:24:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:24:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:24:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:25:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:25:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:25:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:25:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:25:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:25:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:26:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:26:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:26:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:26:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:26:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:26:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:27:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:27:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:27:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:27:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:27:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:27:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:28:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:28:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:28:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:28:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:28:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:28:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:29:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:29:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:29:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:29:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:29:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:29:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:30:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:30:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:30:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:30:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:30:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:30:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:31:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:31:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:31:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:31:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:31:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:31:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:32:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:32:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:32:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:32:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:32:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:32:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:33:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:33:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:33:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:33:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:33:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:33:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:34:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:34:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:34:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:34:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:34:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:34:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:35:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:35:19 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:35:29 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:35:39 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:35:49 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:35:59 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:36:09 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:36:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:36:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:36:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:36:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:37:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:37:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:37:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:37:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:37:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:37:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:38:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:38:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:38:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:38:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:38:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:38:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:39:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:39:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:39:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:39:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:39:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:39:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:40:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:40:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:40:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:40:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:40:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:40:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:41:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:41:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:41:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:41:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:41:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:41:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:42:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:42:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:42:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:42:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:42:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:42:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:43:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:43:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:43:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:43:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:43:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:43:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:44:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:44:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:44:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:44:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:44:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:44:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:45:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:45:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:45:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:45:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:45:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:45:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:46:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:46:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:46:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:46:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:46:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:46:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:47:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:47:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:47:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:47:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:47:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:47:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:48:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:48:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:48:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:48:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:48:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:48:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:49:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:49:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:49:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:49:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:49:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:49:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:50:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:50:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:50:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:50:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:50:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:50:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:51:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:51:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:51:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:51:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:51:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:51:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:52:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:52:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:52:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:52:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:52:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:52:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:53:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:53:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:53:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:53:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:53:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:53:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:54:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:54:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:54:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:54:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:54:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:54:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:55:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:55:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:55:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:55:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:55:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:55:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:56:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:56:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:56:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:56:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:56:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:56:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:57:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:57:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:57:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:57:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:57:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:57:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:58:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:58:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:58:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:58:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:58:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:58:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:59:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:59:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:59:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:59:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:59:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 07:59:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:00:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:00:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:00:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:00:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:00:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:00:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:01:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:01:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:01:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:01:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:01:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:01:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:02:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:02:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:02:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:02:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:02:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:02:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:03:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:03:11 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:03:21 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:03:31 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:03:41 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:03:51 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:04:01 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:04:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:04:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:04:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:04:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:04:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:05:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:05:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:05:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:05:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:05:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:05:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:06:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:06:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:06:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:06:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:06:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:06:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:07:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:07:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:07:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:07:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:07:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:07:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:08:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:08:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:08:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:08:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:08:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:08:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:09:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:09:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:09:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:09:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:09:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:09:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:10:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:10:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:10:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:10:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:10:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:10:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:11:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:11:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:11:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:11:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:11:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:11:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:12:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:12:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:12:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:12:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:12:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:12:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:13:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:13:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:13:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:13:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:13:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:13:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:14:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:14:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:14:22 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:14:32 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:14:42 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:14:52 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:15:02 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:15:12 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:15:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:15:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:15:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:15:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:16:03 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:16:13 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:16:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:16:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:16:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:16:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:17:03 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:17:13 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:17:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:17:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:17:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:17:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:18:03 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:18:13 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:18:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:18:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:18:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:18:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:19:03 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:19:13 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:19:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:19:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:19:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:19:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:20:03 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:20:13 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:20:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:20:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:20:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:20:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:21:03 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:21:13 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:21:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:21:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:21:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:21:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:22:03 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:22:13 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:22:23 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:22:33 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:22:43 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:22:53 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:23:04 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:23:14 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:23:24 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:23:34 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:23:44 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:23:54 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:24:04 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:24:14 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:24:24 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:24:34 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:24:44 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:24:54 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:25:04 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:25:14 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:25:24 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:25:34 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:25:44 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:25:54 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:26:04 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:26:14 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:26:24 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:26:34 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:26:44 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:26:54 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:27:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:27:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:27:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:27:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:27:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:27:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:28:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:28:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:28:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:28:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:28:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:28:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:29:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:29:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:29:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:29:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:29:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:29:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:30:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:30:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:30:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:30:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:30:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:30:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:31:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:31:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:31:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:31:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:31:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:31:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:32:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:32:15 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:32:25 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:32:35 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:32:45 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:32:55 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:33:05 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:33:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:33:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:33:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:33:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:33:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:34:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:34:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:34:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:34:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:34:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:34:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:35:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:35:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:35:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:35:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:35:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:35:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:36:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:36:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:36:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:36:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:36:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:36:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:37:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:37:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:37:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:37:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:37:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:37:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:38:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:38:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:38:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:38:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:38:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:38:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:39:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:39:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:39:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:39:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:39:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:39:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:40:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:40:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:40:26 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:40:36 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:40:46 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:40:56 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:41:06 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:41:16 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:41:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:41:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:41:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:41:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:42:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:42:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:42:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:42:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:42:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:42:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:43:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:43:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:43:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:43:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:43:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:43:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:44:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:44:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:44:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:44:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:44:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:44:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:45:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:45:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:45:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:45:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:45:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:45:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:46:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:46:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:46:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:46:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:46:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:46:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:47:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:47:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:47:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:47:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:47:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:47:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:48:07 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:48:17 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:48:27 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:48:37 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:48:47 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:48:57 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:49:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:49:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:49:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:49:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:49:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:49:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:50:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:50:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:50:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:50:38 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:50:48 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:50:58 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:51:08 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:51:18 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:51:28 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 08:51:38 [INFO] Coin acceptor reconnected on COM9
+2026-11-10 08:51:38 [INFO] ESP32: ================================
+2026-11-10 08:51:38 [INFO] ESP32: ================================
+2026-11-10 08:52:23 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 08:52:28 [INFO] Real coin detected: P1.0
+2026-11-10 08:52:29 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 08:52:29 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 08:52:31 [INFO] Idle warning sent (7 min)
+2026-11-10 08:52:38 [INFO] Timer tick: 290s left
+2026-11-10 08:52:39 [INFO] Timer tick: 290s left
+2026-11-10 08:52:48 [INFO] Timer tick: 280s left
+2026-11-10 08:52:49 [INFO] Timer tick: 280s left
+2026-11-10 08:52:58 [INFO] Timer tick: 270s left
+2026-11-10 08:52:59 [INFO] Timer tick: 270s left
+2026-11-10 08:53:08 [INFO] Timer tick: 260s left
+2026-11-10 08:53:09 [INFO] Timer tick: 260s left
+2026-11-10 08:53:18 [INFO] Timer tick: 250s left
+2026-11-10 08:53:19 [INFO] Timer tick: 250s left
+2026-11-10 08:53:28 [INFO] Timer tick: 240s left
+2026-11-10 08:53:29 [INFO] Timer tick: 240s left
+2026-11-10 08:53:38 [INFO] Timer tick: 230s left
+2026-11-10 08:53:39 [INFO] Timer tick: 230s left
+2026-11-10 08:53:48 [INFO] Timer tick: 220s left
+2026-11-10 08:53:49 [INFO] Timer tick: 220s left
+2026-11-10 08:53:58 [INFO] Timer tick: 210s left
+2026-11-10 08:53:59 [INFO] Timer tick: 210s left
+2026-11-10 08:54:08 [INFO] Timer tick: 200s left
+2026-11-10 08:54:09 [INFO] Timer tick: 200s left
+2026-11-10 08:54:18 [INFO] Timer tick: 190s left
+2026-11-10 08:54:19 [INFO] Timer tick: 190s left
+2026-11-10 08:54:21 [INFO] Real coin detected: P1.0
+2026-11-10 08:54:22 [INFO] Added P1.0 = 300 more seconds
+2026-11-10 08:54:23 [INFO] Real coin detected: P5.0
+2026-11-10 08:54:24 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 08:54:28 [INFO] Timer tick: 1980s left
+2026-11-10 08:54:29 [INFO] Timer tick: 1980s left
+2026-11-10 08:54:38 [INFO] Timer tick: 1970s left
+2026-11-10 08:54:39 [INFO] Timer tick: 1970s left
+2026-11-10 08:54:48 [INFO] Timer tick: 1960s left
+2026-11-10 08:54:49 [INFO] Timer tick: 1960s left
+2026-11-10 08:54:58 [INFO] Timer tick: 1950s left
+2026-11-10 08:54:58 [INFO] Timer tick: 1950s left
+2026-11-10 08:54:58 [INFO] Real coin detected: P10.0
+2026-11-10 08:54:59 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 08:55:08 [INFO] Timer tick: 4940s left
+2026-11-10 08:55:08 [INFO] Timer tick: 4940s left
+2026-11-10 08:55:11 [INFO] Idle 10 mins — stopping timer and shutting down
+2026-11-10 08:55:12 [INFO] Session ended
+2026-11-10 08:55:12 [INFO] Running: shutdown
+2026-11-10 08:55:16 [WARNING] Coin rejected by ESP32: INVALID: 22 pulses
+2026-11-10 09:39:59 [INFO] Pisonet Client starting — server: https://monitonet.com/pisonetV2/api
+2026-11-10 09:39:59 [INFO] Mode: Normal logging, File coin trigger
+2026-11-10 09:39:59 [INFO] Using Ethernet MAC: 00:d8:61:ca:29:9f
+2026-11-10 09:39:59 [INFO] Registering — MAC: 00:d8:61:ca:29:9f, hostname: DESKTOP-IR25OBQ
+2026-11-10 09:40:00 [INFO] Registered as: DESKTOP-IR25OBQ via https://monitonet.com/pisonetV2/api
+2026-11-10 09:40:03 [INFO] Hardware specs sent
+2026-11-10 09:40:03 [INFO] Running as DESKTOP-IR25OBQ — rate: P5.0/min
+2026-11-10 09:40:03 [INFO] File coin watcher started (normal mode)
+2026-11-10 09:40:03 [INFO] All threads started
+2026-11-10 09:40:03 [INFO] Coin acceptor listener started on COM9
+2026-11-10 09:40:03 [INFO] ESP32: ================================
+2026-11-10 09:40:03 [INFO] ESP32: ================================
+2026-11-10 09:41:11 [INFO] Coin acceptor enabled (GPIO 22 HIGH)
+2026-11-10 09:41:56 [INFO] Real coin detected: P1.0
+2026-11-10 09:41:57 [INFO] Calculating time: P1.0 x 5.0 min/peso x 60 = 300s
+2026-11-10 09:41:57 [INFO] Session started — P1.0 = 300s (5min 0sec)
+2026-11-10 09:42:06 [INFO] Real coin detected: P10.0
+2026-11-10 09:42:06 [INFO] Timer tick: 290s left
+2026-11-10 09:42:07 [INFO] Added P10.0 = 3000 more seconds
+2026-11-10 09:42:07 [INFO] Timer tick: 3290s left
+2026-11-10 09:42:16 [INFO] Timer tick: 3280s left
+2026-11-10 09:42:17 [INFO] Timer tick: 3280s left
+2026-11-10 09:42:19 [INFO] Real coin detected: P5.0
+2026-11-10 09:42:21 [INFO] Added P5.0 = 1500 more seconds
+2026-11-10 09:42:26 [INFO] Timer tick: 4770s left
+2026-11-10 09:42:27 [INFO] Timer tick: 4770s left
+2026-11-10 09:42:36 [INFO] Real coin detected: P20.0
+2026-11-10 09:42:36 [INFO] Timer tick: 4760s left
+2026-11-10 09:42:37 [INFO] Added P20.0 = 6000 more seconds
+2026-11-10 09:42:37 [INFO] Timer tick: 10760s left
+2026-11-10 09:42:46 [INFO] Timer tick: 10750s left
+2026-11-10 09:42:47 [INFO] Timer tick: 10750s left
+2026-11-10 09:42:56 [INFO] Timer tick: 10740s left
+2026-11-10 09:42:57 [INFO] Timer tick: 10740s left
+2026-11-10 09:43:06 [INFO] Timer tick: 10730s left
+2026-11-10 09:43:07 [INFO] Timer tick: 10730s left
+2026-11-10 09:43:16 [INFO] Timer tick: 10720s left
+2026-11-10 09:43:17 [INFO] Timer tick: 10720s left
+2026-11-10 09:43:26 [INFO] Timer tick: 10710s left
+2026-11-10 09:43:27 [INFO] Timer tick: 10710s left
+2026-11-10 09:43:36 [INFO] Timer tick: 10700s left
+2026-11-10 09:43:37 [INFO] Timer tick: 10700s left
+2026-11-10 09:43:47 [INFO] Timer tick: 10690s left
+2026-11-10 09:43:47 [INFO] Timer tick: 10690s left
+2026-11-10 09:43:57 [INFO] Timer tick: 10680s left
+2026-11-10 09:43:57 [INFO] Timer tick: 10680s left
+2026-11-10 09:44:07 [INFO] Timer tick: 10670s left
+2026-11-10 09:44:07 [INFO] Timer tick: 10670s left
+2026-11-10 09:44:17 [INFO] Timer tick: 10660s left
+2026-11-10 09:44:17 [INFO] Timer tick: 10660s left
+2026-11-10 09:44:27 [INFO] Timer tick: 10650s left
+2026-11-10 09:44:27 [INFO] Timer tick: 10650s left
+2026-11-10 09:44:37 [INFO] Timer tick: 10640s left
+2026-11-10 09:44:37 [INFO] Timer tick: 10640s left
+2026-11-10 09:44:47 [INFO] Timer tick: 10630s left
+2026-11-10 09:44:47 [INFO] Timer tick: 10630s left
+2026-11-10 09:44:57 [INFO] Timer tick: 10620s left
+2026-11-10 09:44:57 [INFO] Timer tick: 10620s left
+2026-11-10 09:45:07 [INFO] Timer tick: 10610s left
+2026-11-10 09:45:07 [INFO] Timer tick: 10610s left
+2026-11-10 09:45:17 [INFO] Timer tick: 10600s left
+2026-11-10 09:45:17 [INFO] Timer tick: 10600s left
+2026-11-10 09:45:27 [INFO] Timer tick: 10590s left
+2026-11-10 09:45:27 [INFO] Timer tick: 10590s left
+2026-11-10 09:45:37 [INFO] Timer tick: 10580s left
+2026-11-10 09:45:37 [INFO] Timer tick: 10580s left
+2026-11-10 09:45:47 [INFO] Timer tick: 10570s left
+2026-11-10 09:45:47 [INFO] Timer tick: 10570s left
+2026-11-10 09:45:49 [INFO] Screenshot sent to server
+2026-11-10 09:45:57 [INFO] Timer tick: 10560s left
+2026-11-10 09:45:57 [INFO] Timer tick: 10560s left
+2026-11-10 09:46:07 [INFO] Timer tick: 10550s left
+2026-11-10 09:46:07 [INFO] Timer tick: 10550s left
+2026-11-10 09:46:17 [INFO] Timer tick: 10540s left
+2026-11-10 09:46:17 [INFO] Timer tick: 10540s left
+2026-11-10 09:46:27 [INFO] Timer tick: 10530s left
+2026-11-10 09:46:27 [INFO] Timer tick: 10530s left
+2026-11-10 09:46:37 [INFO] Timer tick: 10520s left
+2026-11-10 09:46:37 [INFO] Timer tick: 10520s left
+2026-11-10 09:46:47 [INFO] Timer tick: 10510s left
+2026-11-10 09:46:47 [INFO] Timer tick: 10510s left
+2026-11-10 09:46:50 [INFO] Running: lock
+2026-11-10 09:46:50 [INFO] Session force-stopped by admin
+2026-11-10 09:46:50 [INFO] Session ended
+2026-11-10 09:47:07 [INFO] Running: lock
+2026-11-10 09:47:07 [INFO] Command executed: lock
+2026-11-10 09:47:29 [INFO] Coin acceptor disabled (GPIO 22 LOW)
+2026-11-10 09:47:35 [ERROR] Coin acceptor serial connection lost: ClearCommError failed (PermissionError(13, 'Access is denied.', None, 5)) — attempting reconnect
+2026-11-10 09:47:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:47:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:48:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:48:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:48:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:48:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:48:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:48:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:49:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:49:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:49:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:49:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:49:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:49:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:50:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:50:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:50:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:50:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:50:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:50:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:51:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:51:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:51:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:51:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:51:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:51:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:52:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:52:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:52:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:52:30 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:52:40 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:52:50 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:53:00 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:53:10 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:53:20 [WARNING] ESP32 not detected — retrying in 10s
+2026-11-10 09:53:22 [INFO] Running: shutdown
+2026-11-10 09:53:22 [INFO] Command executed: shutdown
+2026-11-10 09:53:30 [WARNING] ESP32 not detected — retrying in 10s

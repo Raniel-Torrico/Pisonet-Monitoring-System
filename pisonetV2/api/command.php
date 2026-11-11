@@ -27,14 +27,14 @@ if ($action === 'queue') {
     // Regular commands + coin insert for diskless mode
     // Coin commands use the format: coin:5 (meaning insert P5)
     $allowed  = ['shutdown', 'restart', 'lock', 'unlock', 'screenshot', 'wake', 'refresh_specs'];
-$is_coin  = str_starts_with($command, 'coin:');
-$is_kill  = str_starts_with($command, 'kill:');
-$is_restart_app = str_starts_with($command, 'restart_app:');
+    $is_coin        = str_starts_with($command, 'coin:');
+    $is_kill        = str_starts_with($command, 'kill:');
+    $is_restart_app = str_starts_with($command, 'restart_app:');
+    $is_stop_timer  = $command === 'stop_timer';
 
-if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill && !$is_restart_app) {
-    respond(false, null, 'command must be: shutdown, restart, lock, unlock, screenshot, wake, refresh_specs, coin:[amount], kill:[pid], or restart_app:[path]', 422);
+if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill && !$is_restart_app && !$is_stop_timer) {
+    respond(false, null, 'command must be: shutdown, restart, lock, unlock, screenshot, wake, refresh_specs, stop_timer, coin:[amount], kill:[pid], or restart_app:[path]', 422);
 }
-
     // Validate the coin amount if it is a coin command
     if ($is_coin) {
         $amount = (float) substr($command, 5);
@@ -99,7 +99,3 @@ if ($action === 'ack') {
 
 respond(false, null, 'action must be: queue or ack', 422);
 
-$is_restart_app = str_starts_with($command, 'restart_app:');
-if (!in_array($command, $allowed, true) && !$is_coin && !$is_kill && !$is_restart_app) {
-    respond(false, null, 'command must be: ...', 422);
-}
